@@ -10,4 +10,7 @@ kotlin {
     }
 }
 
+dependencies {
+    commonMainImplementation(projects.tasketShared)
+}
 
