@@ -4,13 +4,24 @@ plugins {
 }
 
 kotlin {
-    js {
-        browser()
+    js(IR) {
+        browser {
+            commonWebpackConfig {
+                outputFileName = "main.js"
+                sourceMaps = false
+
+                cssSupport {
+                    enabled.set(true)
+                }
+            }
+        }
         binaries.executable()
     }
-}
 
-dependencies {
-    commonMainImplementation(projects.tasketShared)
+    sourceSets.jsMain.dependencies {
+        implementation(projects.tasketShared)
+        implementation(libs.kvision.core)
+        implementation(libs.kvision.bootstrap)
+        implementation(libs.kvision.i18n)
+    }
 }
-

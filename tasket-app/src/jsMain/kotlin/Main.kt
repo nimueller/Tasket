@@ -1,6 +1,9 @@
-import dev.cryptospace.tasket.payloads.TestPayload
+import io.kvision.BootstrapCssModule
+import io.kvision.BootstrapModule
+import io.kvision.CoreModule
+import io.kvision.module
+import io.kvision.startApplication
 
 fun main() {
-    console.log("Hello World!")
-    console.log(TestPayload(value = "Hello World!"))
+    startApplication(::App, module.hot, CoreModule, BootstrapModule, BootstrapCssModule)
 }
