@@ -8,7 +8,7 @@ import io.kvision.form.text.textInput
 fun Container.todoInserter() {
     textInput {
         onInput {
-            TodoState.todos += TodoPayload("Test")
+            TodoState.todos += TodoPayload("", "Test")
         }
     }
 }

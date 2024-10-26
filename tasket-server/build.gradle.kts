@@ -15,8 +15,11 @@ application {
 dependencies {
     implementation(projects.tasketShared)
     implementation(libs.logback)
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.netty)
-    implementation(libs.ktor.server.content)
-    implementation(libs.ktor.server.json)
+    implementation(libs.postgresql)
+    implementation(libs.bundles.ktor)
+    implementation(libs.bundles.exposed)
+}
+
+tasks.named<JavaExec>("run") {
+    environment(env.allVariables())
 }

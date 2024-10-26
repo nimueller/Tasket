@@ -20,9 +20,6 @@ kotlin {
 
     sourceSets.jsMain.dependencies {
         implementation(projects.tasketShared)
-        implementation(libs.kvision.core)
-        implementation(libs.kvision.state)
-        implementation(libs.kvision.bootstrap)
-        implementation(libs.kvision.i18n)
+        implementation(libs.bundles.kvision)
     }
 }
