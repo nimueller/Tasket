@@ -13,6 +13,7 @@ dependencyResolutionManagement {
             library("ktor-server-json", "io.ktor", "ktor-serialization-kotlinx-json").versionRef("ktor")
             library("logback", "ch.qos.logback", "logback-classic").versionRef("logback")
             library("kvision-core", "io.kvision", "kvision").versionRef("kvision")
+            library("kvision-state", "io.kvision", "kvision-state").versionRef("kvision")
             library("kvision-bootstrap", "io.kvision", "kvision-bootstrap").versionRef("kvision")
             library("kvision-i18n", "io.kvision", "kvision-i18n").versionRef("kvision")
         }
