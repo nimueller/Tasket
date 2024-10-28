@@ -21,18 +21,26 @@ object HttpClient {
         return parseResponse(response)
     }
 
-    suspend inline fun <reified T : Payload> post(resource: String, payload: T): T? {
+    suspend inline fun <reified T : Payload> post(
+        resource: String,
+        payload: T,
+    ): T? {
         val url = "$host/$resource"
         val body = Json.encodeToString(payload)
         console.log("POST $url")
         console.log("\t$body")
-        val response = window.fetch(url, object : RequestInit {
-            override var method: String? = "POST"
-            override var headers: dynamic = json(
-                "Content-Type" to "application/json"
-            )
-            override var body: String? = body
-        }).await()
+        val response =
+            window.fetch(
+                url,
+                object : RequestInit {
+                    override var method: String? = "POST"
+                    override var headers: dynamic =
+                        json(
+                            "Content-Type" to "application/json",
+                        )
+                    override var body: String? = body
+                },
+            ).await()
         return parseResponse(response)
     }
 
