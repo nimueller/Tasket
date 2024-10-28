@@ -8,6 +8,7 @@ postgresql = "42.7.+"
 [libraries]
 ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
 ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
+ktor-server-cors = { group = "io.ktor", name = "ktor-server-cors", version.ref = "ktor" }
 ktor-server-content-negotation = { group = "io.ktor", name = "ktor-server-content-negotiation", version.ref = "ktor" }
 ktor-server-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
@@ -22,6 +23,6 @@ exposed-kotlin-datetime = { group = "org.jetbrains.exposed", name = "exposed-kot
 postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgresql" }
 
 [bundles]
-ktor = ["ktor-server-core", "ktor-server-netty", "ktor-server-content-negotation", "ktor-server-json"]
+ktor = ["ktor-server-core", "ktor-server-netty", "ktor-server-content-negotation", "ktor-server-json", "ktor-server-cors"]
 kvision = ["kvision-core", "kvision-state", "kvision-bootstrap", "kvision-i18n"]
 exposed = ["exposed-core", "exposed-dao", "exposed-jdbc", "exposed-kotlin-datetime"]

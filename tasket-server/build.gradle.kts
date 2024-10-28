@@ -18,6 +18,7 @@ dependencies {
     implementation(libs.postgresql)
     implementation(libs.bundles.ktor)
     implementation(libs.bundles.exposed)
+    implementation("io.ktor:ktor-server-cors-jvm:3.0.0")
 }
 
 tasks.named<JavaExec>("run") {
