@@ -16,6 +16,7 @@ kvision-core = { group = "io.kvision", name = "kvision", version.ref = "kvision"
 kvision-state = { group = "io.kvision", name = "kvision-state", version.ref = "kvision" }
 kvision-bootstrap = { group = "io.kvision", name = "kvision-bootstrap", version.ref = "kvision" }
 kvision-i18n = { group = "io.kvision", name = "kvision-i18n", version.ref = "kvision" }
+kvision-fontawesome = { group = "io.kvision", name = "kvision-fontawesome", version.ref = "kvision" }
 exposed-core = { group = "org.jetbrains.exposed", name = "exposed-core", version.ref = "exposed" }
 exposed-dao = { group = "org.jetbrains.exposed", name = "exposed-dao", version.ref = "exposed" }
 exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version.ref = "exposed" }
@@ -24,5 +25,5 @@ postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "pos
 
 [bundles]
 ktor = ["ktor-server-core", "ktor-server-netty", "ktor-server-content-negotation", "ktor-server-json", "ktor-server-cors"]
-kvision = ["kvision-core", "kvision-state", "kvision-bootstrap", "kvision-i18n"]
+kvision = ["kvision-core", "kvision-state", "kvision-bootstrap", "kvision-i18n", "kvision-fontawesome"]
 exposed = ["exposed-core", "exposed-dao", "exposed-jdbc", "exposed-kotlin-datetime"]

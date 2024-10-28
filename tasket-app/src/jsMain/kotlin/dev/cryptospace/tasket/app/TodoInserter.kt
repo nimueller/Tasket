@@ -1,5 +1,6 @@
 package dev.cryptospace.tasket.app
 
+import dev.cryptospace.tasket.app.model.TodoViewModel
 import dev.cryptospace.tasket.app.network.HttpClient
 import dev.cryptospace.tasket.payloads.TodoPayload
 import io.kvision.core.Container
@@ -14,7 +15,7 @@ fun Container.todoInserter() {
                 val payload = TodoPayload(label = value ?: "")
                 HttpClient.post("todo", payload)
                 value = ""
-                TodoState.refreshTodos()
+                TodoViewModel.loadTodos()
             }
         }
     }
