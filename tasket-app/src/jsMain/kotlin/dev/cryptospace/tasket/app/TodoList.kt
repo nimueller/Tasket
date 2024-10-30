@@ -28,13 +28,21 @@ fun Container.todoList() {
             }
         }
         TodoViewModel.loadTodos()
+
+        addAfterInsertHook { node ->
+        }
     }
 }
+
+@JsModule("is-sorted")
+@JsNonModule
+external fun <T> sorted(a: Array<T>): Boolean
 
 private fun Container.todoListItem(payload: TodoPayload) {
     add(
         flexPanel(className = "list-group-item justify-content-between") {
             id = payload.id
+            setDragDropData("text/plain", "element")
             flexPanel(FlexDirection.ROW) {
                 checkBox()
                 span(className = "list-group-item-title", content = payload.label)

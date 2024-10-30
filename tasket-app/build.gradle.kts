@@ -22,5 +22,7 @@ kotlin {
     sourceSets.jsMain.dependencies {
         implementation(projects.tasketShared)
         implementation(libs.bundles.kvision)
+        implementation(npm("sortablejs", "1.15.3"))
+        implementation(npm("is-sorted", "1.0.5"))
     }
 }

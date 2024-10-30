@@ -17,7 +17,7 @@ class App : Application() {
     }
 
     override fun start() {
-        root("root") {
+        root(id = "root") {
             div(className = "p-3") {
                 flexPanel(direction = FlexDirection.ROW) {
                     addCssStyle(
