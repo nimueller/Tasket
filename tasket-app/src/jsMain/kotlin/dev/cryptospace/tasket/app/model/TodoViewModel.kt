@@ -9,10 +9,11 @@ import kotlinx.coroutines.launch
 object TodoViewModel {
     val todos = ObservableListWrapper<TodoPayload>()
 
-    fun loadTodos() = KVScope.launch {
-        todos.clear()
-        todos.addAll(fetchTodos())
-    }
+    fun loadTodos() =
+        KVScope.launch {
+            todos.clear()
+            todos.addAll(fetchTodos())
+        }
 
     private suspend fun fetchTodos(): List<TodoPayload> {
         return HttpClient.get("todo") ?: emptyList()

@@ -27,3 +27,6 @@ postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "pos
 ktor = ["ktor-server-core", "ktor-server-netty", "ktor-server-content-negotation", "ktor-server-json", "ktor-server-cors"]
 kvision = ["kvision-core", "kvision-state", "kvision-bootstrap", "kvision-i18n", "kvision-fontawesome"]
 exposed = ["exposed-core", "exposed-dao", "exposed-jdbc", "exposed-kotlin-datetime"]
+
+[plugins]
+kvision = { id = "io.kvision", version.ref = "kvision" }

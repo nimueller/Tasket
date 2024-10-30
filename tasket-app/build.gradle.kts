@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("tasket.shared")
+    alias(libs.plugins.kvision)
 }
 
 kotlin {
