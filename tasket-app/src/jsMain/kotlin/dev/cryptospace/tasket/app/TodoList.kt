@@ -2,6 +2,7 @@ package dev.cryptospace.tasket.app
 
 import dev.cryptospace.tasket.app.model.TodoViewModel
 import dev.cryptospace.tasket.payloads.TodoPayload
+import external.Sortable
 import io.kvision.core.Container
 import io.kvision.core.FlexDirection
 import io.kvision.form.check.checkBox
@@ -11,6 +12,8 @@ import io.kvision.html.div
 import io.kvision.html.span
 import io.kvision.panel.flexPanel
 import io.kvision.state.bind
+import org.w3c.dom.HTMLElement
+import kotlin.js.json
 
 fun Container.todoList() {
     div(className = "list-group") {
@@ -30,19 +33,19 @@ fun Container.todoList() {
         TodoViewModel.loadTodos()
 
         addAfterInsertHook { node ->
+            Sortable.create(
+                node.elm!!.unsafeCast<HTMLElement>(), json(
+                    "animation" to 200,
+                )
+            )
         }
     }
 }
-
-@JsModule("is-sorted")
-@JsNonModule
-external fun <T> sorted(a: Array<T>): Boolean
 
 private fun Container.todoListItem(payload: TodoPayload) {
     add(
         flexPanel(className = "list-group-item justify-content-between") {
             id = payload.id
-            setDragDropData("text/plain", "element")
             flexPanel(FlexDirection.ROW) {
                 checkBox()
                 span(className = "list-group-item-title", content = payload.label)
