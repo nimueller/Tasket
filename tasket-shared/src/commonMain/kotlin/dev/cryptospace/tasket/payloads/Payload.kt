@@ -1,6 +1,6 @@
 package dev.cryptospace.tasket.payloads
 
 interface Payload {
-    var createdAt: Long
-    var updatedAt: Long
+    var createdAt: String?
+    var updatedAt: String?
 }

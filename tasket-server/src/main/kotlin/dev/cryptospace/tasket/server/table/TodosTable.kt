@@ -4,7 +4,7 @@ import dev.cryptospace.tasket.payloads.TodoPayload
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
-object Todos : BaseTable<TodoPayload>() {
+object TodosTable : BaseTable<TodoPayload>() {
     val label = text("label")
 
     override fun ResultRow.toPayload(): TodoPayload {

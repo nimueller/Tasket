@@ -1,7 +1,7 @@
 package dev.cryptospace.tasket.server.table
 
 import dev.cryptospace.tasket.payloads.Payload
-import dev.cryptospace.tasket.server.utils.toUtcMillis
+import dev.cryptospace.tasket.server.utils.toIso8601String
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.kotlin.datetime.timestampWithTimeZone
@@ -11,7 +11,7 @@ abstract class BaseTable<T : Payload>() : UUIDTable(), PayloadMapper<T> {
     val updatedAt = timestampWithTimeZone(name = "updated_at")
 
     protected fun ResultRow.writeBaseColumnsToPayload(payload: T) {
-        payload.createdAt = this[createdAt].toUtcMillis()
-        payload.updatedAt = this[updatedAt].toUtcMillis()
+        payload.createdAt = this[createdAt].toIso8601String()
+        payload.updatedAt = this[updatedAt].toIso8601String()
     }
 }

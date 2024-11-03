@@ -34,9 +34,10 @@ fun Container.todoList() {
 
         addAfterInsertHook { node ->
             Sortable.create(
-                node.elm!!.unsafeCast<HTMLElement>(), json(
+                node.elm!!.unsafeCast<HTMLElement>(),
+                json(
                     "animation" to 200,
-                )
+                ),
             )
         }
     }

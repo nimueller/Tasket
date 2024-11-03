@@ -1,7 +1,7 @@
 package dev.cryptospace.tasket.server.routes
 
 import dev.cryptospace.tasket.payloads.TodoPayload
-import dev.cryptospace.tasket.server.table.Todos
+import dev.cryptospace.tasket.server.table.TodosTable
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
@@ -12,19 +12,19 @@ import io.ktor.server.routing.route
 fun Route.todo() {
     route("todo") {
         get {
-            handleGetAllRoute<Todos, TodoPayload>()
+            handleGetAllRoute<TodosTable, TodoPayload>()
         }
         get("{id}") {
-            handleGetByIdRoute<Todos, TodoPayload>()
+            handleGetByIdRoute<TodosTable, TodoPayload>()
         }
         post {
-            handlePostRoute<Todos, TodoPayload>()
+            handlePostRoute<TodosTable, TodoPayload>()
         }
         put("{id}") {
-            handleUpsertRoute<Todos, TodoPayload>()
+            handleUpsertRoute<TodosTable, TodoPayload>()
         }
         delete("{id}") {
-            handleDeleteRoute<Todos, TodoPayload>()
+            handleDeleteRoute<TodosTable, TodoPayload>()
         }
     }
 }
