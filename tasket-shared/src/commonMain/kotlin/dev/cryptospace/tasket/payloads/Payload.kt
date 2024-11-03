@@ -1,3 +1,6 @@
 package dev.cryptospace.tasket.payloads
 
-interface Payload
+interface Payload {
+    var createdAt: Long
+    var updatedAt: Long
+}

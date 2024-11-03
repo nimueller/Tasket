@@ -8,7 +8,8 @@ postgresql = "42.7.+"
 [libraries]
 ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
 ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
-ktor-server-cors = { group = "io.ktor", name = "ktor-server-cors", version.ref = "ktor" }
+ktor-server-cors-core = { group = "io.ktor", name = "ktor-server-cors", version.ref = "ktor" }
+ktor-server-cors-jvm = { group = "io.ktor", name = "ktor-server-cors-jvm", version.ref = "ktor" }
 ktor-server-content-negotation = { group = "io.ktor", name = "ktor-server-content-negotiation", version.ref = "ktor" }
 ktor-server-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 logback = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
@@ -22,11 +23,13 @@ exposed-dao = { group = "org.jetbrains.exposed", name = "exposed-dao", version.r
 exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version.ref = "exposed" }
 exposed-kotlin-datetime = { group = "org.jetbrains.exposed", name = "exposed-kotlin-datetime", version.ref = "exposed" }
 postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgresql" }
+liquibase-core = { group = "org.liquibase", name = "liquibase-core", version = "4.29.+" }
 
 [bundles]
-ktor = ["ktor-server-core", "ktor-server-netty", "ktor-server-content-negotation", "ktor-server-json", "ktor-server-cors"]
+ktor = ["ktor-server-core", "ktor-server-netty", "ktor-server-content-negotation", "ktor-server-json", "ktor-server-cors-core", "ktor-server-cors-jvm"]
 kvision = ["kvision-core", "kvision-state", "kvision-bootstrap", "kvision-i18n", "kvision-fontawesome"]
 exposed = ["exposed-core", "exposed-dao", "exposed-jdbc", "exposed-kotlin-datetime"]
 
 [plugins]
 kvision = { id = "io.kvision", version.ref = "kvision" }
+liquibase = { id = "org.liquibase.gradle", version = "3.0.+" }

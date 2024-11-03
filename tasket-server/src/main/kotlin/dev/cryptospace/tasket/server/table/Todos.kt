@@ -1,15 +1,16 @@
 package dev.cryptospace.tasket.server.table
 
 import dev.cryptospace.tasket.payloads.TodoPayload
-import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
-object Todos : UUIDTable(), PayloadMapper<TodoPayload> {
+object Todos : BaseTable<TodoPayload>() {
     val label = text("label")
 
     override fun ResultRow.toPayload(): TodoPayload {
-        return TodoPayload(id = this[id].toString(), label = this[label])
+        val payload = TodoPayload(id = this[id].toString(), label = this[label])
+        writeBaseColumnsToPayload(payload)
+        return payload
     }
 
     override fun UpdateBuilder<Int>.fromPayload(payload: TodoPayload) {

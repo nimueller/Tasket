@@ -1,6 +1,5 @@
 package dev.cryptospace
 
-import dev.cryptospace.tasket.payloads.TestPayload
 import dev.cryptospace.tasket.server.routes.todo
 import dev.cryptospace.tasket.server.table.Todos
 import io.ktor.http.HttpHeaders
@@ -12,8 +11,6 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
-import io.ktor.server.response.respond
-import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -60,9 +57,6 @@ fun Application.module() {
         if (System.getenv("ALLOWED_HOST") != null) allowHost(System.getenv("ALLOWED_HOST")) else anyHost()
     }
     routing {
-        get("/") {
-            call.respond(TestPayload(value = "Hello World!"))
-        }
         todo()
     }
 }
