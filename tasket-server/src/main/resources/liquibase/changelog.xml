@@ -3,11 +3,71 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1730661193547-1" author="nico (generated)">
+        <comment>Create Extensions</comment>
+        <!-- @formatter:off -->
+        <sql dbms="postgresql">CREATE EXTENSION IF NOT EXISTS "pgcrypto"</sql>
+        <!-- @formatter:on -->
+    </changeSet>
+
+    <changeSet id="1730660460449-1" author="nico (generated)">
+        <comment>Create Schema</comment>
+        <!-- @formatter:off -->
+        <sql dbms="postgresql">CREATE SCHEMA IF NOT EXISTS tasket</sql>
+        <!-- @formatter:on -->
+    </changeSet>
+
+    <changeSet id="1730661383833-1" author="nico (generated)">
+        <comment>Create Trigger Functions</comment>
+        <sqlFile dbms="postgresql" path="trigger_functions.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
     <changeSet id="1730474594736-1" author="nico (generated)">
-        <createTable tableName="test">
-            <column name="id" type="uuid">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="tasket" tableName="todos"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="tasket" tableName="todos">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
                 <constraints primaryKey="true"/>
             </column>
+            <column name="label" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="1730661486529-1" author="nico (generated)">
+        <comment>Add created_at trigger for todos table</comment>
+        <!-- @formatter:off -->
+        <sql dbms="postgresql">
+            CREATE OR REPLACE TRIGGER trigger_set_created_at
+                BEFORE INSERT
+                ON tasket.todos
+                FOR EACH ROW
+                EXECUTE FUNCTION set_created_at_timestamp();
+        </sql>
+        <!-- @formatter:on -->
+    </changeSet>
+
+    <changeSet id="1730660707511-1" author="nico (generated)">
+        <comment>Add updated_at trigger for todos table</comment>
+        <!-- @formatter:off -->
+        <sql dbms="postgresql">
+            CREATE OR REPLACE TRIGGER trigger_set_updated_at
+                BEFORE INSERT OR UPDATE
+                ON tasket.todos
+                FOR EACH ROW
+                EXECUTE FUNCTION set_updated_at_timestamp();
+        </sql>
+        <!-- @formatter:on -->
     </changeSet>
 </databaseChangeLog>

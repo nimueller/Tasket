@@ -39,7 +39,7 @@ liquibase {
             }"
             println(url)
             arguments = mapOf(
-                "changeLogFile" to "src/main/resources/liquibase/changelog.xml",
+                "changelogFile" to "src/main/resources/liquibase/changelog.xml",
                 "searchPath" to project.projectDir,
                 "url" to url,
                 "username" to env.fetchOrNull("POSTGRES_USER")!!,
