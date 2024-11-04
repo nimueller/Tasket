@@ -5,6 +5,7 @@ import dev.cryptospace.tasket.payloads.TodoPayload
 import external.Sortable
 import io.kvision.core.Container
 import io.kvision.core.FlexDirection
+import io.kvision.core.onClickLaunch
 import io.kvision.form.check.checkBox
 import io.kvision.html.ButtonStyle
 import io.kvision.html.button
@@ -46,7 +47,10 @@ fun Container.todoList() {
 private fun Container.todoListItem(payload: TodoPayload) {
     add(
         flexPanel(className = "list-group-item justify-content-between") {
-            id = payload.id
+            onClickLaunch {
+                TodoDetails.modal.show()
+                TodoDetails.refreshModal(payload.id!!)
+            }
             flexPanel(FlexDirection.ROW) {
                 checkBox()
                 span(className = "list-group-item-title", content = payload.label)
