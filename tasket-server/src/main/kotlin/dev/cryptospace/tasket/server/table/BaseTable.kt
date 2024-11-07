@@ -6,7 +6,7 @@ import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.kotlin.datetime.timestampWithTimeZone
 
-abstract class BaseTable<T : Payload>() : UUIDTable(), PayloadMapper<T> {
+abstract class BaseTable<T : Payload>(name: String = "") : UUIDTable(name), PayloadMapper<T> {
     val createdAt = timestampWithTimeZone(name = "created_at")
     val updatedAt = timestampWithTimeZone(name = "updated_at")
 

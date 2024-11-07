@@ -16,6 +16,6 @@ object TodoViewModel {
         }
 
     private suspend fun fetchTodos(): List<TodoPayload> {
-        return HttpClient.get("todo") ?: emptyList()
+        return HttpClient.get("todos") ?: emptyList()
     }
 }

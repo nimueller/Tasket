@@ -13,9 +13,10 @@ external object Intl {
 fun String.fromIso8601String(): String {
     val date = Date(this)
     return Intl.DateTimeFormat(
-        undefined, json(
+        undefined,
+        json(
             "dateStyle" to "medium",
             "timeStyle" to "medium",
-        )
+        ),
     ).format(date)
 }

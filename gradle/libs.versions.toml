@@ -18,6 +18,7 @@ kvision-state = { group = "io.kvision", name = "kvision-state", version.ref = "k
 kvision-bootstrap = { group = "io.kvision", name = "kvision-bootstrap", version.ref = "kvision" }
 kvision-i18n = { group = "io.kvision", name = "kvision-i18n", version.ref = "kvision" }
 kvision-fontawesome = { group = "io.kvision", name = "kvision-fontawesome", version.ref = "kvision" }
+kvision-richtext = { group = "io.kvision", name = "kvision-richtext", version.ref = "kvision" }
 exposed-core = { group = "org.jetbrains.exposed", name = "exposed-core", version.ref = "exposed" }
 exposed-dao = { group = "org.jetbrains.exposed", name = "exposed-dao", version.ref = "exposed" }
 exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version.ref = "exposed" }
@@ -27,7 +28,7 @@ liquibase-core = { group = "org.liquibase", name = "liquibase-core", version = "
 
 [bundles]
 ktor = ["ktor-server-core", "ktor-server-netty", "ktor-server-content-negotation", "ktor-server-json", "ktor-server-cors-core", "ktor-server-cors-jvm"]
-kvision = ["kvision-core", "kvision-state", "kvision-bootstrap", "kvision-i18n", "kvision-fontawesome"]
+kvision = ["kvision-core", "kvision-state", "kvision-bootstrap", "kvision-i18n", "kvision-fontawesome", "kvision-richtext"]
 exposed = ["exposed-core", "exposed-dao", "exposed-jdbc", "exposed-kotlin-datetime"]
 
 [plugins]
