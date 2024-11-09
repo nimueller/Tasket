@@ -32,21 +32,19 @@ tasks.named<JavaExec>("run") {
 liquibase {
     activities {
         val main by creating {
-            val url = "jdbc:postgresql://${env.fetchOrNull("POSTGRES_HOST")!!}:${env.fetchOrNull("POSTGRES_PORT")!!}/${
+            val url = "jdbc:postgresql://${env.fetchOrNull("POSTGRES_HOST")}:${env.fetchOrNull("POSTGRES_PORT")}/${
                 env.fetchOrNull(
                     "POSTGRES_DB",
                 )!!
             }"
-            println(url)
-            arguments =
-                mapOf(
-                    "changelogFile" to "src/main/resources/liquibase/changelog.xml",
-                    "searchPath" to project.projectDir,
-                    "url" to url,
-                    "username" to env.fetchOrNull("POSTGRES_USER")!!,
-                    "password" to env.fetchOrNull("POSTGRES_PASSWORD")!!,
-                    "driver" to "org.postgresql.Driver",
-                )
+            arguments = mapOf(
+                "changelogFile" to "src/main/resources/liquibase/changelog.xml",
+                "searchPath" to project.projectDir,
+                "url" to url,
+                "username" to env.fetchOrNull("POSTGRES_USER"),
+                "password" to env.fetchOrNull("POSTGRES_PASSWORD"),
+                "driver" to "org.postgresql.Driver",
+            )
         }
     }
     runList = "main"
