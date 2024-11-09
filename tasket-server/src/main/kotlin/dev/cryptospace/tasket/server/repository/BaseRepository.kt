@@ -60,10 +60,7 @@ abstract class BaseRepository<T : Payload>(val table: BaseTable<T>) {
         }
     }
 
-    suspend fun upsert(
-        payload: T,
-        id: UUID,
-    ): T {
+    suspend fun upsert(payload: T, id: UUID): T {
         return suspendedTransaction {
             with(table) {
                 val insertedId =

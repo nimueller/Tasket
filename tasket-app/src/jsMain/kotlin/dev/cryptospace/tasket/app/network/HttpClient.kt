@@ -21,10 +21,7 @@ object HttpClient {
         return parseResponse(response)
     }
 
-    suspend inline fun <reified T : Payload> post(
-        resource: String,
-        payload: T,
-    ): T? {
+    suspend inline fun <reified T : Payload> post(resource: String, payload: T): T? {
         val url = "$host/$resource"
         val body = Json.encodeToString(payload)
         console.log("POST $url")

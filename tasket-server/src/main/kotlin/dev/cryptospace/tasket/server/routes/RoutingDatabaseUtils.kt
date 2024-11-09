@@ -13,10 +13,7 @@ suspend inline fun <reified T : Payload> RoutingContext.handleGetAllRoute(reposi
     call.respond(todoPayloads)
 }
 
-suspend inline fun <reified T : Payload> RoutingContext.handleGetByIdRoute(
-    repository: BaseRepository<T>,
-    id: UUID,
-) {
+suspend inline fun <reified T : Payload> RoutingContext.handleGetByIdRoute(repository: BaseRepository<T>, id: UUID) {
     val payload = repository.getById(id)
 
     if (payload == null) {
@@ -32,19 +29,13 @@ suspend inline fun <reified T : Payload> RoutingContext.handlePostRoute(reposito
     call.respond(payload)
 }
 
-suspend inline fun <reified V : Payload> RoutingContext.handlePatchRoute(
-    repository: BaseRepository<V>,
-    id: UUID,
-) {
+suspend inline fun <reified V : Payload> RoutingContext.handlePatchRoute(repository: BaseRepository<V>, id: UUID) {
     val receivedPayload = call.receive<V>()
     val payload = repository.upsert(receivedPayload, id)
     call.respond(payload)
 }
 
-suspend inline fun <reified V : Payload> RoutingContext.handleDeleteRoute(
-    repository: BaseRepository<V>,
-    id: UUID,
-) {
+suspend inline fun <reified V : Payload> RoutingContext.handleDeleteRoute(repository: BaseRepository<V>, id: UUID) {
     val deletedRowCount = repository.delete(id)
 
     if (deletedRowCount == 0) {

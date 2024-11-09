@@ -8,10 +8,7 @@ import org.w3c.dom.HTMLElement
 external object Sortable {
     val version: String
 
-    fun create(
-        element: HTMLElement,
-        options: dynamic = definedExternally,
-    )
+    fun create(element: HTMLElement, options: dynamic = definedExternally)
 }
 
 external interface SortableOptions {

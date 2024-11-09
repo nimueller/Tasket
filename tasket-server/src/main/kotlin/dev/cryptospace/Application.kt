@@ -34,9 +34,9 @@ fun main() {
         password = System.getenv("POSTGRES_PASSWORD") ?: "postgres",
         driver = requireNotNull(Driver::class.qualifiedName),
         databaseConfig =
-            DatabaseConfig {
-                defaultSchema = Schema("tasket")
-            },
+        DatabaseConfig {
+            defaultSchema = Schema("tasket")
+        },
     )
 
     transaction {

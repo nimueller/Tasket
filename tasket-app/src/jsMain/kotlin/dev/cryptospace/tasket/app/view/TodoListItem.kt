@@ -10,10 +10,7 @@ import io.kvision.html.div
 import io.kvision.html.span
 import io.kvision.panel.flexPanel
 
-fun Container.todoListItem(
-    id: String,
-    label: String,
-): Widget {
+fun Container.todoListItem(id: String, label: String): Widget {
     return flexPanel(className = "list-group-item justify-content-between") {
         this.id = id
         flexPanel(FlexDirection.ROW) {
