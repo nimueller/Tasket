@@ -35,7 +35,7 @@ liquibase {
             val url = "jdbc:postgresql://${env.fetchOrNull("POSTGRES_HOST")}:${env.fetchOrNull("POSTGRES_PORT")}/${
                 env.fetchOrNull(
                     "POSTGRES_DB",
-                )!!
+                )
             }"
             arguments = mapOf(
                 "changelogFile" to "src/main/resources/liquibase/changelog.xml",
