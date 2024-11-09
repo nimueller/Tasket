@@ -10,3 +10,16 @@ plugins {
 repositories {
     mavenCentral()
 }
+
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom(project.rootDir.resolve("detekt.yml"))
+}
+
+tasks.detekt {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        md.required.set(true)
+    }
+}
