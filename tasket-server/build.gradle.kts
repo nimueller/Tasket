@@ -20,9 +20,10 @@ dependencies {
     implementation(libs.bundles.ktor)
     implementation(libs.bundles.exposed)
 
-    liquibaseRuntime(libs.liquibase.core)
-    liquibaseRuntime(libs.postgresql)
-    liquibaseRuntime("info.picocli:picocli:4.7.5")
+    liquibaseRuntime(libs.bundles.liquibase)
+
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.ktor.test)
 }
 
 tasks.named<JavaExec>("run") {

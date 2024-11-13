@@ -1,6 +1,7 @@
 package dev.cryptospace.tasket.payloads
 
-interface Payload {
-    var createdAt: String?
-    var updatedAt: String?
+abstract class Payload {
+    var id: String? = null
+    var createdAt: String? = null
+    var updatedAt: String? = null
 }
