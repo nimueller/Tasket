@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1730474594736-1" author="nico (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="tasket" tableName="todos"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="tasket" tableName="todos">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="created_at" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="label" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status_id" type="uuid" defaultValue="'1fab4c54-11bc-4f8a-a950-7a0032d31e85'">
+                <constraints references="tasket.todo_statuses" foreignKeyName="fk_todos_status_id" nullable="false"/>
+            </column>
+        </createTable>
+        <sql dbms="postgresql">
+            CREATE OR REPLACE TRIGGER trigger_set_updated_at
+            BEFORE UPDATE ON tasket.todos
+            FOR EACH ROW
+            EXECUTE FUNCTION set_updated_at_timestamp();
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

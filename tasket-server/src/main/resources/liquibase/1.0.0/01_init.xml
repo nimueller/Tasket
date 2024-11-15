@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1730661193547-1" author="nico (generated)">
+        <comment>Create Extensions</comment>
+        <sql dbms="postgresql">CREATE EXTENSION IF NOT EXISTS "pgcrypto"</sql>
+    </changeSet>
+
+    <changeSet id="1730660460449-1" author="nico (generated)">
+        <comment>Create Schema</comment>
+        <sql dbms="postgresql">CREATE SCHEMA IF NOT EXISTS tasket</sql>
+    </changeSet>
+
+    <changeSet id="1730661383833-1" author="nico (generated)">
+        <comment>Create Trigger Functions</comment>
+        <sql dbms="postgresql">
+            CREATE OR REPLACE FUNCTION set_updated_at_timestamp() RETURNS TRIGGER AS
+            $$
+            BEGIN
+                NEW.updated_at = CURRENT_TIMESTAMP;
+                RETURN NEW;
+            END
+            $$ LANGUAGE plpgsql;
+        </sql>
+    </changeSet>
+
+    <changeSet id="1731611679350-1" author="nico (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM pg_type WHERE typname = 'bootstrap_color';
+            </sqlCheck>
+        </preConditions>
+        <comment>Create Bootstrap Color Type</comment>
+        <sql dbms="postgresql">
+            CREATE TYPE bootstrap_color AS ENUM (
+                'PRIMARY',
+                'SECONDARY',
+                'SUCCESS',
+                'DANGER',
+                'WARNING',
+                'INFO'
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

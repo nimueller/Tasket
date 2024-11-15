@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1731529889284-1" author="nico (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="tasket" tableName="todo_status_changes"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="tasket" tableName="todo_status_changes">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="created_at" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="todo_id" type="uuid">
+                <constraints nullable="false" references="tasket.todos(id)" foreignKeyName="fk_status_changes_todo_id"
+                             deleteCascade="true"/>
+            </column>
+            <column name="old_status_id" type="uuid">
+                <constraints nullable="false" references="tasket.todo_statuses(id)"
+                             foreignKeyName="fk_status_changes_old_status_id"/>
+            </column>
+            <column name="new_status_id" type="uuid">
+                <constraints nullable="false" references="tasket.todo_statuses(id)"
+                             foreignKeyName="fk_status_changes_new_status_id"/>
+            </column>
+        </createTable>
+        <sql dbms="postgresql">
+            CREATE OR REPLACE TRIGGER trigger_set_updated_at
+            BEFORE UPDATE ON tasket.todo_status_changes
+            FOR EACH ROW
+            EXECUTE FUNCTION set_updated_at_timestamp();
+        </sql>
+    </changeSet>
+
+    <changeSet id="1731529878971-1" author="nico (generated)">
+        <sql dbms="postgresql" splitStatements="false">
+            CREATE OR REPLACE FUNCTION log_todo_status_change() RETURNS TRIGGER AS
+            $$
+            BEGIN
+                IF OLD.status_id IS DISTINCT FROM NEW.status_id THEN
+                    INSERT INTO tasket.todo_status_changes(todo_id, old_status_id, new_status_id)
+                        VALUES (NEW.id, OLD.status_id, NEW.status_id);
+                END IF;
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE OR REPLACE TRIGGER trigger_log_status_change
+            AFTER UPDATE OF status_id ON tasket.todos
+            FOR EACH ROW
+            EXECUTE FUNCTION log_todo_status_change();
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

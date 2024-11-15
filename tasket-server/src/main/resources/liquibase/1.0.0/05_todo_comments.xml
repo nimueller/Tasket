@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1730825946461-1" author="nico (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="tasket" tableName="todo_comments"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="tasket" tableName="todo_comments">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="created_at" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="todo_id" type="uuid">
+                <constraints references="tasket.todos" foreignKeyName="fk_todo_comments_todo_id"
+                             deleteCascade="true" nullable="false"/>
+            </column>
+            <column name="comment" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <sql dbms="postgresql">
+            CREATE OR REPLACE TRIGGER trigger_set_updated_at
+            BEFORE UPDATE ON tasket.todo_comments
+            FOR EACH ROW
+            EXECUTE FUNCTION set_updated_at_timestamp();
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

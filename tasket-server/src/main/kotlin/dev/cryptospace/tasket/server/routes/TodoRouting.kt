@@ -1,7 +1,7 @@
 package dev.cryptospace.tasket.server.routes
 
-import dev.cryptospace.tasket.server.repository.TodoCommentsRepository
-import dev.cryptospace.tasket.server.repository.TodosRepository
+import dev.cryptospace.tasket.server.repository.TodoCommentRepository
+import dev.cryptospace.tasket.server.repository.TodoRepository
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
@@ -15,21 +15,23 @@ import java.util.UUID
 fun Route.todo() {
     route("todos") {
         get {
-            handleGetAllRoute(TodosRepository)
+            handleGetAllRoute(TodoRepository)
         }
         post {
-            handlePostRoute(TodosRepository)
+            handlePostRoute(TodoRepository)
         }
         route("{todoId}") {
             get {
-                handleGetByIdRoute(TodosRepository, call.parameters.getOrFail<UUID>("todoId"))
+                handleGetByIdRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))
             }
             put {
-                handlePatchRoute(TodosRepository, call.parameters.getOrFail<UUID>("todoId"))
+                handlePatchRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))
             }
             delete {
-                handleDeleteRoute(TodosRepository, call.parameters.getOrFail<UUID>("todoId"))
+                handleDeleteRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))
             }
+        }
+        route("{todoId}") {
             comments()
         }
     }
@@ -38,11 +40,11 @@ fun Route.todo() {
 private fun Route.comments() {
     route("comments") {
         get {
-            val comments = TodoCommentsRepository.getAllCommentsForTodo(call.parameters.getOrFail<UUID>("todoId"))
+            val comments = TodoCommentRepository.getAllCommentsForTodo(call.parameters.getOrFail<UUID>("todoId"))
             call.respond(comments)
         }
         post {
-            handlePostRoute(TodoCommentsRepository)
+            handlePostRoute(TodoCommentRepository)
         }
     }
 }

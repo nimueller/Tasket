@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1731526605376-1" author="nico (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="tasket" tableName="todo_statuses"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="tasket" tableName="todo_statuses">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="created_at" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="color" type="bootstrap_color">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <sql dbms="postgresql">
+            CREATE OR REPLACE TRIGGER trigger_set_updated_at
+            BEFORE UPDATE ON tasket.todo_statuses
+            FOR EACH ROW
+            EXECUTE FUNCTION set_updated_at_timestamp();
+
+            CREATE OR REPLACE FUNCTION soft_delete_status()
+            RETURNS TRIGGER AS $$
+            BEGIN
+                UPDATE tasket.todo_statuses SET active = false WHERE id = OLD.id;
+                RETURN NULL;
+            END
+            $$ LANGUAGE plpgsql;
+
+            CREATE TRIGGER trigger_soft_delete_status
+            BEFORE DELETE ON tasket.todo_statuses
+            FOR EACH ROW
+            EXECUTE FUNCTION soft_delete_status();
+        </sql>
+    </changeSet>
+
+    <changeSet id="1731526780550-1" author="nico (generated)">
+        <preConditions onFail="MARK_RAN">
+            <tableIsEmpty schemaName="tasket" tableName="todo_statuses"/>
+        </preConditions>
+        <insert schemaName="tasket" tableName="todo_statuses">
+            <column name="id" value="1fab4c54-11bc-4f8a-a950-7a0032d31e85"/>
+            <column name="name" value="New"/>
+            <column name="color" value="PRIMARY"/>
+        </insert>
+        <insert schemaName="tasket" tableName="todo_statuses">
+            <column name="id" value="a7226e20-0ba5-4f20-b69e-84243d207d7f"/>
+            <column name="name" value="In Progress"/>
+            <column name="color" value="INFO"/>
+        </insert>
+        <insert schemaName="tasket" tableName="todo_statuses">
+            <column name="id" value="0c98041b-8263-4fdf-8c99-9d8a1e42cfae"/>
+            <column name="name" value="Blocked"/>
+            <column name="color" value="DANGER"/>
+        </insert>
+        <insert schemaName="tasket" tableName="todo_statuses">
+            <column name="id" value="ed4e2b8d-0a5a-4258-9769-532b371998fb"/>
+            <column name="name" value="Completed"/>
+            <column name="color" value="SUCCESS"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

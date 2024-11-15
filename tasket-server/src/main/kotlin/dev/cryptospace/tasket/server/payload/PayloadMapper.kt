@@ -5,14 +5,14 @@ import dev.cryptospace.tasket.server.table.BaseTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 
-object PayloadMapper {
-    fun <T : Payload> mapEntityToPayload(table: BaseTable<T>, resultRow: ResultRow): T {
-        val payload = table.payloadCreator()
-        table.registeredPayloads.forEach { it.writeToPayload(resultRow, payload) }
-        return payload
-    }
+interface PayloadMapper<T : BaseTable, V : Payload> {
+    fun mapEntityToPayload(table: T, resultRow: ResultRow): V
 
-    fun <T : Payload> mapPayloadToEntity(table: BaseTable<T>, updateBuilder: UpdateBuilder<Int>, payload: T) {
-        table.registeredPayloads.forEach { it.readFromPayload(updateBuilder, payload) }
+    fun mapPayloadToEntity(table: T, updateBuilder: UpdateBuilder<Int>, payload: V)
+
+    fun V.updateBaseAttributes(table: T, resultRow: ResultRow) {
+        this.id = resultRow[table.id].toString()
+        this.createdAt = resultRow[table.createdAt].toString()
+        this.updatedAt = resultRow[table.updatedAt].toString()
     }
 }

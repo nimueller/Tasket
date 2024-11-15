@@ -14,57 +14,60 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.upsert
 import java.util.UUID
 
-abstract class BaseRepository<T : Payload>(private val table: BaseTable<T>) {
-    private suspend fun <T> suspendedTransaction(block: Transaction.() -> T): T {
+abstract class BaseRepository<T : BaseTable, V : Payload>(
+    private val table: T,
+    private val mapper: PayloadMapper<T, V>
+) {
+    private suspend fun <R> suspendedTransaction(block: Transaction.() -> R): R {
         return newSuspendedTransaction(Dispatchers.IO, statement = block)
     }
 
-    private suspend fun queryForSingleResult(predicate: SqlExpressionBuilder.() -> Op<Boolean>): T? {
+    private suspend fun queryForSingleResult(predicate: SqlExpressionBuilder.() -> Op<Boolean>): V? {
         return suspendedTransaction {
             table.selectAll().where(predicate).singleOrNull()?.let { row ->
-                PayloadMapper.mapEntityToPayload(table, row)
+                mapper.mapEntityToPayload(table, row)
             }
         }
     }
 
-    protected suspend fun queryForMultipleResults(predicate: SqlExpressionBuilder.() -> Op<Boolean>): List<T> {
+    protected suspend fun queryForMultipleResults(predicate: SqlExpressionBuilder.() -> Op<Boolean>): List<V> {
         return suspendedTransaction {
             table.selectAll().where(predicate).map { row ->
-                PayloadMapper.mapEntityToPayload(table, row)
+                mapper.mapEntityToPayload(table, row)
             }
         }
     }
 
-    suspend fun getAll(): List<T> {
+    suspend fun getAll(): List<V> {
         return suspendedTransaction {
             table.selectAll().map { row ->
-                PayloadMapper.mapEntityToPayload(table, row)
+                mapper.mapEntityToPayload(table, row)
             }
         }
     }
 
-    suspend fun getById(id: UUID): T? {
+    suspend fun getById(id: UUID): V? {
         return queryForSingleResult { table.id eq id }
     }
 
-    suspend fun insert(payload: T): T {
+    suspend fun insert(payload: V): V {
         return suspendedTransaction {
             val insertedId = table.insert { statement ->
-                PayloadMapper.mapPayloadToEntity(table, statement, payload)
+                mapper.mapPayloadToEntity(table, statement, payload)
             }[table.id]
 
             val row = table.selectAll().where {
                 table.id eq insertedId
             }.single()
 
-            PayloadMapper.mapEntityToPayload(table, row)
+            mapper.mapEntityToPayload(table, row)
         }
     }
 
-    suspend fun upsert(payload: T, id: UUID): T {
+    suspend fun upsert(payload: V, id: UUID): V {
         return suspendedTransaction {
             val insertedId = table.upsert { statement ->
-                PayloadMapper.mapPayloadToEntity(table, statement, payload)
+                mapper.mapPayloadToEntity(table, statement, payload)
                 statement[table.id] = id
             }[table.id]
 
@@ -72,7 +75,7 @@ abstract class BaseRepository<T : Payload>(private val table: BaseTable<T>) {
                 table.id eq insertedId
             }.single()
 
-            PayloadMapper.mapEntityToPayload(table, row)
+            mapper.mapEntityToPayload(table, row)
         }
     }
 

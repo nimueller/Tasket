@@ -27,7 +27,7 @@ exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datet
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 postgresql = { module = "org.postgresql:postgresql", version = "42.7.+" }
-liquibase-core = { module = "org.liquibase:liquibase-core", version = "4.29.+" }
+liquibase-core = { module = "org.liquibase:liquibase-core", version = "4.30.+" }
 logback = { module = "ch.qos.logback:logback-classic", version = "1.5.+" }
 picocli = { module = "info.picocli:picocli", version = "4.7.5" }
 
