@@ -12,6 +12,7 @@ buildscript {
 
 plugins {
     id("co.uzzu.dotenv.gradle") version "4.0.+"
+    id("org.sonarqube") version "5.+"
     idea
 }
 
