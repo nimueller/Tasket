@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 object TodoCommentMapper : PayloadMapper<TodoCommentsTable, TodoCommentPayload> {
     override fun mapEntityToPayload(table: TodoCommentsTable, resultRow: ResultRow): TodoCommentPayload {
         val payload = TodoCommentPayload(
-            comment = resultRow[table.comment]
+            comment = resultRow[table.comment],
         )
         payload.updateBaseAttributes(table, resultRow)
         return payload
@@ -17,7 +17,7 @@ object TodoCommentMapper : PayloadMapper<TodoCommentsTable, TodoCommentPayload> 
     override fun mapPayloadToEntity(
         table: TodoCommentsTable,
         updateBuilder: UpdateBuilder<Int>,
-        payload: TodoCommentPayload
+        payload: TodoCommentPayload,
     ) {
         updateBuilder[table.comment] = payload.comment
     }

@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_USAGE")
+
 plugins {
     kotlin("jvm")
     id("tasket.shared")
@@ -17,13 +19,15 @@ dependencies {
     implementation(projects.tasketShared)
     implementation(libs.logback)
     implementation(libs.postgresql)
-    implementation(libs.bundles.ktor)
+    implementation(libs.bundles.ktor.server)
     implementation(libs.bundles.exposed)
+    implementation(libs.bundles.liquibase)
 
     liquibaseRuntime(libs.bundles.liquibase)
 
     testImplementation(libs.kotlin.test)
-    testImplementation(libs.ktor.test)
+    testImplementation(libs.bundles.ktor.test)
+    testImplementation(libs.bundles.testcontainers)
 }
 
 tasks.named<JavaExec>("run") {
@@ -51,6 +55,7 @@ liquibase {
     runList = "main"
 }
 
-tasks.named("run") {
-    dependsOn(tasks.update)
+powerAssert {
+    functions = listOf("kotlin.assert", "kotlin.test.assertTrue", "kotlin.test.assertEquals", "kotlin.test.assertNull")
+    includedSourceSets = listOf(sourceSets.test.name)
 }

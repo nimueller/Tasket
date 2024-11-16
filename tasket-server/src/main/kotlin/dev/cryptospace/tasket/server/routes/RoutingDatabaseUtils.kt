@@ -10,7 +10,7 @@ import io.ktor.server.routing.RoutingContext
 import java.util.UUID
 
 suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.handleGetAllRoute(
-    repository: BaseRepository<T, V>
+    repository: BaseRepository<T, V>,
 ) {
     val todoPayloads = repository.getAll()
     call.respond(todoPayloads)
@@ -18,7 +18,7 @@ suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.h
 
 suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.handleGetByIdRoute(
     repository: BaseRepository<T, V>,
-    id: UUID
+    id: UUID,
 ) {
     val payload = repository.getById(id)
 
@@ -30,7 +30,7 @@ suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.h
 }
 
 suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.handlePostRoute(
-    repository: BaseRepository<T, V>
+    repository: BaseRepository<T, V>,
 ) {
     val receivedPayload = call.receive<V>()
     val payload = repository.insert(receivedPayload)
@@ -39,7 +39,7 @@ suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.h
 
 suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.handlePatchRoute(
     repository: BaseRepository<T, V>,
-    id: UUID
+    id: UUID,
 ) {
     val receivedPayload = call.receive<V>()
     val payload = repository.upsert(receivedPayload, id)
@@ -48,7 +48,7 @@ suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.h
 
 suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.handleDeleteRoute(
     repository: BaseRepository<T, V>,
-    id: UUID
+    id: UUID,
 ) {
     val deletedRowCount = repository.delete(id)
 

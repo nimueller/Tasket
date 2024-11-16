@@ -18,7 +18,7 @@ object TodoStatusMapper : PayloadMapper<TodoStatusesTable, TodoStatusPayload> {
     override fun mapPayloadToEntity(
         table: TodoStatusesTable,
         updateBuilder: UpdateBuilder<Int>,
-        payload: TodoStatusPayload
+        payload: TodoStatusPayload,
     ) {
         updateBuilder[table.name] = payload.name
         updateBuilder[table.color] = payload.color

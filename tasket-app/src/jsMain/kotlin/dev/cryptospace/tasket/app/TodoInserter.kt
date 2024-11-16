@@ -13,10 +13,8 @@ fun Container.todoInserter() {
     textInput {
         placeholder = tr("New TODO")
         onEventLaunch("keyup") { event ->
-            if (event is KeyboardEvent && event.key == "Enter" && value?.isNotBlank() == true) {
-                val payload = TodoPayload().apply {
-                    label = value ?: ""
-                }
+            if (event is KeyboardEvent && event.key == "Enter" && !value.isNullOrBlank()) {
+                val payload = TodoPayload(label = value!!)
                 HttpClient.post("todos", payload)
                 value = ""
                 TodoViewModel.loadTodos()

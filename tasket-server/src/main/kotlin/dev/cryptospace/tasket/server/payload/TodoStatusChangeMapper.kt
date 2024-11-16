@@ -18,7 +18,7 @@ object TodoStatusChangeMapper : PayloadMapper<TodoStatusChangesTable, TodoStatus
     override fun mapPayloadToEntity(
         table: TodoStatusChangesTable,
         updateBuilder: UpdateBuilder<Int>,
-        payload: TodoStatusChangePayload
+        payload: TodoStatusChangePayload,
     ) {
         // No update of any attributes supported at the moment
     }

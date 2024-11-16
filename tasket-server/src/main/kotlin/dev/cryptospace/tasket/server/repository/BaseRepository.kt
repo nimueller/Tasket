@@ -16,7 +16,7 @@ import java.util.UUID
 
 abstract class BaseRepository<T : BaseTable, V : Payload>(
     private val table: T,
-    private val mapper: PayloadMapper<T, V>
+    private val mapper: PayloadMapper<T, V>,
 ) {
     private suspend fun <R> suspendedTransaction(block: Transaction.() -> R): R {
         return newSuspendedTransaction(Dispatchers.IO, statement = block)

@@ -11,34 +11,10 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.routing.routing
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.DatabaseConfig
-import org.jetbrains.exposed.sql.Schema
-import org.jetbrains.exposed.sql.Slf4jSqlDebugLogger
-import org.postgresql.Driver
-
-fun buildDatabaseUrl(): String {
-    val host = System.getenv("POSTGRES_HOST") ?: "localhost"
-    val port = System.getenv("POSTGRES_PORT") ?: "5432"
-    val database = System.getenv("POSTGRES_DB") ?: "rss"
-
-    return "jdbc:postgresql://$host:$port/$database"
-}
 
 fun main() {
-    Database.connect(
-        url = buildDatabaseUrl(),
-        user = System.getenv("POSTGRES_USER") ?: "postgres",
-        password = System.getenv("POSTGRES_PASSWORD") ?: "postgres",
-        driver = requireNotNull(Driver::class.qualifiedName),
-        databaseConfig = DatabaseConfig {
-            defaultSchema = Schema("tasket")
-            sqlLogger = Slf4jSqlDebugLogger
-        },
-    )
-
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
+    initializeDatabase()
+    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module).start(wait = true)
 }
 
 fun Application.module() {

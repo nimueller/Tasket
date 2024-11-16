@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 object TodoMapper : PayloadMapper<TodosTable, TodoPayload> {
     override fun mapEntityToPayload(table: TodosTable, resultRow: ResultRow): TodoPayload {
         val payload = TodoPayload(
-            label = resultRow[table.label]
+            label = resultRow[table.label],
         )
         payload.updateBaseAttributes(table, resultRow)
         return payload
