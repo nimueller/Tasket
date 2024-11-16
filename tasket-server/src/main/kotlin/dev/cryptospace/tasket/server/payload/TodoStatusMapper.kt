@@ -15,7 +15,7 @@ object TodoStatusMapper : PayloadMapper<TodoStatusesTable, TodoStatusPayload> {
         return payload
     }
 
-    override fun mapPayloadToEntity(
+    override fun mapPayloadAsUpdate(
         table: TodoStatusesTable,
         updateBuilder: UpdateBuilder<Int>,
         payload: TodoStatusPayload,

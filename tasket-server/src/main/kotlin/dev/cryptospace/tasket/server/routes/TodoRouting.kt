@@ -1,11 +1,13 @@
 package dev.cryptospace.tasket.server.routes
 
+import dev.cryptospace.tasket.server.payload.TodoPatchMapper
 import dev.cryptospace.tasket.server.repository.TodoCommentRepository
 import dev.cryptospace.tasket.server.repository.TodoRepository
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
+import io.ktor.server.routing.patch
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
@@ -25,7 +27,10 @@ fun Route.todo() {
                 handleGetByIdRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))
             }
             put {
-                handlePatchRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))
+                handlePutRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))
+            }
+            patch {
+                handlePatchRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"), TodoPatchMapper)
             }
             delete {
                 handleDeleteRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))

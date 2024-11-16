@@ -1,10 +1,12 @@
 package dev.cryptospace.tasket.server.routes
 
 import dev.cryptospace.module
+import dev.cryptospace.tasket.payloads.TodoPatchPayload
 import dev.cryptospace.tasket.payloads.TodoPayload
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -131,6 +133,57 @@ class TodoTest {
         }
         client.get("/todos/00000000-0000-0000-0000-000000000000").apply {
             assert(status == HttpStatusCode.NotFound)
+        }
+    }
+
+    @Test
+    fun `post todo with empty label should fail and return 400`() = testApplication {
+        application {
+            module()
+        }
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+        client.post("/todos") {
+            contentType(ContentType.Application.Json)
+            setBody(TodoPatchPayload(label = null))
+        }.apply {
+            assert(status == HttpStatusCode.BadRequest)
+        }
+        client.get("/todos").apply {
+            assert(status == HttpStatusCode.OK)
+            val payload = body<List<TodoPayload>>()
+            assert(payload.isEmpty())
+        }
+    }
+
+    @Test
+    fun `patch todo should update inserted item`() = testApplication {
+        application {
+            module()
+        }
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+        val response = client.post("/todos") {
+            contentType(ContentType.Application.Json)
+            setBody(TodoPayload(label = "Test Todo"))
+        }
+        val insertedItem = response.body<TodoPayload>()
+
+        client.patch("/todos/${insertedItem.id}") {
+            contentType(ContentType.Application.Json)
+            setBody(TodoPatchPayload(label = "Updated Todo"))
+        }.apply {
+            assert(status == HttpStatusCode.OK)
+            val payload = body<TodoPayload>()
+            assert(payload.label == "Updated Todo")
+            assert(payload.id == insertedItem.id)
+            assert(payload.createdAt == insertedItem.createdAt)
         }
     }
 }

@@ -14,7 +14,7 @@ object TodoCommentMapper : PayloadMapper<TodoCommentsTable, TodoCommentPayload> 
         return payload
     }
 
-    override fun mapPayloadToEntity(
+    override fun mapPayloadAsUpdate(
         table: TodoCommentsTable,
         updateBuilder: UpdateBuilder<Int>,
         payload: TodoCommentPayload,

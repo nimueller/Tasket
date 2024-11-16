@@ -14,7 +14,7 @@ object TodoMapper : PayloadMapper<TodosTable, TodoPayload> {
         return payload
     }
 
-    override fun mapPayloadToEntity(table: TodosTable, updateBuilder: UpdateBuilder<Int>, payload: TodoPayload) {
+    override fun mapPayloadAsUpdate(table: TodosTable, updateBuilder: UpdateBuilder<Int>, payload: TodoPayload) {
         updateBuilder[table.label] = payload.label
     }
 }
