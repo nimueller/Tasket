@@ -129,7 +129,7 @@ class TodoTest {
                 json()
             }
         }
-        client.get("/todos/00000000-0000-0000-0000-000000000000\n").apply {
+        client.get("/todos/00000000-0000-0000-0000-000000000000").apply {
             assert(status == HttpStatusCode.NotFound)
         }
     }

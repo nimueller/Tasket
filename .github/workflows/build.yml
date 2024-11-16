@@ -1,9 +1,7 @@
 name: CI
 on:
     push:
-        branches: [ "main" ]
     pull_request:
-        branches: [ "main" ]
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -18,3 +16,5 @@ jobs:
                     distribution: 'temurin'
             -   name: Build with Gradle Wrapper
                 run: ./gradlew build
+            -   name: Sonarqube
+                run: ./gradlew sonar -Dsonar.token=${{ secrets.SONARQUBE_TOKEN }}
