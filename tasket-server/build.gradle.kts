@@ -34,6 +34,16 @@ tasks.named<JavaExec>("run") {
     environment(env.allVariables())
 }
 
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(true)
+    }
+}
+
 liquibase {
     activities {
         val main by creating {
