@@ -35,6 +35,7 @@ tasks.named<JavaExec>("run") {
 }
 
 tasks.test {
+    useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport)
 }
 

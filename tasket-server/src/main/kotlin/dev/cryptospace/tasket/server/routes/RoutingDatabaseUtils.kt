@@ -7,6 +7,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.RoutingContext
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.util.UUID
 
 suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.handleGetAllRoute(
@@ -31,10 +32,11 @@ suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.h
 
 suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.handlePostRoute(
     repository: BaseRepository<T, V>,
+    noinline additionalAttributes: UpdateBuilder<Int>.() -> Unit = {},
 ) {
     val receivedPayload = call.receive<V>()
-    val payload = repository.insert(receivedPayload)
-    call.respond(payload)
+    val payload = repository.insert(receivedPayload, additionalAttributes)
+    call.respond(HttpStatusCode.Created, payload)
 }
 
 suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.handlePatchRoute(

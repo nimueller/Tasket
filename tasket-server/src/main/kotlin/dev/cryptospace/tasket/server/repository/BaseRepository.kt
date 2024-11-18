@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.deleteReturning
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.upsert
 import java.util.UUID
@@ -50,10 +51,11 @@ abstract class BaseRepository<T : BaseTable, V : Payload>(
         return queryForSingleResult { table.id eq id }
     }
 
-    suspend fun insert(payload: V): V {
+    suspend fun insert(payload: V, includeAdditionalAttributes: UpdateBuilder<Int>.() -> Unit = {}): V {
         return suspendedTransaction {
             val insertedId = table.insert { statement ->
                 mapper.mapPayloadToEntity(table, statement, payload)
+                statement.includeAdditionalAttributes()
             }[table.id]
 
             val row = table.selectAll().where {

@@ -10,6 +10,8 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 
 fun main() {
@@ -34,5 +36,9 @@ fun Application.module() {
     }
     routing {
         todo()
+
+        get("ping") {
+            call.respondText("pong")
+        }
     }
 }

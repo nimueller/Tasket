@@ -1,5 +1,6 @@
 package dev.cryptospace.tasket.server.routes
 
+import PostgresIntegrationTest
 import dev.cryptospace.module
 import dev.cryptospace.tasket.payloads.TodoPayload
 import io.ktor.client.call.body
@@ -12,46 +13,24 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.testing.testApplication
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.AfterClass
-import org.junit.BeforeClass
-import setupTestDatabaseWithPostgres
-import kotlin.test.BeforeTest
+import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.Test
 
+@ExtendWith(PostgresIntegrationTest::class)
 class TodoTest {
-
-    companion object {
-        @JvmStatic
-        @BeforeClass
-        fun setupDatabase() {
-            setupTestDatabaseWithPostgres()
-        }
-
-        @JvmStatic
-        @AfterClass
-        fun tearDownDatabase() {
-            setupTestDatabaseWithPostgres()
-        }
-    }
-
-    @BeforeTest
-    fun setup() {
-        transaction {
-            exec("TRUNCATE TABLE tasket.todos CASCADE")
-        }
-    }
 
     @Test
     fun `get all todos on empty database should return empty array`() = testApplication {
         application {
             module()
         }
+
         val client = createClient {
             install(ContentNegotiation) {
                 json()
             }
         }
+
         client.get("/todos").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoPayload>>()
@@ -64,15 +43,20 @@ class TodoTest {
         application {
             module()
         }
+
         val client = createClient {
             install(ContentNegotiation) {
                 json()
             }
         }
+
         client.post("/todos") {
             contentType(ContentType.Application.Json)
             setBody(TodoPayload(label = "Test Todo"))
+        }.apply {
+            assert(status == HttpStatusCode.Created)
         }
+
         client.get("/todos").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoPayload>>()
@@ -86,16 +70,20 @@ class TodoTest {
         application {
             module()
         }
+
         val client = createClient {
             install(ContentNegotiation) {
                 json()
             }
         }
-        val response = client.post("/todos") {
+
+        val insertedItem = client.post("/todos") {
             contentType(ContentType.Application.Json)
             setBody(TodoPayload(label = "Test Todo"))
+        }.let { response ->
+            assert(response.status == HttpStatusCode.Created)
+            response.body<TodoPayload>()
         }
-        val insertedItem = response.body<TodoPayload>()
 
         client.get("/todos/${insertedItem.id}").apply {
             assert(status == HttpStatusCode.OK)
@@ -109,11 +97,13 @@ class TodoTest {
         application {
             module()
         }
+
         val client = createClient {
             install(ContentNegotiation) {
                 json()
             }
         }
+
         client.get("/todos/null").apply {
             assert(status == HttpStatusCode.BadRequest)
         }
@@ -124,11 +114,13 @@ class TodoTest {
         application {
             module()
         }
+
         val client = createClient {
             install(ContentNegotiation) {
                 json()
             }
         }
+
         client.get("/todos/00000000-0000-0000-0000-000000000000").apply {
             assert(status == HttpStatusCode.NotFound)
         }

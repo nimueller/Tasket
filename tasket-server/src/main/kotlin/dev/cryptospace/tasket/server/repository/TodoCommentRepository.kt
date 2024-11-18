@@ -9,7 +9,7 @@ object TodoCommentRepository :
     BaseRepository<TodoCommentsTable, TodoCommentPayload>(TodoCommentsTable, TodoCommentMapper) {
     suspend fun getAllCommentsForTodo(todoId: UUID): List<TodoCommentPayload> {
         return queryForMultipleResults {
-            TodoCommentsTable.id eq todoId
+            TodoCommentsTable.todoId eq todoId
         }
     }
 }
