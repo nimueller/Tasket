@@ -14,7 +14,7 @@ fun Container.todoInserter() {
         placeholder = tr("New TODO")
         onEventLaunch("keyup") { event ->
             if (event is KeyboardEvent && event.key == "Enter" && !value.isNullOrBlank()) {
-                val payload = TodoPayload(label = value!!)
+                val payload = TodoPayload(label = value!!, statusId = null)
                 HttpClient.post("todos", payload)
                 value = ""
                 TodoViewModel.loadTodos()
