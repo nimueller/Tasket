@@ -52,7 +52,7 @@ class TodoTest {
 
         client.post("/todos") {
             contentType(ContentType.Application.Json)
-            setBody(TodoPayload(label = "Test Todo"))
+            setBody(TodoPayload(label = "Test Todo", statusId = null))
         }.apply {
             assert(status == HttpStatusCode.Created)
         }
@@ -79,7 +79,7 @@ class TodoTest {
 
         val insertedItem = client.post("/todos") {
             contentType(ContentType.Application.Json)
-            setBody(TodoPayload(label = "Test Todo"))
+            setBody(TodoPayload(label = "Test Todo", statusId = null))
         }.let { response ->
             assert(response.status == HttpStatusCode.Created)
             response.body<TodoPayload>()

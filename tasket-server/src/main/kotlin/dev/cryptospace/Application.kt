@@ -1,5 +1,6 @@
 package dev.cryptospace
 
+import dev.cryptospace.tasket.server.routes.status
 import dev.cryptospace.tasket.server.routes.todo
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
@@ -10,8 +11,6 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
-import io.ktor.server.response.respondText
-import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 
 fun main() {
@@ -35,10 +34,7 @@ fun Application.module() {
         if (System.getenv("ALLOWED_HOST") != null) allowHost(System.getenv("ALLOWED_HOST")) else anyHost()
     }
     routing {
+        status()
         todo()
-
-        get("ping") {
-            call.respondText("pong")
-        }
     }
 }

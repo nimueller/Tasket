@@ -2,6 +2,7 @@ package dev.cryptospace.tasket.server.routes
 
 import dev.cryptospace.tasket.server.repository.TodoCommentRepository
 import dev.cryptospace.tasket.server.repository.TodoRepository
+import dev.cryptospace.tasket.server.repository.TodoStatusChangeRepository
 import dev.cryptospace.tasket.server.table.TodoCommentsTable
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -31,9 +32,9 @@ fun Route.todo() {
             delete {
                 handleDeleteRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))
             }
-        }
-        route("{todoId}") {
+
             comments()
+            statusChanges()
         }
     }
 }
@@ -47,6 +48,14 @@ private fun Route.comments() {
             handlePostRoute(TodoCommentRepository) {
                 this[TodoCommentsTable.todoId] = call.parameters.getOrFail<UUID>("todoId")
             }
+        }
+    }
+}
+
+private fun Route.statusChanges() {
+    route("statusChanges") {
+        get {
+            call.respond(TodoStatusChangeRepository.getAllCommentsForTodo(call.parameters.getOrFail<UUID>("todoId")))
         }
     }
 }

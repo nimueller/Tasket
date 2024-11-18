@@ -26,6 +26,7 @@ dependencies {
     liquibaseRuntime(libs.bundles.liquibase)
 
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.junit.params)
     testImplementation(libs.bundles.ktor.test)
     testImplementation(libs.bundles.testcontainers)
 }
