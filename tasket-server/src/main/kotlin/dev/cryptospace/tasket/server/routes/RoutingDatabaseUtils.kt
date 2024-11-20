@@ -2,6 +2,7 @@ package dev.cryptospace.tasket.server.routes
 
 import dev.cryptospace.tasket.payloads.Payload
 import dev.cryptospace.tasket.server.repository.BaseRepository
+import dev.cryptospace.tasket.server.repository.ReadOnlyRepository
 import dev.cryptospace.tasket.server.table.BaseTable
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
@@ -11,14 +12,14 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.util.UUID
 
 suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.handleGetAllRoute(
-    repository: BaseRepository<T, V>,
+    repository: ReadOnlyRepository<T, V>,
 ) {
     val todoPayloads = repository.getAll()
     call.respond(todoPayloads)
 }
 
 suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.handleGetByIdRoute(
-    repository: BaseRepository<T, V>,
+    repository: ReadOnlyRepository<T, V>,
     id: UUID,
 ) {
     val payload = repository.getById(id)

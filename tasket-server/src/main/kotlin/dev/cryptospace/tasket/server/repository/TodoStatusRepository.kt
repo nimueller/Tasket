@@ -4,5 +4,7 @@ import dev.cryptospace.tasket.payloads.TodoStatusPayload
 import dev.cryptospace.tasket.server.payload.TodoStatusMapper
 import dev.cryptospace.tasket.server.table.TodoStatusesTable
 
-object TodoStatusRepository :
-    BaseRepository<TodoStatusesTable, TodoStatusPayload>(TodoStatusesTable, TodoStatusMapper)
+object TodoStatusRepository : ReadOnlyRepository<TodoStatusesTable, TodoStatusPayload>(
+    TodoStatusesTable,
+    TodoStatusMapper,
+)

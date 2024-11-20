@@ -5,6 +5,7 @@ import dev.cryptospace.module
 import dev.cryptospace.tasket.payloads.TodoPayload
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -122,6 +123,52 @@ class TodoTest {
         }
 
         client.get("/todos/00000000-0000-0000-0000-000000000000").apply {
+            assert(status == HttpStatusCode.NotFound)
+        }
+    }
+
+    @Test
+    fun `delete todo on existing item should remove item`() = testApplication {
+        application {
+            module()
+        }
+
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        val insertedItem = client.post("/todos") {
+            contentType(ContentType.Application.Json)
+            setBody(TodoPayload(label = "Test Todo", statusId = null))
+        }.let { response ->
+            assert(response.status == HttpStatusCode.Created)
+            response.body<TodoPayload>()
+        }
+
+        client.delete("/todos/${insertedItem.id}").apply {
+            assert(status == HttpStatusCode.OK)
+        }
+
+        client.get("/todos/${insertedItem.id}").apply {
+            assert(status == HttpStatusCode.NotFound)
+        }
+    }
+
+    @Test
+    fun `delete todo which does not exist should return 404`() = testApplication {
+        application {
+            module()
+        }
+
+        val client = createClient {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+
+        client.delete("/todos/00000000-0000-0000-0000-000000000000").apply {
             assert(status == HttpStatusCode.NotFound)
         }
     }
