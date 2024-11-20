@@ -7,6 +7,8 @@ import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.bearer
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
@@ -19,6 +21,10 @@ fun main() {
 }
 
 fun Application.module() {
+    install(Authentication) {
+        bearer {
+        }
+    }
     install(ContentNegotiation) {
         json()
     }
