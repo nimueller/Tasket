@@ -1,13 +1,19 @@
 package dev.cryptospace
 
+import com.auth0.jwt.JWT
+import dev.cryptospace.tasket.server.routes.login
 import dev.cryptospace.tasket.server.routes.status
 import dev.cryptospace.tasket.server.routes.todo
+import dev.cryptospace.tasket.server.security.JwtService
+import dev.cryptospace.tasket.server.security.REALM
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.UserIdPrincipal
+import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.bearer
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -23,6 +29,15 @@ fun main() {
 fun Application.module() {
     install(Authentication) {
         bearer {
+            realm = REALM
+            authenticate { tokenCredential ->
+                val token = tokenCredential.token
+                if (JwtService.verifyToken(token)) {
+                    UserIdPrincipal(JWT.decode(token).subject)
+                } else {
+                    null
+                }
+            }
         }
     }
     install(ContentNegotiation) {
@@ -40,7 +55,11 @@ fun Application.module() {
         if (System.getenv("ALLOWED_HOST") != null) allowHost(System.getenv("ALLOWED_HOST")) else anyHost()
     }
     routing {
-        status()
-        todo()
+        login()
+
+        authenticate {
+            status()
+            todo()
+        }
     }
 }
