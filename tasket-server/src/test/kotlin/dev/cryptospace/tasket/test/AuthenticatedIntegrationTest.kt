@@ -40,8 +40,8 @@ fun testWebserviceUnauthenticated(doTest: suspend HttpClient.() -> Unit) = testA
     client.doTest()
 }
 
-fun testWebserviceAuthenticated(doTest: suspend HttpClient.() -> Unit) = testApplication {
-    testWebserviceAuthenticatedWithUser { doTest() }
+fun testWebserviceAuthenticated(isAdmin: Boolean = false, doTest: suspend HttpClient.() -> Unit) = testApplication {
+    testWebserviceAuthenticatedWithUser(isAdmin = isAdmin) { doTest() }
 }
 
 fun testWebserviceAuthenticatedWithUser(
@@ -49,6 +49,8 @@ fun testWebserviceAuthenticatedWithUser(
     isAdmin: Boolean = false,
     doTest: suspend HttpClient.(TestUser) -> Unit,
 ) = testApplication {
+    cleanupAuthenticatedWebservice()
+
     application {
         module()
     }
@@ -57,19 +59,15 @@ fun testWebserviceAuthenticatedWithUser(
     val loginResponse = authenticate(username)
     val client = prepareAuthenticatedClient(loginResponse.accessToken)
 
-    try {
-        client.doTest(
-            TestUser(
-                id = testUserId,
-                username = username,
-                password = TEST_USER_PASSWORD,
-                accessToken = loginResponse.accessToken,
-                refreshToken = loginResponse.refreshToken,
-            ),
-        )
-    } finally {
-        cleanupAuthenticatedWebservice()
-    }
+    client.doTest(
+        TestUser(
+            id = testUserId,
+            username = username,
+            password = TEST_USER_PASSWORD,
+            accessToken = loginResponse.accessToken,
+            refreshToken = loginResponse.refreshToken,
+        ),
+    )
 }
 
 private fun prepareTestUser(user: String, isAdmin: Boolean): UserId {

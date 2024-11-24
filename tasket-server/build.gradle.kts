@@ -23,6 +23,7 @@ dependencies {
     implementation(libs.bundles.ktor.server)
     implementation(libs.bundles.exposed)
     implementation(libs.bundles.liquibase)
+    testImplementation("io.ktor:ktor-server-test-host-jvm:3.0.1")
 
     liquibaseRuntime(libs.bundles.liquibase)
 

@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT
 import dev.cryptospace.tasket.server.routes.login
 import dev.cryptospace.tasket.server.routes.status
 import dev.cryptospace.tasket.server.routes.todo
+import dev.cryptospace.tasket.server.routes.users
 import dev.cryptospace.tasket.server.security.JwtService
 import dev.cryptospace.tasket.server.table.user.UserRole
 import dev.cryptospace.tasket.server.table.user.UsersTable
@@ -57,6 +58,10 @@ fun Application.module() {
         authenticate {
             status()
             todo()
+        }
+
+        authenticate("admin") {
+            users()
         }
     }
 }
