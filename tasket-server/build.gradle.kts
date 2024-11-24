@@ -19,6 +19,7 @@ dependencies {
     implementation(projects.tasketShared)
     implementation(libs.logback)
     implementation(libs.postgresql)
+    implementation(libs.bouncycastle)
     implementation(libs.bundles.ktor.server)
     implementation(libs.bundles.exposed)
     implementation(libs.bundles.liquibase)
@@ -36,6 +37,7 @@ tasks.named<JavaExec>("run") {
 }
 
 tasks.test {
+    environment("JWT_SECRET", "test")
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport)
 }

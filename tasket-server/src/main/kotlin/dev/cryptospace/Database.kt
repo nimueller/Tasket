@@ -31,13 +31,16 @@ private fun buildDatabaseUrl(): String {
 
 private fun connectToDatabase(databaseUrl: String, username: String, password: String) {
     Database.connect(
-        url = databaseUrl,
+        url = databaseUrl + "?stringtype=unspecified",
         user = username,
         password = password,
         driver = requireNotNull(Driver::class.qualifiedName),
         databaseConfig = DatabaseConfig {
             defaultSchema = Schema("tasket")
             sqlLogger = Slf4jSqlDebugLogger
+        },
+        setupConnection = { connection ->
+            connection.clientInfo["stringtype"] = "unspecified"
         },
     )
 }

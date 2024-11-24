@@ -1,3 +1,5 @@
+package dev.cryptospace.tasket.test
+
 import liquibase.Contexts
 import liquibase.LabelExpression
 import liquibase.Liquibase
@@ -39,7 +41,7 @@ class PostgresIntegrationTest :
     private fun connectToDatabase() {
         println("Connecting to Postgres container")
         Database.connect(
-            url = postgresTestContainer.jdbcUrl,
+            url = postgresTestContainer.jdbcUrl + "?stringtype=unspecified",
             driver = "org.postgresql.Driver",
             user = postgresTestContainer.username,
             password = postgresTestContainer.password,
@@ -62,10 +64,10 @@ class PostgresIntegrationTest :
     }
 
     override fun beforeEach(context: ExtensionContext?) {
-        println("Cleanup database for test ${context?.displayName}")
         transaction {
             exec("TRUNCATE TABLE tasket.todos CASCADE")
         }
+        println("Cleaned up database for test ${context?.displayName}")
     }
 
     companion object {

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1732131404963-1" author="nico (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists schemaName="tasket" tableName="users"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="tasket" tableName="users">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="created_at" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamptz" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="text">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="salt" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_role" type="user_role" defaultValue="USER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <sql dbms="postgresql">
+            CREATE OR REPLACE TRIGGER trigger_set_updated_at
+            BEFORE UPDATE ON tasket.todo_comments
+            FOR EACH ROW
+            EXECUTE FUNCTION set_updated_at_timestamp();
+        </sql>
+    </changeSet>
+
+    <changeSet id="1732452140609-1" author="nico (generated)">
+        <preConditions onFail="MARK_RAN">
+            <tableIsEmpty schemaName="tasket" tableName="users"/>
+        </preConditions>
+        <insert schemaName="tasket" tableName="users">
+            <column name="id" value="4b69655f-4307-47c9-90e7-8007e5b0a278"/>
+            <column name="username" value="admin"/>
+            <!-- default user/password "admin" "admin" (user will be prompted to change password upon first login) -->
+            <column name="password" value="8sMWjh5ww6I/tKYSY4EsL/xmKhHRIDmmju3zXmxPpmA="/>
+            <column name="salt" value="cGa4va5VvyMT6z8z+0spTA=="/>
+            <column name="user_role" value="ADMIN"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

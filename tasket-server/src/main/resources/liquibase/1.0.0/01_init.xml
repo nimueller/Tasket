@@ -46,4 +46,19 @@
         </sql>
     </changeSet>
 
+    <changeSet id="1732452080373-1" author="nico (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM pg_type WHERE typname = 'user_role';
+            </sqlCheck>
+        </preConditions>
+        <comment>Create User Role</comment>
+        <sql dbms="postgresql">
+            CREATE TYPE user_role AS ENUM (
+                'USER',
+                'ADMIN'
+            );
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

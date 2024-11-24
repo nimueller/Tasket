@@ -12,7 +12,10 @@ ktor-server-cors-core = { module = "io.ktor:ktor-server-cors", version.ref = "kt
 ktor-server-cors-jvm = { module = "io.ktor:ktor-server-cors-jvm", version.ref = "ktor" }
 ktor-server-content-negotation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
 ktor-server-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor" }
 ktor-test = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
+ktor-test-jvm = { module = "io.ktor:ktor-server-test-host-jvm", version.ref = "ktor" }
 ktor-client-content-negotation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 
 kvision-core = { module = "io.kvision:kvision", version.ref = "kvision" }
@@ -36,10 +39,11 @@ postgresql = { module = "org.postgresql:postgresql", version = "42.7.+" }
 liquibase-core = { module = "org.liquibase:liquibase-core", version = "4.30.+" }
 logback = { module = "ch.qos.logback:logback-classic", version = "1.5.+" }
 picocli = { module = "info.picocli:picocli", version = "4.7.5" }
+bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version = "1.+" }
 
 [bundles]
-ktor-server = ["ktor-server-core", "ktor-server-netty", "ktor-server-content-negotation", "ktor-server-json", "ktor-server-cors-core", "ktor-server-cors-jvm"]
-ktor-test = ["ktor-test", "ktor-client-content-negotation"]
+ktor-server = ["ktor-server-core", "ktor-server-netty", "ktor-server-content-negotation", "ktor-server-json", "ktor-server-cors-core", "ktor-server-cors-jvm", "ktor-server-auth", "ktor-server-auth-jwt"]
+ktor-test = ["ktor-test", "ktor-test-jvm", "ktor-client-content-negotation"]
 kvision = ["kvision-core", "kvision-state", "kvision-bootstrap", "kvision-i18n", "kvision-fontawesome", "kvision-richtext"]
 exposed = ["exposed-core", "exposed-dao", "exposed-jdbc", "exposed-kotlin-datetime"]
 liquibase = ["liquibase-core", "postgresql", "picocli"]

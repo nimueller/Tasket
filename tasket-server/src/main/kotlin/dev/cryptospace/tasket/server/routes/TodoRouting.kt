@@ -27,7 +27,7 @@ fun Route.todo() {
                 handleGetByIdRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))
             }
             put {
-                handlePatchRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))
+                handlePutRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))
             }
             delete {
                 handleDeleteRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))
