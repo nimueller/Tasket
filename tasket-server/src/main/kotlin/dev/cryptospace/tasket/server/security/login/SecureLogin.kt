@@ -42,7 +42,6 @@ object SecureLogin {
             val session = UserSessionService.login(UserId(userUuid))
             SuccessLoginResult(session)
         } else {
-            // TODO log failed attempts in database and lock account after a certain number of attempts
             FailedLoginResult
         }
     }

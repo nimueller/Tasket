@@ -19,7 +19,6 @@ object UserSessionService {
             }
         }
 
-        // TODO log this login to database
         return LoginResponsePayload(accessToken = accessToken, refreshToken = refreshToken.token)
     }
 }
