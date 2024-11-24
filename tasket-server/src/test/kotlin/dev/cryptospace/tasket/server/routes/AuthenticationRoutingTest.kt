@@ -20,6 +20,7 @@ class AuthenticationRoutingTest {
 
     @Test
     fun `valid credentials should return valid access token`() = testWebserviceAuthenticatedWithUser { user ->
+
         post("/login") {
             contentType(ContentType.Application.Json)
             setBody(LoginRequestPayload(username = user.username, password = user.password))

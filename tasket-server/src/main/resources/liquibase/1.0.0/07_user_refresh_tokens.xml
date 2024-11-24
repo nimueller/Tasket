@@ -37,6 +37,9 @@
             FOR EACH ROW
             EXECUTE FUNCTION set_updated_at_timestamp();
         </sql>
+        <createIndex schemaName="tasket" tableName="user_refresh_tokens" indexName="i_user_refresh_tokens_user_id">
+            <column name="user_id"/>
+        </createIndex>
     </changeSet>
 
 </databaseChangeLog>

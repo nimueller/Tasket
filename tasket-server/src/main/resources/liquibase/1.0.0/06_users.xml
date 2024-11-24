@@ -29,6 +29,9 @@
             <column name="salt" type="text">
                 <constraints nullable="false"/>
             </column>
+            <column name="user_role" type="user_role" defaultValue="USER">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <sql dbms="postgresql">
             CREATE OR REPLACE TRIGGER trigger_set_updated_at
@@ -36,6 +39,20 @@
             FOR EACH ROW
             EXECUTE FUNCTION set_updated_at_timestamp();
         </sql>
+    </changeSet>
+
+    <changeSet id="1732452140609-1" author="nico (generated)">
+        <preConditions onFail="MARK_RAN">
+            <tableIsEmpty schemaName="tasket" tableName="users"/>
+        </preConditions>
+        <insert schemaName="tasket" tableName="users">
+            <column name="id" value="4b69655f-4307-47c9-90e7-8007e5b0a278"/>
+            <column name="username" value="admin"/>
+            <!-- default user/password "admin" "admin" (user will be prompted to change password upon first login) -->
+            <column name="password" value="8sMWjh5ww6I/tKYSY4EsL/xmKhHRIDmmju3zXmxPpmA="/>
+            <column name="salt" value="cGa4va5VvyMT6z8z+0spTA=="/>
+            <column name="user_role" value="ADMIN"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

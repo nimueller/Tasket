@@ -40,7 +40,7 @@ suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.h
     call.respond(HttpStatusCode.Created, payload)
 }
 
-suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.handlePatchRoute(
+suspend inline fun <reified T : BaseTable, reified V : Payload> RoutingContext.handlePutRoute(
     repository: BaseRepository<T, V>,
     id: UUID,
 ) {

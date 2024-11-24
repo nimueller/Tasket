@@ -4,6 +4,7 @@ import dev.cryptospace.module
 import dev.cryptospace.tasket.payloads.authentication.LoginRequestPayload
 import dev.cryptospace.tasket.payloads.authentication.LoginResponsePayload
 import dev.cryptospace.tasket.server.table.user.UserId
+import dev.cryptospace.tasket.server.table.user.UserRole
 import dev.cryptospace.tasket.server.table.user.UsersTable
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -45,13 +46,14 @@ fun testWebserviceAuthenticated(doTest: suspend HttpClient.() -> Unit) = testApp
 
 fun testWebserviceAuthenticatedWithUser(
     username: String = TEST_USER_USERNAME,
+    isAdmin: Boolean = false,
     doTest: suspend HttpClient.(TestUser) -> Unit,
 ) = testApplication {
     application {
         module()
     }
 
-    val testUserId = prepareTestUser(username)
+    val testUserId = prepareTestUser(username, isAdmin)
     val loginResponse = authenticate(username)
     val client = prepareAuthenticatedClient(loginResponse.accessToken)
 
@@ -70,12 +72,13 @@ fun testWebserviceAuthenticatedWithUser(
     }
 }
 
-private fun prepareTestUser(user: String): UserId {
+private fun prepareTestUser(user: String, isAdmin: Boolean): UserId {
     val testUserId = transaction {
         val insertedId = UsersTable.insert {
             it[username] = user
             it[password] = TEST_USER_PASSWORD_HASH
             it[salt] = TEST_USER_PASSWORD_SALT
+            it[role] = if (isAdmin) UserRole.ADMIN else UserRole.USER
         }[UsersTable.id]
 
         UserId(insertedId.value)

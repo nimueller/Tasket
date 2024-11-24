@@ -41,7 +41,7 @@ class PostgresIntegrationTest :
     private fun connectToDatabase() {
         println("Connecting to Postgres container")
         Database.connect(
-            url = postgresTestContainer.jdbcUrl,
+            url = postgresTestContainer.jdbcUrl + "?stringtype=unspecified",
             driver = "org.postgresql.Driver",
             user = postgresTestContainer.username,
             password = postgresTestContainer.password,

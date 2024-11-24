@@ -1,5 +1,6 @@
 package dev.cryptospace.tasket.server.table
 
+import dev.cryptospace.tasket.server.table.postgres.postgresEnum
 import dev.cryptospace.tasket.types.BootstrapColor
 
 object TodoStatusesTable : BaseTable(name = "tasket.todo_statuses") {
