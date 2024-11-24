@@ -64,10 +64,10 @@ class PostgresIntegrationTest :
     }
 
     override fun beforeEach(context: ExtensionContext?) {
-        println("Cleanup database for test ${context?.displayName}")
         transaction {
             exec("TRUNCATE TABLE tasket.todos CASCADE")
         }
+        println("Cleaned up database for test ${context?.displayName}")
     }
 
     companion object {

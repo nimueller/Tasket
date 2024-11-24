@@ -1,7 +1,6 @@
 package dev.cryptospace.tasket.server.routes
 
 import dev.cryptospace.tasket.payloads.TodoStatusPayload
-import dev.cryptospace.tasket.test.AuthenticatedIntegrationTest
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
 import dev.cryptospace.tasket.test.testWebserviceAuthenticated
 import dev.cryptospace.tasket.types.BootstrapColor
@@ -14,7 +13,6 @@ import org.junit.jupiter.params.provider.CsvFileSource
 import kotlin.test.Test
 
 @ExtendWith(PostgresIntegrationTest::class)
-@ExtendWith(AuthenticatedIntegrationTest::class)
 class TodoStatusTest {
 
     @Test

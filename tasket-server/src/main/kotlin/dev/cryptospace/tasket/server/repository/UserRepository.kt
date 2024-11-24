@@ -2,7 +2,7 @@ package dev.cryptospace.tasket.server.repository
 
 import dev.cryptospace.tasket.payloads.UserPayload
 import dev.cryptospace.tasket.server.payload.UserMapper
-import dev.cryptospace.tasket.server.table.UsersTable
+import dev.cryptospace.tasket.server.table.user.UsersTable
 import org.jetbrains.exposed.sql.selectAll
 
 object UserRepository : BaseRepository<UsersTable, UserPayload>(UsersTable, UserMapper) {

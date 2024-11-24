@@ -1,4 +1,4 @@
-package dev.cryptospace.tasket.payloads
+package dev.cryptospace.tasket.payloads.authentication
 
 import kotlinx.serialization.Serializable
 

@@ -2,7 +2,7 @@ package dev.cryptospace.tasket.server.payload
 
 import dev.cryptospace.tasket.payloads.UserPayload
 import dev.cryptospace.tasket.server.security.Argon2Hashing
-import dev.cryptospace.tasket.server.table.UsersTable
+import dev.cryptospace.tasket.server.table.user.UsersTable
 import io.ktor.util.encodeBase64
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.statements.UpdateBuilder

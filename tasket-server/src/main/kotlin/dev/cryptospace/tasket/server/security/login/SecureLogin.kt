@@ -1,10 +1,10 @@
 package dev.cryptospace.tasket.server.security.login
 
-import dev.cryptospace.tasket.payloads.LoginRequestPayload
+import dev.cryptospace.tasket.payloads.authentication.LoginRequestPayload
 import dev.cryptospace.tasket.server.security.Argon2Hashing
-import dev.cryptospace.tasket.server.security.JwtService
-import dev.cryptospace.tasket.server.table.UserId
-import dev.cryptospace.tasket.server.table.UsersTable
+import dev.cryptospace.tasket.server.security.UserSessionService
+import dev.cryptospace.tasket.server.table.user.UserId
+import dev.cryptospace.tasket.server.table.user.UsersTable
 import io.ktor.util.decodeBase64Bytes
 import io.ktor.util.encodeBase64
 import org.jetbrains.exposed.sql.selectAll
@@ -36,11 +36,11 @@ object SecureLogin {
         val expectedPassword = user?.get(UsersTable.password)?.decodeBase64Bytes() ?: DUMMY_PASSWORD.decodeBase64Bytes()
 
         return if (MessageDigest.isEqual(requestPassword, expectedPassword)) {
-            val userId = requireNotNull(user) {
+            val userUuid = requireNotNull(user) {
                 "User should not be null here, as we already checked the password."
-            }[UsersTable.id].toString()
-            val token = JwtService.generateToken(UserId(userId))
-            SuccessLoginResult(token)
+            }[UsersTable.id].value
+            val session = UserSessionService.login(UserId(userUuid))
+            SuccessLoginResult(session)
         } else {
             // TODO log failed attempts in database and lock account after a certain number of attempts
             FailedLoginResult

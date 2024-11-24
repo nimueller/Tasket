@@ -5,7 +5,6 @@ import dev.cryptospace.tasket.server.routes.login
 import dev.cryptospace.tasket.server.routes.status
 import dev.cryptospace.tasket.server.routes.todo
 import dev.cryptospace.tasket.server.security.JwtService
-import dev.cryptospace.tasket.server.security.REALM
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
@@ -29,7 +28,7 @@ fun main() {
 fun Application.module() {
     install(Authentication) {
         bearer {
-            realm = REALM
+            realm = JwtService.REALM
             authenticate { tokenCredential ->
                 val token = tokenCredential.token
                 if (JwtService.verifyToken(token)) {

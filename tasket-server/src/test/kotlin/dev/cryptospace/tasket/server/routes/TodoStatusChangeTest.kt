@@ -3,7 +3,6 @@ package dev.cryptospace.tasket.server.routes
 import dev.cryptospace.tasket.payloads.TodoPayload
 import dev.cryptospace.tasket.payloads.TodoStatusChangePayload
 import dev.cryptospace.tasket.server.table.TodosTable
-import dev.cryptospace.tasket.test.AuthenticatedIntegrationTest
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
 import dev.cryptospace.tasket.test.testWebserviceAuthenticated
 import io.ktor.client.call.body
@@ -24,7 +23,6 @@ private const val NEW_STATUS_ID = "1fab4c54-11bc-4f8a-a950-7a0032d31e85"
 private const val IN_PROGRESS_STATUS_ID = "a7226e20-0ba5-4f20-b69e-84243d207d7f"
 
 @ExtendWith(PostgresIntegrationTest::class)
-@ExtendWith(AuthenticatedIntegrationTest::class)
 class TodoStatusChangeTest {
 
     private lateinit var todoId: UUID

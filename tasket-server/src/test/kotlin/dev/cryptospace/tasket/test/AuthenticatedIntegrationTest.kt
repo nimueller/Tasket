@@ -1,8 +1,10 @@
 package dev.cryptospace.tasket.test
 
 import dev.cryptospace.module
-import dev.cryptospace.tasket.payloads.LoginRequestPayload
-import dev.cryptospace.tasket.server.table.UsersTable
+import dev.cryptospace.tasket.payloads.authentication.LoginRequestPayload
+import dev.cryptospace.tasket.payloads.authentication.LoginResponsePayload
+import dev.cryptospace.tasket.server.table.user.UserId
+import dev.cryptospace.tasket.server.table.user.UsersTable
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -13,43 +15,15 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.extension.AfterAllCallback
-import org.junit.jupiter.api.extension.BeforeAllCallback
-import org.junit.jupiter.api.extension.ExtensionContext
-import java.util.UUID
 
 const val TEST_USER_USERNAME = "test"
 const val TEST_USER_PASSWORD = "password"
 private const val TEST_USER_PASSWORD_HASH = "l2sr83tTVOdVmiMZwhcQyjn5NFJhSsP0M3ZvlEYBQ1g="
 private const val TEST_USER_PASSWORD_SALT = "q/zMS1D1fqwuO1qcb1Rp4A=="
-
-class AuthenticatedIntegrationTest :
-    BeforeAllCallback,
-    AfterAllCallback {
-
-    private lateinit var testUserId: UUID
-
-    override fun beforeAll(context: ExtensionContext) {
-        testUserId = transaction {
-            UsersTable.insert {
-                it[username] = TEST_USER_USERNAME
-                it[password] = TEST_USER_PASSWORD_HASH
-                it[salt] = TEST_USER_PASSWORD_SALT
-            }[UsersTable.id].value
-        }
-    }
-
-    override fun afterAll(context: ExtensionContext) {
-        transaction {
-            UsersTable.deleteWhere { UsersTable.id eq testUserId }
-        }
-    }
-}
 
 fun testWebserviceUnauthenticated(doTest: suspend HttpClient.() -> Unit) = testApplication {
     application {
@@ -66,29 +40,84 @@ fun testWebserviceUnauthenticated(doTest: suspend HttpClient.() -> Unit) = testA
 }
 
 fun testWebserviceAuthenticated(doTest: suspend HttpClient.() -> Unit) = testApplication {
+    testWebserviceAuthenticatedWithUser { doTest() }
+}
+
+fun testWebserviceAuthenticatedWithUser(
+    username: String = TEST_USER_USERNAME,
+    doTest: suspend HttpClient.(TestUser) -> Unit,
+) = testApplication {
     application {
         module()
     }
 
-    val loginClient = createClient {
-        install(ContentNegotiation) {
-            json()
-        }
+    val testUserId = prepareTestUser(username)
+    val loginResponse = authenticate(username)
+    val client = prepareAuthenticatedClient(loginResponse.accessToken)
+
+    try {
+        client.doTest(
+            TestUser(
+                id = testUserId,
+                username = username,
+                password = TEST_USER_PASSWORD,
+                accessToken = loginResponse.accessToken,
+                refreshToken = loginResponse.refreshToken,
+            ),
+        )
+    } finally {
+        cleanupAuthenticatedWebservice()
     }
+}
 
-    val token = loginClient.post("/login") {
-        contentType(ContentType.Application.Json)
-        setBody(LoginRequestPayload(username = TEST_USER_USERNAME, password = TEST_USER_PASSWORD))
-    }.body<String>()
+private fun prepareTestUser(user: String): UserId {
+    val testUserId = transaction {
+        val insertedId = UsersTable.insert {
+            it[username] = user
+            it[password] = TEST_USER_PASSWORD_HASH
+            it[salt] = TEST_USER_PASSWORD_SALT
+        }[UsersTable.id]
 
+        UserId(insertedId.value)
+    }
+    return testUserId
+}
+
+private suspend fun ApplicationTestBuilder.authenticate(user: String): LoginResponsePayload {
     val client = createClient {
         install(ContentNegotiation) {
             json()
         }
-        defaultRequest {
-            bearerAuth(token)
-        }
     }
 
-    client.doTest()
+    return client.post("/login") {
+        contentType(ContentType.Application.Json)
+        setBody(LoginRequestPayload(username = user, password = TEST_USER_PASSWORD))
+    }.body<LoginResponsePayload>()
 }
+
+private fun ApplicationTestBuilder.prepareAuthenticatedClient(accessToken: String): HttpClient {
+    return createClient {
+        install(ContentNegotiation) {
+            json()
+        }
+        defaultRequest {
+            bearerAuth(accessToken)
+        }
+    }
+}
+
+private fun cleanupAuthenticatedWebservice() {
+    transaction {
+        exec("TRUNCATE TABLE tasket.users CASCADE")
+        println("Cleaned up all users")
+    }
+}
+
+data class TestUser(
+    val id: UserId,
+    val username: String,
+    val password: String,
+    val accessToken: String,
+    val refreshToken: String,
+)

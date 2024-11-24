@@ -2,7 +2,6 @@ package dev.cryptospace.tasket.server.routes
 
 import dev.cryptospace.tasket.payloads.TodoCommentPayload
 import dev.cryptospace.tasket.server.table.TodosTable
-import dev.cryptospace.tasket.test.AuthenticatedIntegrationTest
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
 import dev.cryptospace.tasket.test.testWebserviceAuthenticated
 import io.ktor.client.call.body
@@ -20,7 +19,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 @ExtendWith(PostgresIntegrationTest::class)
-@ExtendWith(AuthenticatedIntegrationTest::class)
 class TodoCommentTest {
 
     private lateinit var todoId: UUID

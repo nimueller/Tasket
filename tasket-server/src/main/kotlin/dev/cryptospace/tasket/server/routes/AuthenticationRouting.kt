@@ -1,7 +1,9 @@
 package dev.cryptospace.tasket.server.routes
 
-import dev.cryptospace.tasket.payloads.LoginRequestPayload
+import dev.cryptospace.tasket.payloads.authentication.LoginRequestPayload
+import dev.cryptospace.tasket.payloads.authentication.RefreshTokenRequestPayload
 import dev.cryptospace.tasket.server.security.login.SecureLogin
+import dev.cryptospace.tasket.server.security.refresh.SecureRefresh
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -17,6 +19,18 @@ fun Route.login() {
             call.respond(loginResult.statusCode)
         } else {
             call.respond(loginResult.statusCode, message)
+        }
+    }
+
+    post("/refresh") {
+        val refreshTokenRequest = call.receive<RefreshTokenRequestPayload>()
+        val refreshResult = SecureRefresh.tryRefresh(refreshTokenRequest)
+        val message = refreshResult.message
+
+        if (message == null) {
+            call.respond(refreshResult.statusCode)
+        } else {
+            call.respond(refreshResult.statusCode, message)
         }
     }
 }

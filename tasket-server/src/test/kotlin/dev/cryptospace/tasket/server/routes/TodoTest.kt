@@ -1,7 +1,6 @@
 package dev.cryptospace.tasket.server.routes
 
 import dev.cryptospace.tasket.payloads.TodoPayload
-import dev.cryptospace.tasket.test.AuthenticatedIntegrationTest
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
 import dev.cryptospace.tasket.test.testWebserviceAuthenticated
 import io.ktor.client.call.body
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.Test
 
 @ExtendWith(PostgresIntegrationTest::class)
-@ExtendWith(AuthenticatedIntegrationTest::class)
 class TodoTest {
 
     @Test
