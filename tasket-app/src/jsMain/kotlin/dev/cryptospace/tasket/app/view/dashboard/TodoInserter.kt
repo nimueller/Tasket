@@ -1,4 +1,4 @@
-package dev.cryptospace.tasket.app
+package dev.cryptospace.tasket.app.view.dashboard
 
 import dev.cryptospace.tasket.app.model.TodoViewModel
 import dev.cryptospace.tasket.app.network.HttpClient
@@ -15,7 +15,7 @@ fun Container.todoInserter() {
         onEventLaunch("keyup") { event ->
             if (event is KeyboardEvent && event.key == "Enter" && !value.isNullOrBlank()) {
                 val payload = TodoPayload(label = value!!, statusId = null)
-                HttpClient.post("todos", payload)
+                HttpClient.post("/todos", payload)
                 value = ""
                 TodoViewModel.loadTodos()
             }

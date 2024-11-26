@@ -1,4 +1,4 @@
-package dev.cryptospace.tasket.app.view
+package dev.cryptospace.tasket.app.view.dashboard
 
 import io.kvision.core.Container
 import io.kvision.core.FlexDirection

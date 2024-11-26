@@ -15,17 +15,18 @@ object HttpClient {
         get() = localStorage.getItem("host")
 
     suspend inline fun <reified T> get(resource: String): T? {
-        val url = "$host/$resource"
+        val url = "$host$resource"
         console.log("GET $url")
         val response = window.fetch(url).await()
         return parseResponse(response)
     }
 
-    suspend inline fun <reified T : Payload> post(resource: String, payload: T): T? {
-        val url = "$host/$resource"
+    suspend inline fun <reified T : Payload> postForResponse(resource: String, payload: T): Response {
+        val url = "$host$resource"
         val body = Json.encodeToString(payload)
         console.log("POST $url")
         console.log("\t$body")
+
         val response =
             window.fetch(
                 url,
@@ -38,7 +39,11 @@ object HttpClient {
                     override var body: String? = body
                 },
             ).await()
-        return parseResponse(response)
+        return response
+    }
+
+    suspend inline fun <reified T : Payload> post(resource: String, payload: T): T? {
+        return parseResponse(postForResponse(resource, payload))
     }
 
     suspend inline fun <reified T> parseResponse(response: Response): T? {
