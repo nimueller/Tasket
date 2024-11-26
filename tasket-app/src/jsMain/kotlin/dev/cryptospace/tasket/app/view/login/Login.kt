@@ -5,6 +5,7 @@ import dev.cryptospace.tasket.app.components.card
 import dev.cryptospace.tasket.app.components.iconFormGroup
 import dev.cryptospace.tasket.app.model.LoginDataModel
 import dev.cryptospace.tasket.app.network.HttpClient
+import dev.cryptospace.tasket.app.network.HttpClient.login
 import dev.cryptospace.tasket.app.utils.onEnterKeyUp
 import io.kvision.core.Container
 import io.kvision.core.FlexDirection
@@ -101,10 +102,10 @@ fun Container.loginButton(form: FormPanel<LoginDataModel>) = div(className = "co
 
 private suspend fun submit(form: FormPanel<LoginDataModel>) {
     form.clearValidation()
-    val response = HttpClient.postForResponse("/login", form.getData().toPayload())
-    form.getData().loginSuccess = response.ok
+    val successfulLogin = HttpClient.login(form.getData().toPayload())
+    form.getData().loginSuccess = successfulLogin
 
-    if (response.ok) {
+    if (successfulLogin) {
         App.routing.navigate("/")
     } else {
         form.validate()

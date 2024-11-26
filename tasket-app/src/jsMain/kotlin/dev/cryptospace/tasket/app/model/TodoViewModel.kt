@@ -1,6 +1,7 @@
 package dev.cryptospace.tasket.app.model
 
 import dev.cryptospace.tasket.app.network.HttpClient
+import dev.cryptospace.tasket.app.network.get
 import dev.cryptospace.tasket.payloads.TodoPayload
 import io.kvision.core.KVScope
 import io.kvision.state.ObservableListWrapper
@@ -15,6 +16,6 @@ object TodoViewModel {
     }
 
     private suspend fun fetchTodos(): List<TodoPayload> {
-        return HttpClient.get("/todos") ?: emptyList()
+        return HttpClient.get<List<TodoPayload>>("/todos").parsedEntity ?: emptyList()
     }
 }

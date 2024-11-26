@@ -1,6 +1,8 @@
 package dev.cryptospace.tasket.app.network
 
-import dev.cryptospace.tasket.payloads.Payload
+import dev.cryptospace.tasket.payloads.authentication.LoginRequestPayload
+import dev.cryptospace.tasket.payloads.authentication.LoginResponsePayload
+import dev.cryptospace.tasket.payloads.authentication.RefreshTokenRequestPayload
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import kotlinx.coroutines.await
@@ -13,45 +15,66 @@ import kotlin.js.json
 object HttpClient {
     val host: String?
         get() = localStorage.getItem("host")
+    private var accessToken: String
+        get() = localStorage.getItem("accessToken") ?: ""
+        set(value) = localStorage.setItem("accessToken", value)
+    private var refreshToken: String
+        get() = localStorage.getItem("refreshToken") ?: ""
+        set(value) = localStorage.setItem("refreshToken", value)
 
-    suspend inline fun <reified T> get(resource: String): T? {
-        val url = "$host$resource"
-        console.log("GET $url")
-        val response = window.fetch(url).await()
-        return parseResponse(response)
+    suspend fun HttpClient.login(payload: LoginRequestPayload): Boolean {
+        val url = "$host/login"
+        val body = Json.encodeToString(payload)
+        return refreshTokens(url, body).parsedEntity?.let { responsePayload ->
+            setTokens(responsePayload)
+            true
+        } ?: false
     }
 
-    suspend inline fun <reified T : Payload> postForResponse(resource: String, payload: T): Response {
-        val url = "$host$resource"
-        val body = Json.encodeToString(payload)
-        console.log("POST $url")
-        console.log("\t$body")
+    private suspend fun HttpClient.refreshTokens(url: String, body: String): HttpResponse<LoginResponsePayload> {
+        val response = window.fetch(
+            url,
+            object : RequestInit {
+                override var method: String? = "POST"
+                override var headers: dynamic = json("Content-Type" to "application/json")
+                override var body: String? = body
+            },
+        ).await()
+        val parsedResponse = parseResponse<LoginResponsePayload>(response)
+        return HttpResponse(response.status, parsedResponse)
+    }
 
-        val response =
-            window.fetch(
-                url,
-                object : RequestInit {
-                    override var method: String? = "POST"
-                    override var headers: dynamic =
-                        json(
-                            "Content-Type" to "application/json",
-                        )
-                    override var body: String? = body
-                },
-            ).await()
+    private fun setTokens(responsePayload: LoginResponsePayload) {
+        accessToken = responsePayload.accessToken
+        refreshToken = responsePayload.refreshToken
+        println("Access token and refresh token refreshed")
+    }
+
+    suspend fun <T : Any> ensureAccessToken(sender: suspend (String) -> HttpResponse<T>): HttpResponse<T> {
+        val response = sender(accessToken)
+
+        // try to refresh the access token if the request was unauthorized,
+        // if we are logged in (refreshToken is not blank)
+        if (refreshToken.isNotBlank() && response.status == 401.toShort()) {
+            refreshAccessToken(refreshToken)?.let { responsePayload ->
+                setTokens(responsePayload)
+            }
+
+            return sender(accessToken)
+        }
+
         return response
     }
 
-    suspend inline fun <reified T : Payload> post(resource: String, payload: T): T? {
-        return parseResponse(postForResponse(resource, payload))
+    private suspend fun HttpClient.refreshAccessToken(refreshToken: String): LoginResponsePayload? {
+        val url = "$host/refresh"
+        val body = Json.encodeToString(RefreshTokenRequestPayload(refreshToken))
+        return refreshTokens(url, body).parsedEntity
     }
 
     suspend inline fun <reified T> parseResponse(response: Response): T? {
-        console.log(response.status)
-
         return if (response.ok) {
             val responseData = response.text().await()
-            console.log("\t$responseData")
             Json.decodeFromString(responseData)
         } else {
             null

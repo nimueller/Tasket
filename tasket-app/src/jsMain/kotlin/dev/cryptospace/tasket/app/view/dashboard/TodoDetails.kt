@@ -1,6 +1,7 @@
 package dev.cryptospace.tasket.app.view.dashboard
 
 import dev.cryptospace.tasket.app.network.HttpClient
+import dev.cryptospace.tasket.app.network.get
 import dev.cryptospace.tasket.app.utils.fromIso8601String
 import dev.cryptospace.tasket.payloads.TodoCommentPayload
 import dev.cryptospace.tasket.payloads.TodoPayload
@@ -30,8 +31,8 @@ object TodoDetails {
     suspend fun refreshModal(id: String) {
         setTimestampBadgesInPlaceholderMode()
 
-        val todoPayload = HttpClient.get<TodoPayload>("/todos/$id")
-        val todoComments = HttpClient.get<List<TodoCommentPayload>>("/todos/$id/comments")
+        val todoPayload = HttpClient.get<TodoPayload>("/todos/$id").parsedEntity
+        val todoComments = HttpClient.get<List<TodoCommentPayload>>("/todos/$id/comments").parsedEntity
 
         modal.removeAll()
 
