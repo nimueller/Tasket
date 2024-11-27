@@ -9,7 +9,7 @@ kotlin {
         browser {
             commonWebpackConfig {
                 outputFileName = "main.js"
-                sourceMaps = false
+                sourceMaps = true
 
                 cssSupport {
                     enabled.set(true)

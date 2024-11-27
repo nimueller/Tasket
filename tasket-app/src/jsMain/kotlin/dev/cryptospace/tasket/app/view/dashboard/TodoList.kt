@@ -1,4 +1,4 @@
-package dev.cryptospace.tasket.app
+package dev.cryptospace.tasket.app.view.dashboard
 
 import dev.cryptospace.tasket.app.model.TodoViewModel
 import dev.cryptospace.tasket.payloads.TodoPayload

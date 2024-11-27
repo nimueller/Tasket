@@ -1,7 +1,8 @@
-package dev.cryptospace.tasket.app
+package dev.cryptospace.tasket.app.view.dashboard
 
 import dev.cryptospace.tasket.app.model.TodoViewModel
 import dev.cryptospace.tasket.app.network.HttpClient
+import dev.cryptospace.tasket.app.network.post
 import dev.cryptospace.tasket.payloads.TodoPayload
 import io.kvision.core.Container
 import io.kvision.core.onEventLaunch
@@ -15,9 +16,11 @@ fun Container.todoInserter() {
         onEventLaunch("keyup") { event ->
             if (event is KeyboardEvent && event.key == "Enter" && !value.isNullOrBlank()) {
                 val payload = TodoPayload(label = value!!, statusId = null)
-                HttpClient.post("todos", payload)
-                value = ""
-                TodoViewModel.loadTodos()
+                val success = HttpClient.post("/todos", payload).handleStatusCodes() != null
+                if (success) {
+                    value = ""
+                    TodoViewModel.loadTodos()
+                }
             }
         }
     }

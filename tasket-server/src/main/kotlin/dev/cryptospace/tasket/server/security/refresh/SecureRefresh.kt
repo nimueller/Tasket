@@ -7,7 +7,9 @@ import dev.cryptospace.tasket.server.security.UserSessionService
 import dev.cryptospace.tasket.server.table.user.RefreshTokensTable
 import dev.cryptospace.tasket.server.table.user.UserId
 import dev.cryptospace.tasket.server.utils.logger
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.OffsetDateTime
@@ -29,19 +31,28 @@ object SecureRefresh {
 
     private fun doRefresh(refreshToken: String): RefreshResult {
         val userId = extractUser(refreshToken) ?: return FailedRefreshResult
-        val tokenValid = transaction {
-            RefreshTokensTable.selectAll().where {
-                RefreshTokensTable.userId eq userId and
-                    (RefreshTokensTable.token eq refreshToken) and
-                    (RefreshTokensTable.expiration greaterEq OffsetDateTime.now())
-            }.count() > 0
-        }
+        val tokenValid = verifyTokenValid(userId, refreshToken)
 
         return if (tokenValid) {
             val session = UserSessionService.login(UserId(userId))
+            deleteOutdatedRefreshToken(userId, refreshToken)
             SuccessRefreshResult(session)
         } else {
             FailedRefreshResult
+        }
+    }
+
+    private fun verifyTokenValid(userId: UUID, refreshToken: String): Boolean = transaction {
+        RefreshTokensTable.selectAll().where {
+            RefreshTokensTable.userId eq userId and
+                (RefreshTokensTable.token eq refreshToken) and
+                (RefreshTokensTable.expiration greaterEq OffsetDateTime.now())
+        }.count() > 0
+    }
+
+    private fun deleteOutdatedRefreshToken(user: UUID, refreshToken: String) = transaction {
+        RefreshTokensTable.deleteWhere {
+            userId eq user and (token eq refreshToken)
         }
     }
 

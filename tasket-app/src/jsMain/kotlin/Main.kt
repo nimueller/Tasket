@@ -1,3 +1,4 @@
+import dev.cryptospace.tasket.app.App
 import external.Sortable
 import io.kvision.BootstrapCssModule
 import io.kvision.BootstrapModule
@@ -8,7 +9,7 @@ import io.kvision.startApplication
 
 fun main() {
     printSortableVersion()
-    startApplication(::App, module.hot, CoreModule, BootstrapModule, BootstrapCssModule, FontAwesomeModule)
+    startApplication({ App }, module.hot, CoreModule, BootstrapModule, BootstrapCssModule, FontAwesomeModule)
 }
 
 fun printSortableVersion() {
