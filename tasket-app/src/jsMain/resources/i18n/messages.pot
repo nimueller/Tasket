@@ -1,0 +1,37 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/network/HttpResponse.kt:19
+msgid "<p>An error occurred. Please try again later.</p> <p>If you are an administrator, please check the server logs and file a bug report at:</p>"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:76
+msgid "Enter your password"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:67
+msgid "Enter your username"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/network/HttpResponse.kt:18
+msgid "Error"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:38
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:94
+msgid "Login"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/dashboard/TodoInserter.kt:15
+msgid "New TODO"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:40
+msgid "Please enter your username and password"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:88
+msgid "Remember me"
+msgstr ""
