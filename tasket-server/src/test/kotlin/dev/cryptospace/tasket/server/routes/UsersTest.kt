@@ -24,35 +24,35 @@ class UsersTest {
 
     @Test
     fun `get all users should return 401 for normal user`() = testWebserviceAuthenticated(isAdmin = false) {
-        get("/users").apply {
+        get("/rest/users").apply {
             assert(status == HttpStatusCode.Unauthorized)
         }
     }
 
     @Test
     fun `post user should return 401 for normal user`() = testWebserviceAuthenticated(isAdmin = false) {
-        post("/users").apply {
+        post("/rest/users").apply {
             assert(status == HttpStatusCode.Unauthorized)
         }
     }
 
     @Test
     fun `get user should return 401 for normal user`() = testWebserviceAuthenticatedWithUser(isAdmin = false) { user ->
-        get("/users/${user.id}").apply {
+        get("/rest/users/${user.id}").apply {
             assert(status == HttpStatusCode.Unauthorized)
         }
     }
 
     @Test
     fun `put user should return 401 for normal user`() = testWebserviceAuthenticatedWithUser(isAdmin = false) { user ->
-        put("/users/${user.id}").apply {
+        put("/rest/users/${user.id}").apply {
             assert(status == HttpStatusCode.Unauthorized)
         }
     }
 
     @Test
     fun `get all users should return valid result for admin user`() = testWebserviceAuthenticated(isAdmin = true) {
-        get("/users").apply {
+        get("/rest/users").apply {
             assert(status == HttpStatusCode.OK)
             val users = body<List<UserPayload>>()
             assert(users.size == 1)
@@ -62,7 +62,7 @@ class UsersTest {
 
     @Test
     fun `post user should insert user`() = testWebserviceAuthenticated(isAdmin = true) {
-        post("/users") {
+        post("/rest/users") {
             contentType(ContentType.Application.Json)
             setBody(UserPayload(username = "new", password = "new"))
         }.apply {
@@ -76,14 +76,14 @@ class UsersTest {
 
     @Test
     fun `get after post user should return inserted user`() = testWebserviceAuthenticated(isAdmin = true) {
-        val insertedId = post("/users") {
+        val insertedId = post("/rest/users") {
             contentType(ContentType.Application.Json)
             setBody(UserPayload(username = "new", password = "new"))
         }.apply {
             assert(status == HttpStatusCode.Created)
         }.body<UserPayload>().id
 
-        get("/users/$insertedId").apply {
+        get("/rest/users/$insertedId").apply {
             assert(status == HttpStatusCode.OK)
             val user = body<UserPayload>()
             assert(user.username == "new")
@@ -92,14 +92,14 @@ class UsersTest {
 
     @Test
     fun `put user should update user`() = testWebserviceAuthenticated(isAdmin = true) {
-        val insertedId = post("/users") {
+        val insertedId = post("/rest/users") {
             contentType(ContentType.Application.Json)
             setBody(UserPayload(username = "new", password = "new"))
         }.apply {
             assert(status == HttpStatusCode.Created)
         }.body<UserPayload>().id
 
-        put("/users/$insertedId") {
+        put("/rest/users/$insertedId") {
             contentType(ContentType.Application.Json)
             setBody(UserPayload(username = "updated", password = "updated"))
         }.apply {

@@ -17,7 +17,7 @@ class TodoStatusTest {
 
     @Test
     fun `get all statuses should return default status list`() = testWebserviceAuthenticated {
-        get("/statuses").apply {
+        get("/rest/statuses").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoStatusPayload>>()
             assert(payload.size == 4)
@@ -28,7 +28,7 @@ class TodoStatusTest {
     @CsvFileSource(resources = ["/statuses.csv"], delimiter = ',')
     fun `get specific status should return correct values`(id: String, name: String, color: String) =
         testWebserviceAuthenticated {
-            get("/statuses/$id").apply {
+            get("/rest/statuses/$id").apply {
                 assert(status == HttpStatusCode.OK)
                 val payload = body<TodoStatusPayload>()
                 assert(payload.id == id)

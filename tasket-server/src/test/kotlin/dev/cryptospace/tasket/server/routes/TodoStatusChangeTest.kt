@@ -39,7 +39,7 @@ class TodoStatusChangeTest {
 
     @Test
     fun `initial status should be New`() = testWebserviceAuthenticated {
-        get("/todos/$todoId").apply {
+        get("/rest/todos/$todoId").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<TodoPayload>()
             assert(payload.statusId == NEW_STATUS_ID)
@@ -48,7 +48,7 @@ class TodoStatusChangeTest {
 
     @Test
     fun `get status changes on new todo should return empty list`() = testWebserviceAuthenticated {
-        get("/todos/$todoId/statusChanges").apply {
+        get("/rest/todos/$todoId/statusChanges").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoStatusChangePayload>>()
             assert(payload.isEmpty())
@@ -57,7 +57,7 @@ class TodoStatusChangeTest {
 
     @Test
     fun `get status changes on todo with changed status should return change`() = testWebserviceAuthenticated {
-        put("/todos/$todoId") {
+        put("/rest/todos/$todoId") {
             contentType(ContentType.Application.Json)
             setBody(TodoPayload(label = "Test Todo", statusId = IN_PROGRESS_STATUS_ID))
         }.apply {
@@ -65,7 +65,7 @@ class TodoStatusChangeTest {
             assert(body<TodoPayload>().statusId == IN_PROGRESS_STATUS_ID)
         }
 
-        get("/todos/$todoId/statusChanges").apply {
+        get("/rest/todos/$todoId/statusChanges").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoStatusChangePayload>>()
             assert(payload.size == 1)

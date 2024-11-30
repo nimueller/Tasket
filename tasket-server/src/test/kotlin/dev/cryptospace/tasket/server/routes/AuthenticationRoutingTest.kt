@@ -20,7 +20,7 @@ class AuthenticationRoutingTest {
 
     @Test
     fun `valid credentials should return valid access token`() = testWebserviceAuthenticatedWithUser { user ->
-        post("/login") {
+        post("/rest/login") {
             contentType(ContentType.Application.Json)
             setBody(LoginRequestPayload(username = user.username, password = user.password))
         }.apply {
@@ -33,7 +33,7 @@ class AuthenticationRoutingTest {
 
     @Test
     fun `unknown user should return 401`() = testWebserviceAuthenticatedWithUser { user ->
-        post("/login") {
+        post("/rest/login") {
             contentType(ContentType.Application.Json)
             setBody(LoginRequestPayload(username = "invalid", password = user.password))
         }.apply {
@@ -43,7 +43,7 @@ class AuthenticationRoutingTest {
 
     @Test
     fun `invalid password should return 401`() = testWebserviceAuthenticatedWithUser { user ->
-        post("/login") {
+        post("/rest/login") {
             contentType(ContentType.Application.Json)
             setBody(LoginRequestPayload(username = user.username, password = "invalid"))
         }.apply {
@@ -54,7 +54,7 @@ class AuthenticationRoutingTest {
     @Test
     fun `refresh should return valid access token and rotate refresh token`() =
         testWebserviceAuthenticatedWithUser { user ->
-            post("/refresh") {
+            post("/rest/refresh") {
                 contentType(ContentType.Application.Json)
                 setBody(RefreshTokenRequestPayload(user.refreshToken))
             }.apply {

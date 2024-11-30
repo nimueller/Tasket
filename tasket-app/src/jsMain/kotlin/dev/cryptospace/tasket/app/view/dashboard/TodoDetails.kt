@@ -31,8 +31,8 @@ object TodoDetails {
     suspend fun refreshModal(id: String) {
         setTimestampBadgesInPlaceholderMode()
 
-        val todoPayload = HttpClient.get<TodoPayload>("/todos/$id").handleStatusCodes()
-        val todoComments = HttpClient.get<List<TodoCommentPayload>>("/todos/$id/comments").handleStatusCodes()
+        val todoPayload = HttpClient.get<TodoPayload>("/rest/todos/$id").handleStatusCodes()
+        val todoComments = HttpClient.get<List<TodoCommentPayload>>("/rest/todos/$id/comments").handleStatusCodes()
 
         modal.removeAll()
 

@@ -23,7 +23,7 @@ object HttpClient {
         set(value) = localStorage.setItem("refreshToken", value)
 
     suspend fun HttpClient.login(payload: LoginRequestPayload): Boolean {
-        val url = "$host/login"
+        val url = "$host/rest/login"
         val body = Json.encodeToString(payload)
         return refreshTokens(url, body).parsedEntity?.let { responsePayload ->
             setTokens(responsePayload)
@@ -67,7 +67,7 @@ object HttpClient {
     }
 
     private suspend fun HttpClient.refreshAccessToken(refreshToken: String): LoginResponsePayload? {
-        val url = "$host/refresh"
+        val url = "$host/rest/refresh"
         val body = Json.encodeToString(RefreshTokenRequestPayload(refreshToken))
         return refreshTokens(url, body).parsedEntity
     }
