@@ -22,7 +22,7 @@ object App : Application() {
             mapOf(
                 "en" to io.kvision.require("./i18n/messages-en.json"),
                 "de" to io.kvision.require("./i18n/messages-de.json"),
-            )
+            ),
         )
 
         root(id = "root") {
