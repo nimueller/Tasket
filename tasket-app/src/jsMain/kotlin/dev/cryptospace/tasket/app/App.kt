@@ -18,7 +18,13 @@ object App : Application() {
     }
 
     override fun start() {
-        I18n.manager = DefaultI18nManager(mapOf())
+        I18n.manager = DefaultI18nManager(
+            mapOf(
+                "en" to io.kvision.require("./i18n/messages-en.json"),
+                "de" to io.kvision.require("./i18n/messages-de.json"),
+            )
+        )
+        I18n.language = "de"
 
         root(id = "root") {
             routing = Routing.init(root = "/", useHash = false)
