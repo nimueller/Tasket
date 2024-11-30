@@ -17,8 +17,7 @@ import java.util.UUID
 fun Route.todo() {
     route("todos") {
         get {
-            throw NotImplementedError("Not implemented")
-//            handleGetAllRoute(TodoRepository)
+            handleGetAllRoute(TodoRepository)
         }
         post {
             handlePostRoute(TodoRepository)

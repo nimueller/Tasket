@@ -1,42 +1,52 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the KVision package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: KVision\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-16 02:58+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: German\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-
 #: src/jsMain/kotlin/dev/cryptospace/tasket/app/network/HttpResponse.kt:19
-msgid "<p>Es ist ein Fehler aufgetreten.</p> <p>Bitte reichen Sie unter nachfolgendem Link einen Fehler ein, wenn Sie der Administrator sind.</p>"
-msgstr ""
+msgid "<p>An error occurred. Please try again later.</p> <p>If you are an administrator, please check the server logs and file a bug report at:</p>"
+msgstr "<p>Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.</p> <p>Wenn Sie ein Administrator sind, überprüfen Sie bitte die Serverprotokolle und reichen Sie einen Fehlerbericht ein unter:</p>"
 
 #: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:76
-msgid "Passwort eingeben"
-msgstr ""
+msgid "Enter your password"
+msgstr "Passwort eingeben"
 
 #: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:67
-msgid "Benutzername eingeben"
-msgstr ""
+msgid "Enter your username"
+msgstr "Benutzernamen eingeben"
 
 #: src/jsMain/kotlin/dev/cryptospace/tasket/app/network/HttpResponse.kt:18
-msgid "Fehler"
-msgstr ""
+msgid "Error"
+msgstr "Fehler"
 
 #: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:38
 #: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:94
 msgid "Login"
-msgstr ""
+msgstr "Login"
 
 #: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/dashboard/TodoInserter.kt:15
-msgid "Neues TODO"
-msgstr ""
+msgid "New TODO"
+msgstr "Neues TODO"
 
 #: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:40
-msgid "Bitte geben Sie Ihre Anmeldedaten ein."
-msgstr ""
+msgid "Please enter your username and password"
+msgstr "Bitte geben Sie Ihren Benutzernamen und Ihr Passwort ein"
 
 #: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:88
-msgid "Eingeloggt bleiben"
-msgstr ""
+msgid "Remember me"
+msgstr "Eingeloggt bleiben"
