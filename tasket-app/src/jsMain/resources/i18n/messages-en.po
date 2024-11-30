@@ -1,0 +1,52 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the KVision package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: KVision\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-16 02:58+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/network/HttpResponse.kt:19
+msgid "<p>An error occurred. Please try again later.</p> <p>If you are an administrator, please check the server logs and file a bug report at:</p>"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:76
+msgid "Enter your password"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:67
+msgid "Enter your username"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/network/HttpResponse.kt:18
+msgid "Error"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:38
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:94
+msgid "Login"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/dashboard/TodoInserter.kt:15
+msgid "New TODO"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:40
+msgid "Please enter your username and password"
+msgstr ""
+
+#: src/jsMain/kotlin/dev/cryptospace/tasket/app/view/login/Login.kt:88
+msgid "Remember me"
+msgstr ""
