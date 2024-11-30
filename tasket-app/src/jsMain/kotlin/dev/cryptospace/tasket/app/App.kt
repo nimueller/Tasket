@@ -24,7 +24,6 @@ object App : Application() {
                 "de" to io.kvision.require("./i18n/messages-de.json"),
             )
         )
-        I18n.language = "de"
 
         root(id = "root") {
             routing = Routing.init(root = "/", useHash = false)
