@@ -35,7 +35,7 @@ class TodoCommentTest {
 
     @Test
     fun `get all comments on empty database should return empty array`() = testWebserviceAuthenticated {
-        get("/todos/$todoId/comments").apply {
+        get("/rest/todos/$todoId/comments").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoCommentPayload>>()
             assert(payload.isEmpty())
@@ -44,14 +44,14 @@ class TodoCommentTest {
 
     @Test
     fun `get all comments after post should return inserted item`() = testWebserviceAuthenticated {
-        post("/todos/$todoId/comments") {
+        post("/rest/todos/$todoId/comments") {
             contentType(ContentType.Application.Json)
             setBody(TodoCommentPayload(comment = "Test Comment"))
         }.apply {
             assert(status == HttpStatusCode.Created)
         }
 
-        get("/todos/$todoId/comments").apply {
+        get("/rest/todos/$todoId/comments").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoCommentPayload>>()
             assert(payload.size == 1)

@@ -16,7 +16,7 @@ fun Container.todoInserter() {
         onEventLaunch("keyup") { event ->
             if (event is KeyboardEvent && event.key == "Enter" && !value.isNullOrBlank()) {
                 val payload = TodoPayload(label = value!!, statusId = null)
-                val success = HttpClient.post("/todos", payload).handleStatusCodes() != null
+                val success = HttpClient.post("/rest/todos", payload).handleStatusCodes() != null
                 if (success) {
                     value = ""
                     TodoViewModel.loadTodos()

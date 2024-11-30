@@ -91,7 +91,7 @@ private suspend fun ApplicationTestBuilder.authenticate(user: String): LoginResp
         }
     }
 
-    return client.post("/login") {
+    return client.post("/rest/login") {
         contentType(ContentType.Application.Json)
         setBody(LoginRequestPayload(username = user, password = TEST_USER_PASSWORD))
     }.body<LoginResponsePayload>()

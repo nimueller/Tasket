@@ -19,13 +19,16 @@ import io.ktor.server.auth.UserIdPrincipal
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.bearer
 import io.ktor.server.engine.embeddedServer
+import io.ktor.server.http.content.staticFiles
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.io.File
 import java.util.UUID
 
 fun main() {
@@ -53,15 +56,23 @@ fun Application.module() {
         if (System.getenv("ALLOWED_HOST") != null) allowHost(System.getenv("ALLOWED_HOST")) else anyHost()
     }
     routing {
-        login()
+        val staticFiles = File("static")
 
-        authenticate {
-            status()
-            todo()
+        if (staticFiles.exists()) {
+            staticFiles("/", staticFiles)
         }
 
-        authenticate("admin") {
-            users()
+        route("/rest") {
+            login()
+
+            authenticate {
+                status()
+                todo()
+            }
+
+            authenticate("admin") {
+                users()
+            }
         }
     }
 }
