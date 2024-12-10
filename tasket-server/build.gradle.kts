@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm")
     id("tasket.shared")
     id("org.liquibase.gradle")
+    id("com.gradleup.shadow") version "8.3.+"
     application
 }
 
@@ -34,6 +35,12 @@ dependencies {
 
 tasks.named<JavaExec>("run") {
     environment(env.allVariables())
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = application.mainClass.get()
+    }
 }
 
 tasks.test {
