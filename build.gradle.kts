@@ -17,8 +17,10 @@ plugins {
 }
 
 allprojects {
+    val tasketVersion: String by ext
+
     group = "dev.cryptospace"
-    version = "1.0.0"
+    version = tasketVersion
 }
 
 idea {
