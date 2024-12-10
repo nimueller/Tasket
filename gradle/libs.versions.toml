@@ -1,7 +1,7 @@
 [versions]
 ktor = "3.0.+"
 kvision = "8.0.+"
-exposed = "0.55.+"
+exposed = "0.57.+"
 kotlin = "2.0.+"
 testcontainers = "1.20.+"
 
