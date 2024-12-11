@@ -7,3 +7,5 @@
 .DS_Store
 .env
 gitleaks.json
+kotlin-js-store/
+tasket-app/.kotlin-js-store/
