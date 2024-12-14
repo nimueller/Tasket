@@ -1,5 +1,7 @@
 **/.*
 **/build/
 **/kotlin-js-store/
+docker-compose.yml
+Dockerfile
 
 !.editorconfig

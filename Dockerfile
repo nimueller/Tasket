@@ -10,6 +10,6 @@ RUN gradle clean build -x test
 FROM amazoncorretto:21-alpine AS final
 WORKDIR /app
 COPY --from=build /app/tasket-server/build/libs/*-all.jar ./app.jar
-COPY --from=build /app/tasket-app/build/dist/productionExecutable ./static/
+COPY --from=build /app/tasket-app/build/dist/js/productionExecutable ./static/
 
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
