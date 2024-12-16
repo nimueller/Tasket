@@ -39,7 +39,7 @@ junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version = "5
 postgresql = { module = "org.postgresql:postgresql", version = "42.7.+" }
 liquibase-core = { module = "org.liquibase:liquibase-core", version = "4.30.+" }
 logback = { module = "ch.qos.logback:logback-classic", version = "1.5.+" }
-picocli = { module = "info.picocli:picocli", version = "4.7.5" }
+picocli = { module = "info.picocli:picocli", version = "4.7.6" }
 bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version = "1.+" }
 
 [bundles]
