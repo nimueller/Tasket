@@ -1,5 +1,5 @@
 [versions]
-ktor = "3.0.1"
+ktor = "3.0.2"
 kvision = "8.0.+"
 exposed = "0.57.+"
 kotlin = "2.0.+"
