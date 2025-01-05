@@ -1,7 +1,8 @@
 package dev.cryptospace.tasket.server.routes
 
-import dev.cryptospace.tasket.payloads.TodoCommentPayload
-import dev.cryptospace.tasket.server.table.TodosTable
+import dev.cryptospace.tasket.payloads.todo.request.TodoCommentRequestPayload
+import dev.cryptospace.tasket.payloads.todo.response.TodoCommentResponsePayload
+import dev.cryptospace.tasket.server.todo.database.TodosTable
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
 import dev.cryptospace.tasket.test.testWebserviceAuthenticated
 import io.ktor.client.call.body
@@ -37,7 +38,7 @@ class TodoCommentTest {
     fun `get all comments on empty database should return empty array`() = testWebserviceAuthenticated {
         get("/rest/todos/$todoId/comments").apply {
             assert(status == HttpStatusCode.OK)
-            val payload = body<List<TodoCommentPayload>>()
+            val payload = body<List<TodoCommentResponsePayload>>()
             assert(payload.isEmpty())
         }
     }
@@ -46,14 +47,14 @@ class TodoCommentTest {
     fun `get all comments after post should return inserted item`() = testWebserviceAuthenticated {
         post("/rest/todos/$todoId/comments") {
             contentType(ContentType.Application.Json)
-            setBody(TodoCommentPayload(comment = "Test Comment"))
+            setBody(TodoCommentRequestPayload(comment = "Test Comment"))
         }.apply {
             assert(status == HttpStatusCode.Created)
         }
 
         get("/rest/todos/$todoId/comments").apply {
             assert(status == HttpStatusCode.OK)
-            val payload = body<List<TodoCommentPayload>>()
+            val payload = body<List<TodoCommentResponsePayload>>()
             assert(payload.size == 1)
             assert(payload.first().comment == "Test Comment")
         }

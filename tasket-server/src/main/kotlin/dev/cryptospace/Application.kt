@@ -3,11 +3,11 @@ package dev.cryptospace
 import com.auth0.jwt.JWT
 import dev.cryptospace.tasket.server.routes.login
 import dev.cryptospace.tasket.server.routes.status
-import dev.cryptospace.tasket.server.routes.todo
-import dev.cryptospace.tasket.server.routes.users
 import dev.cryptospace.tasket.server.security.JwtService
-import dev.cryptospace.tasket.server.table.user.UserRole
-import dev.cryptospace.tasket.server.table.user.UsersTable
+import dev.cryptospace.tasket.server.todo.todo
+import dev.cryptospace.tasket.server.user.database.UserRole
+import dev.cryptospace.tasket.server.user.database.UsersTable
+import dev.cryptospace.tasket.server.user.users
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json

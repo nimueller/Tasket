@@ -4,8 +4,8 @@ import dev.cryptospace.module
 import dev.cryptospace.tasket.payloads.authentication.LoginRequestPayload
 import dev.cryptospace.tasket.payloads.authentication.LoginResponsePayload
 import dev.cryptospace.tasket.server.table.user.UserId
-import dev.cryptospace.tasket.server.table.user.UserRole
-import dev.cryptospace.tasket.server.table.user.UsersTable
+import dev.cryptospace.tasket.server.user.database.UserRole
+import dev.cryptospace.tasket.server.user.database.UsersTable
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation

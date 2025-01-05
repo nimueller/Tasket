@@ -1,6 +1,6 @@
 package dev.cryptospace.tasket.server.routes
 
-import dev.cryptospace.tasket.payloads.TodoStatusPayload
+import dev.cryptospace.tasket.payloads.todo.response.TodoStatusResponsePayload
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
 import dev.cryptospace.tasket.test.testWebserviceAuthenticated
 import dev.cryptospace.tasket.types.BootstrapColor
@@ -19,7 +19,7 @@ class TodoStatusTest {
     fun `get all statuses should return default status list`() = testWebserviceAuthenticated {
         get("/rest/statuses").apply {
             assert(status == HttpStatusCode.OK)
-            val payload = body<List<TodoStatusPayload>>()
+            val payload = body<List<TodoStatusResponsePayload>>()
             assert(payload.size == 4)
         }
     }
@@ -30,8 +30,8 @@ class TodoStatusTest {
         testWebserviceAuthenticated {
             get("/rest/statuses/$id").apply {
                 assert(status == HttpStatusCode.OK)
-                val payload = body<TodoStatusPayload>()
-                assert(payload.id == id)
+                val payload = body<TodoStatusResponsePayload>()
+                assert(payload.metaInformation.id == id)
                 assert(payload.name == name)
                 assert(payload.color == BootstrapColor.valueOf(color))
             }

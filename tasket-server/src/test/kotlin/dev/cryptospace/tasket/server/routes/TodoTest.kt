@@ -1,6 +1,7 @@
 package dev.cryptospace.tasket.server.routes
 
-import dev.cryptospace.tasket.payloads.TodoPayload
+import dev.cryptospace.tasket.payloads.todo.request.TodoRequestPayload
+import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
 import dev.cryptospace.tasket.test.testWebserviceAuthenticated
 import io.ktor.client.call.body
@@ -21,7 +22,7 @@ class TodoTest {
     fun `get all todos on empty database should return empty array`() = testWebserviceAuthenticated {
         get("/rest/todos").apply {
             assert(status == HttpStatusCode.OK)
-            val payload = body<List<TodoPayload>>()
+            val payload = body<List<TodoRequestPayload>>()
             assert(payload.isEmpty())
         }
     }
@@ -30,14 +31,14 @@ class TodoTest {
     fun `get all todos after post should return inserted item`() = testWebserviceAuthenticated {
         post("/rest/todos") {
             contentType(ContentType.Application.Json)
-            setBody(TodoPayload(label = "Test Todo", statusId = null))
+            setBody(TodoRequestPayload(label = "Test Todo", statusId = null))
         }.apply {
             assert(status == HttpStatusCode.Created)
         }
 
         get("/rest/todos").apply {
             assert(status == HttpStatusCode.OK)
-            val payload = body<List<TodoPayload>>()
+            val payload = body<List<TodoResponsePayload>>()
             assert(payload.size == 1)
             assert(payload.first().label == "Test Todo")
         }
@@ -47,15 +48,15 @@ class TodoTest {
     fun `get inserted todo after post should return inserted item`() = testWebserviceAuthenticated {
         val insertedItem = post("/rest/todos") {
             contentType(ContentType.Application.Json)
-            setBody(TodoPayload(label = "Test Todo", statusId = null))
+            setBody(TodoRequestPayload(label = "Test Todo", statusId = null))
         }.let { response ->
             assert(response.status == HttpStatusCode.Created)
-            response.body<TodoPayload>()
+            response.body<TodoResponsePayload>()
         }
 
-        get("/rest/todos/${insertedItem.id}").apply {
+        get("/rest/todos/${insertedItem.metaInformation.id}").apply {
             assert(status == HttpStatusCode.OK)
-            val payload = body<TodoPayload>()
+            val payload = body<TodoResponsePayload>()
             assert(payload.label == "Test Todo")
         }
     }
@@ -78,17 +79,17 @@ class TodoTest {
     fun `delete todo on existing item should remove item`() = testWebserviceAuthenticated {
         val insertedItem = post("/rest/todos") {
             contentType(ContentType.Application.Json)
-            setBody(TodoPayload(label = "Test Todo", statusId = null))
+            setBody(TodoRequestPayload(label = "Test Todo", statusId = null))
         }.let { response ->
             assert(response.status == HttpStatusCode.Created)
-            response.body<TodoPayload>()
+            response.body<TodoResponsePayload>()
         }
 
-        delete("/rest/todos/${insertedItem.id}").apply {
+        delete("/rest/todos/${insertedItem.metaInformation.id}").apply {
             assert(status == HttpStatusCode.OK)
         }
 
-        get("/rest/todos/${insertedItem.id}").apply {
+        get("/rest/todos/${insertedItem.metaInformation.id}").apply {
             assert(status == HttpStatusCode.NotFound)
         }
     }

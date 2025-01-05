@@ -1,6 +1,6 @@
 package dev.cryptospace.tasket.server.routes
 
-import dev.cryptospace.tasket.server.repository.TodoStatusRepository
+import dev.cryptospace.tasket.server.todo.database.TodoStatusRepository
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route

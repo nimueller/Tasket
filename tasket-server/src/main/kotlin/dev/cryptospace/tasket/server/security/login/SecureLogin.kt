@@ -4,7 +4,7 @@ import dev.cryptospace.tasket.payloads.authentication.LoginRequestPayload
 import dev.cryptospace.tasket.server.security.Argon2Hashing
 import dev.cryptospace.tasket.server.security.UserSessionService
 import dev.cryptospace.tasket.server.table.user.UserId
-import dev.cryptospace.tasket.server.table.user.UsersTable
+import dev.cryptospace.tasket.server.user.database.UsersTable
 import io.ktor.util.decodeBase64Bytes
 import io.ktor.util.encodeBase64
 import org.jetbrains.exposed.sql.selectAll

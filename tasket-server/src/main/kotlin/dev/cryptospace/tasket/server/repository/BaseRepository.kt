@@ -1,7 +1,7 @@
 package dev.cryptospace.tasket.server.repository
 
-import dev.cryptospace.tasket.payloads.Payload
-import dev.cryptospace.tasket.server.payload.PayloadMapper
+import dev.cryptospace.tasket.payloads.ResponsePayload
+import dev.cryptospace.tasket.server.payload.ResponseMapper
 import dev.cryptospace.tasket.server.table.BaseTable
 import org.jetbrains.exposed.sql.deleteReturning
 import org.jetbrains.exposed.sql.insert
@@ -10,29 +10,28 @@ import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.upsert
 import java.util.UUID
 
-abstract class BaseRepository<T : BaseTable, V : Payload>(
-    private val table: T,
-    private val mapper: PayloadMapper<T, V>,
-) : ReadOnlyRepository<T, V>(table, mapper) {
-    suspend fun insert(payload: V, includeAdditionalAttributes: UpdateBuilder<Int>.() -> Unit = {}): V {
+abstract class BaseRepository<T : BaseTable, RESP : ResponsePayload>(
+    val table: T,
+    private val responseMapper: ResponseMapper<T, RESP>,
+) : ReadOnlyRepository<T, RESP>(table, responseMapper) {
+    suspend fun insert(updateBuilder: UpdateBuilder<Int>.() -> Unit = {}): RESP {
         return suspendedTransaction {
             val insertedId = table.insert { statement ->
-                mapper.mapPayloadToEntity(table, statement, payload)
-                statement.includeAdditionalAttributes()
+                statement.updateBuilder()
             }[table.id]
 
             val row = table.selectAll().where {
                 table.id eq insertedId
             }.single()
 
-            mapper.mapEntityToPayload(table, row)
+            responseMapper.mapToPayload(table, row)
         }
     }
 
-    suspend fun upsert(payload: V, id: UUID): V {
+    suspend fun upsert(id: UUID, updateBuilder: UpdateBuilder<Int>.() -> Unit = {}): RESP {
         return suspendedTransaction {
-            val insertedId = table.upsert { statement ->
-                mapper.mapPayloadToEntity(table, statement, payload)
+            val insertedId = table.upsert(where = { table.id eq id }) { statement ->
+                statement.updateBuilder()
                 statement[table.id] = id
             }[table.id]
 
@@ -40,7 +39,7 @@ abstract class BaseRepository<T : BaseTable, V : Payload>(
                 table.id eq insertedId
             }.single()
 
-            mapper.mapEntityToPayload(table, row)
+            responseMapper.mapToPayload(table, row)
         }
     }
 

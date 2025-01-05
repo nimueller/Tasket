@@ -1,6 +1,7 @@
 package dev.cryptospace.tasket.server.table.user
 
 import dev.cryptospace.tasket.server.table.BaseTable
+import dev.cryptospace.tasket.server.user.database.UsersTable
 import org.jetbrains.exposed.sql.kotlin.datetime.timestampWithTimeZone
 
 object RefreshTokensTable : BaseTable("tasket.user_refresh_tokens") {

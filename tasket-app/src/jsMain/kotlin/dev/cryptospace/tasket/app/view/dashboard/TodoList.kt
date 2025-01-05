@@ -1,7 +1,7 @@
 package dev.cryptospace.tasket.app.view.dashboard
 
 import dev.cryptospace.tasket.app.model.TodoViewModel
-import dev.cryptospace.tasket.payloads.TodoPayload
+import dev.cryptospace.tasket.payloads.todo.request.TodoRequestPayload
 import external.Sortable
 import io.kvision.core.Container
 import io.kvision.core.FlexDirection
@@ -44,7 +44,7 @@ fun Container.todoList() {
     }
 }
 
-private fun Container.todoListItem(payload: TodoPayload) {
+private fun Container.todoListItem(payload: TodoRequestPayload) {
     add(
         flexPanel(className = "list-group-item justify-content-between") {
             onClickLaunch {
