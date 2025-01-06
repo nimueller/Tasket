@@ -1,14 +1,13 @@
 package dev.cryptospace.tasket.server.user
 
+import dev.cryptospace.tasket.server.authorisation.requireAdminOrOwnerPrivilege
+import dev.cryptospace.tasket.server.authorisation.requireAdminPrivilege
 import dev.cryptospace.tasket.server.routes.handleGetAllRoute
 import dev.cryptospace.tasket.server.routes.handleGetByIdRoute
 import dev.cryptospace.tasket.server.routes.handlePostRoute
 import dev.cryptospace.tasket.server.routes.handlePutRoute
 import dev.cryptospace.tasket.server.user.database.UserRepository
 import dev.cryptospace.tasket.server.user.mapper.UserRequestMapper
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.auth.UserIdPrincipal
-import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -23,26 +22,28 @@ import java.util.UUID
 fun Route.users() {
     route("users") {
         get {
+            requireAdminPrivilege()
             handleGetAllRoute(UserRepository)
         }
         post {
+            requireAdminPrivilege()
             handlePostRoute(UserRepository, UserRequestMapper)
         }
-        route("{id}") {
+        route("{userId}") {
             get {
-                handleGetByIdRoute(UserRepository, call.parameters.getOrFail<UUID>("id"))
+                val id = call.parameters.getOrFail<UUID>(name = "userId")
+                requireAdminOrOwnerPrivilege(id)
+                handleGetByIdRoute(UserRepository, id)
             }
             put {
-                handlePutRoute(UserRepository, UserRequestMapper, call.parameters.getOrFail<UUID>("id"))
+                val id = call.parameters.getOrFail<UUID>(name = "userId")
+                requireAdminOrOwnerPrivilege(id)
+                handlePutRoute(UserRepository, UserRequestMapper, id)
             }
             patch("change-password") {
-                val id = call.parameters.getOrFail("id")
-
-                if (id == call.principal<UserIdPrincipal>()!!.name) {
-                    call.respond(UserRepository.changePassword(UUID.fromString(id), call.receive()))
-                } else {
-                    call.respond(HttpStatusCode.Forbidden)
-                }
+                val id = call.parameters.getOrFail<UUID>(name = "userId")
+                requireAdminOrOwnerPrivilege(id)
+                call.respond(UserRepository.changePassword(id, call.receive()))
             }
         }
     }

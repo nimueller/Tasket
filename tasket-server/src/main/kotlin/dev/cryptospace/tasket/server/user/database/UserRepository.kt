@@ -11,4 +11,10 @@ object UserRepository : BaseRepository<UsersTable, UserResponsePayload>(UsersTab
             this[UsersTable.password] = password
         }
     }
+
+    suspend fun getUserRole(id: UUID): UserRole {
+        return suspendedTransaction {
+            UsersTable.select(UsersTable.role).where { UsersTable.id eq id }.single()[UsersTable.role]
+        }
+    }
 }

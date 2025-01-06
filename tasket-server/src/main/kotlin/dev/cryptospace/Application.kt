@@ -1,6 +1,7 @@
 package dev.cryptospace
 
 import com.auth0.jwt.JWT
+import dev.cryptospace.tasket.server.authorisation.AuthorisationException
 import dev.cryptospace.tasket.server.routes.login
 import dev.cryptospace.tasket.server.routes.status
 import dev.cryptospace.tasket.server.security.JwtService
@@ -10,6 +11,7 @@ import dev.cryptospace.tasket.server.user.database.UsersTable
 import dev.cryptospace.tasket.server.user.users
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -23,6 +25,8 @@ import io.ktor.server.http.content.staticFiles
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.response.respond
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.jetbrains.exposed.sql.and
@@ -54,6 +58,11 @@ fun Application.module() {
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Authorization)
         if (System.getenv("ALLOWED_HOST") != null) allowHost(System.getenv("ALLOWED_HOST")) else anyHost()
+    }
+    install(StatusPages) {
+        exception<AuthorisationException> { call, _ ->
+            call.respond(HttpStatusCode.Forbidden)
+        }
     }
     routing {
         val staticFiles = File("static")
