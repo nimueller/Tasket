@@ -2,7 +2,7 @@
 ktor = "3.0.1"
 kvision = "8.0.+"
 exposed = "0.57.+"
-kotlin = "2.0.+"
+kotlin = "2.1.+"
 testcontainers = "1.20.+"
 
 [libraries]
