@@ -5,7 +5,7 @@ import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoStatusChangeResponsePayload
 import dev.cryptospace.tasket.server.todo.database.TodosTable
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
-import dev.cryptospace.tasket.test.testWebserviceAuthenticated
+import dev.cryptospace.tasket.test.testAuthenticatedWebservice
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.put
@@ -39,8 +39,8 @@ class TodoStatusChangeTest {
     }
 
     @Test
-    fun `initial status should be New`() = testWebserviceAuthenticated {
-        get("/rest/todos/$todoId").apply {
+    fun `initial status should be New`() = testAuthenticatedWebservice {
+        client.get("/rest/todos/$todoId").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<TodoResponsePayload>()
             assert(payload.statusId == NEW_STATUS_ID)
@@ -48,8 +48,8 @@ class TodoStatusChangeTest {
     }
 
     @Test
-    fun `get status changes on new todo should return empty list`() = testWebserviceAuthenticated {
-        get("/rest/todos/$todoId/statusChanges").apply {
+    fun `get status changes on new todo should return empty list`() = testAuthenticatedWebservice {
+        client.get("/rest/todos/$todoId/statusChanges").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoStatusChangeResponsePayload>>()
             assert(payload.isEmpty())
@@ -57,8 +57,8 @@ class TodoStatusChangeTest {
     }
 
     @Test
-    fun `get status changes on todo with changed status should return change`() = testWebserviceAuthenticated {
-        put("/rest/todos/$todoId") {
+    fun `get status changes on todo with changed status should return change`() = testAuthenticatedWebservice {
+        client.put("/rest/todos/$todoId") {
             contentType(ContentType.Application.Json)
             setBody(TodoRequestPayload(label = "Test Todo", statusId = IN_PROGRESS_STATUS_ID))
         }.apply {
@@ -66,7 +66,7 @@ class TodoStatusChangeTest {
             assert(body<TodoResponsePayload>().statusId == IN_PROGRESS_STATUS_ID)
         }
 
-        get("/rest/todos/$todoId/statusChanges").apply {
+        client.get("/rest/todos/$todoId/statusChanges").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoStatusChangeResponsePayload>>()
             assert(payload.size == 1)

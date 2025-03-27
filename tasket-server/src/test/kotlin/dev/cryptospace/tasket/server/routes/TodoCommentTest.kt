@@ -5,7 +5,8 @@ import dev.cryptospace.tasket.payloads.todo.response.TodoCommentResponsePayload
 import dev.cryptospace.tasket.server.todo.database.TodosTable
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
 import dev.cryptospace.tasket.test.TestUser
-import dev.cryptospace.tasket.test.testWebserviceAuthenticated
+import dev.cryptospace.tasket.test.insertUser
+import dev.cryptospace.tasket.test.testAuthenticatedWebservice
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -28,18 +29,21 @@ class TodoCommentTest {
 
     @BeforeTest
     fun setup() {
+        user = insertUser()
+
         transaction {
             todoId = TodosTable.insert {
                 it[label] = "Test Todo"
                 it[owner] = user.id.value
             }[TodosTable.id].value
         }
+
         println("Todo ID: $todoId")
     }
 
     @Test
-    fun `get all comments on empty database should return empty array`() = testWebserviceAuthenticated(user) {
-        get("/rest/todos/$todoId/comments").apply {
+    fun `get all comments on empty database should return empty array`() = testAuthenticatedWebservice(user) {
+        client.get("/rest/todos/$todoId/comments").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoCommentResponsePayload>>()
             assert(payload.isEmpty())
@@ -47,15 +51,15 @@ class TodoCommentTest {
     }
 
     @Test
-    fun `get all comments after post should return inserted item`() = testWebserviceAuthenticated(user) {
-        post("/rest/todos/$todoId/comments") {
+    fun `get all comments after post should return inserted item`() = testAuthenticatedWebservice(user) {
+        client.post("/rest/todos/$todoId/comments") {
             contentType(ContentType.Application.Json)
             setBody(TodoCommentRequestPayload(comment = "Test Comment"))
         }.apply {
             assert(status == HttpStatusCode.Created)
         }
 
-        get("/rest/todos/$todoId/comments").apply {
+        client.get("/rest/todos/$todoId/comments").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoCommentResponsePayload>>()
             assert(payload.size == 1)

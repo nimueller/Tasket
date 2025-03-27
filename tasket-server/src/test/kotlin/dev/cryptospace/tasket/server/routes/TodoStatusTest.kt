@@ -2,7 +2,7 @@ package dev.cryptospace.tasket.server.routes
 
 import dev.cryptospace.tasket.payloads.todo.response.TodoStatusResponsePayload
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
-import dev.cryptospace.tasket.test.testWebserviceAuthenticated
+import dev.cryptospace.tasket.test.testAuthenticatedWebservice
 import dev.cryptospace.tasket.types.BootstrapColor
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -16,8 +16,8 @@ import kotlin.test.Test
 class TodoStatusTest {
 
     @Test
-    fun `get all statuses should return default status list`() = testWebserviceAuthenticated {
-        get("/rest/statuses").apply {
+    fun `get all statuses should return default status list`() = testAuthenticatedWebservice {
+        client.get("/rest/statuses").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoStatusResponsePayload>>()
             assert(payload.size == 4)
@@ -27,8 +27,8 @@ class TodoStatusTest {
     @ParameterizedTest(name = "get specific status should return correct values for id {0}")
     @CsvFileSource(resources = ["/statuses.csv"], delimiter = ',')
     fun `get specific status should return correct values`(id: String, name: String, color: String) =
-        testWebserviceAuthenticated {
-            get("/rest/statuses/$id").apply {
+        testAuthenticatedWebservice {
+            client.get("/rest/statuses/$id").apply {
                 assert(status == HttpStatusCode.OK)
                 val payload = body<TodoStatusResponsePayload>()
                 assert(payload.metaInformation.id == id)

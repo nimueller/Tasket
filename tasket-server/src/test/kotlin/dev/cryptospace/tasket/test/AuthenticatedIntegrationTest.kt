@@ -1,14 +1,11 @@
 package dev.cryptospace.tasket.test
 
 import dev.cryptospace.module
-import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.bearerAuth
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
-import org.jetbrains.exposed.sql.transactions.transaction
 
 fun testWebservice(doTest: suspend WebserviceTest.() -> Unit) = testApplication {
     application {
@@ -25,42 +22,40 @@ fun testWebservice(doTest: suspend WebserviceTest.() -> Unit) = testApplication 
     test.doTest()
 }
 
-fun testWebserviceAuthenticated(
-    username: String = TEST_USER_USERNAME,
-    isAdmin: Boolean = false,
-    doTest: suspend HttpClient.(TestUser) -> Unit
-) = testApplication {
+fun testAuthenticatedWebservice(
+    asUsername: String = TEST_USER_USERNAME,
+    asAdmin: Boolean = false,
+    doTest: suspend WebserviceTest.(TestUser) -> Unit
+) {
+    val user = insertUser(username = asUsername, isAdmin = asAdmin)
+    testAuthenticatedWebservice(user = user, doTest = doTest)
 }
 
-fun testWebserviceAuthenticated(
+fun testAuthenticatedWebservice(
     user: TestUser,
-    doTest: suspend HttpClient.(TestUser) -> Unit,
+    doTest: suspend WebserviceTest.(TestUser) -> Unit
 ) = testApplication {
-    authenticateTestUser(user)
-    cleanupAuthenticatedWebservice()
-
     application {
         module()
     }
 
-//    val client = prepareAuthenticatedClient(user.accessToken)
-    client.doTest(user)
-}
+    val unauthenticatedClient = createClient {
+        install(ContentNegotiation) {
+            json()
+        }
+    }
 
-private fun ApplicationTestBuilder.prepareAuthenticatedClient(accessToken: String): HttpClient {
-    return createClient {
+    val tokens = with(WebserviceTest(unauthenticatedClient)) { user.login() }
+
+    val authenticatedClient = createClient {
         install(ContentNegotiation) {
             json()
         }
         defaultRequest {
-            bearerAuth(accessToken)
+            bearerAuth(tokens.accessToken)
         }
     }
-}
 
-private fun cleanupAuthenticatedWebservice() {
-    transaction {
-        exec("TRUNCATE TABLE tasket.users CASCADE")
-        println("Cleaned up all users")
-    }
+    val test = WebserviceTest(authenticatedClient)
+    test.doTest(user)
 }

@@ -3,10 +3,10 @@ package dev.cryptospace.tasket.server.routes
 import com.auth0.jwt.JWT
 import dev.cryptospace.tasket.payloads.authentication.LoginRequestPayload
 import dev.cryptospace.tasket.payloads.authentication.LoginResponsePayload
+import dev.cryptospace.tasket.payloads.authentication.RefreshTokenRequestPayload
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
-import dev.cryptospace.tasket.test.UserTests
+import dev.cryptospace.tasket.test.insertUser
 import dev.cryptospace.tasket.test.testWebservice
-import dev.cryptospace.tasket.test.testWebserviceAuthenticated
 import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -17,10 +17,12 @@ import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.test.Test
 
 @ExtendWith(PostgresIntegrationTest::class)
-class AuthenticationRoutingTest : UserTests() {
+class AuthenticationRoutingTest {
 
     @Test
     fun `unknown user should return 401`() = testWebservice {
+        insertUser(username = "test", password = "test")
+
         val response = client.post("/rest/login") {
             contentType(ContentType.Application.Json)
             setBody(LoginRequestPayload(username = "unknown", password = "unknown"))
@@ -31,11 +33,11 @@ class AuthenticationRoutingTest : UserTests() {
 
     @Test
     fun `invalid password should return 401`() = testWebservice {
-        val adminUser = insertUser(username = "admin", password = "admin")
+        val user = insertUser(username = "test", password = "test")
 
         val response = client.post("/rest/login") {
             contentType(ContentType.Application.Json)
-            setBody(LoginRequestPayload(username = adminUser.username, password = "invalid"))
+            setBody(LoginRequestPayload(username = user.username, password = "invalid"))
         }
 
         assert(response.status == HttpStatusCode.Unauthorized)
@@ -43,34 +45,36 @@ class AuthenticationRoutingTest : UserTests() {
 
     @Test
     fun `valid credentials should return valid access and refresh tokens`() = testWebservice {
-        val adminUser = insertUser(username = "admin", password = "admin")
+        val user = insertUser(username = "test", password = "test")
 
         val response = client.post("/rest/login") {
             contentType(ContentType.Application.Json)
-            setBody(LoginRequestPayload(username = "admin", password = "admin"))
+            setBody(LoginRequestPayload(username = "test", password = "test"))
         }
 
         assert(response.status == HttpStatusCode.OK)
         val tokens = response.body<LoginResponsePayload>()
-        assert(JWT.decode(tokens.accessToken).subject == adminUser.id.value.toString())
-        assert(JWT.decode(tokens.refreshToken).subject == adminUser.id.value.toString())
+        assert(JWT.decode(tokens.accessToken).subject == user.id.value.toString())
+        assert(JWT.decode(tokens.refreshToken).subject == user.id.value.toString())
     }
 
 
     @Test
-    fun `refresh should return valid access token and rotate refresh token`() =
-        testWebserviceAuthenticated { user ->
-            post("/rest/refresh") {
-                contentType(ContentType.Application.Json)
-//                setBody(RefreshTokenRequestPayload(user.refreshToken))
-            }.apply {
-                assert(status == HttpStatusCode.OK)
-                val responsePayload = body<LoginResponsePayload>()
-                val decodedAccessToken = JWT.decode(responsePayload.accessToken)
-                assert(decodedAccessToken.subject == user.id.value.toString())
+    fun `refresh should return valid access token and rotate refresh token`() = testWebservice {
+        val user = insertUser(username = "test", password = "test")
+        val tokens = user.login()
 
-                val decodedRefreshToken = JWT.decode(responsePayload.refreshToken)
-                assert(decodedRefreshToken.subject == user.id.value.toString())
-            }
+        val response = client.post("/rest/refresh") {
+            contentType(ContentType.Application.Json)
+            setBody(RefreshTokenRequestPayload(tokens.refreshToken))
         }
+
+        assert(response.status == HttpStatusCode.OK)
+        val responsePayload = response.body<LoginResponsePayload>()
+        val decodedAccessToken = JWT.decode(responsePayload.accessToken)
+        assert(decodedAccessToken.subject == user.id.value.toString())
+
+        val decodedRefreshToken = JWT.decode(responsePayload.refreshToken)
+        assert(decodedRefreshToken.subject == user.id.value.toString())
+    }
 }
