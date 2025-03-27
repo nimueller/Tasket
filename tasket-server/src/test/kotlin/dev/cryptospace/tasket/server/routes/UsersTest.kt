@@ -5,7 +5,6 @@ import dev.cryptospace.tasket.payloads.user.response.UserResponsePayload
 import dev.cryptospace.tasket.server.user.database.UsersTable
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
 import dev.cryptospace.tasket.test.testWebserviceAuthenticated
-import dev.cryptospace.tasket.test.testWebserviceAuthenticatedWithUser
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -38,18 +37,20 @@ class UsersTest {
     }
 
     @Test
-    fun `get user should return 401 for normal user`() = testWebserviceAuthenticatedWithUser(isAdmin = false) { user ->
-        get("/rest/users/${user.id}").apply {
-            assert(status == HttpStatusCode.Unauthorized)
+    fun `get user should return 401 for normal user`() =
+        testWebserviceAuthenticated(isAdmin = false) { user ->
+            get("/rest/users/${user.id}").apply {
+                assert(status == HttpStatusCode.Unauthorized)
+            }
         }
-    }
 
     @Test
-    fun `put user should return 401 for normal user`() = testWebserviceAuthenticatedWithUser(isAdmin = false) { user ->
-        put("/rest/users/${user.id}").apply {
-            assert(status == HttpStatusCode.Unauthorized)
+    fun `put user should return 401 for normal user`() =
+        testWebserviceAuthenticated(isAdmin = false) { user ->
+            put("/rest/users/${user.id}").apply {
+                assert(status == HttpStatusCode.Unauthorized)
+            }
         }
-    }
 
     @Test
     fun `get all users should return valid result for admin user`() = testWebserviceAuthenticated(isAdmin = true) {

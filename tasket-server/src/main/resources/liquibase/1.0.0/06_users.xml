@@ -55,4 +55,22 @@
         </insert>
     </changeSet>
 
+    <changeSet id="1736194561000-1" author="nico (generated)">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists schemaName="tasket" tableName="todos" columnName="owner_id"/>
+            </not>
+        </preConditions>
+        <addColumn schemaName="tasket" tableName="todos">
+            <column name="owner_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint
+            constraintName="fk_todos_owner_id"
+            referencedTableSchemaName="tasket" referencedTableName="users" referencedColumnNames="id"
+            baseTableSchemaName="tasket" baseTableName="todos" baseColumnNames="owner_id"
+            onUpdate="CASCADE" onDelete="CASCADE"/>
+    </changeSet>
+
 </databaseChangeLog>

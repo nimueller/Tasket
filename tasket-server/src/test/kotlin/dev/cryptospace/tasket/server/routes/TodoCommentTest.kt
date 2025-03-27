@@ -4,6 +4,7 @@ import dev.cryptospace.tasket.payloads.todo.request.TodoCommentRequestPayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoCommentResponsePayload
 import dev.cryptospace.tasket.server.todo.database.TodosTable
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
+import dev.cryptospace.tasket.test.TestUser
 import dev.cryptospace.tasket.test.testWebserviceAuthenticated
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -23,19 +24,21 @@ import kotlin.test.Test
 class TodoCommentTest {
 
     private lateinit var todoId: UUID
+    private lateinit var user: TestUser
 
     @BeforeTest
     fun setup() {
         transaction {
             todoId = TodosTable.insert {
                 it[label] = "Test Todo"
+                it[owner] = user.id.value
             }[TodosTable.id].value
         }
         println("Todo ID: $todoId")
     }
 
     @Test
-    fun `get all comments on empty database should return empty array`() = testWebserviceAuthenticated {
+    fun `get all comments on empty database should return empty array`() = testWebserviceAuthenticated(user) {
         get("/rest/todos/$todoId/comments").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoCommentResponsePayload>>()
@@ -44,7 +47,7 @@ class TodoCommentTest {
     }
 
     @Test
-    fun `get all comments after post should return inserted item`() = testWebserviceAuthenticated {
+    fun `get all comments after post should return inserted item`() = testWebserviceAuthenticated(user) {
         post("/rest/todos/$todoId/comments") {
             contentType(ContentType.Application.Json)
             setBody(TodoCommentRequestPayload(comment = "Test Comment"))

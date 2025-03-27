@@ -65,6 +65,7 @@ class PostgresIntegrationTest :
 
     override fun beforeEach(context: ExtensionContext?) {
         transaction {
+            exec("TRUNCATE TABLE tasket.users CASCADE")
             exec("TRUNCATE TABLE tasket.todos CASCADE")
         }
         println("Cleaned up database for test ${context?.displayName}")

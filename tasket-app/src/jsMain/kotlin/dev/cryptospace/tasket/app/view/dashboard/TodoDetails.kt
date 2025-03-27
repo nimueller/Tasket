@@ -3,8 +3,8 @@ package dev.cryptospace.tasket.app.view.dashboard
 import dev.cryptospace.tasket.app.network.HttpClient
 import dev.cryptospace.tasket.app.network.get
 import dev.cryptospace.tasket.app.utils.fromIso8601String
-import dev.cryptospace.tasket.payloads.todo.request.TodoRequestPayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoCommentResponsePayload
+import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import io.kvision.badge.Badge
 import io.kvision.core.JustifyContent
 import io.kvision.core.Style
@@ -31,7 +31,7 @@ object TodoDetails {
     suspend fun refreshModal(id: String) {
         setTimestampBadgesInPlaceholderMode()
 
-        val todoPayload = HttpClient.get<TodoRequestPayload>("/rest/todos/$id").handleStatusCodes()
+        val todoPayload = HttpClient.get<TodoResponsePayload>("/rest/todos/$id").handleStatusCodes()
         val todoComments =
             HttpClient.get<List<TodoCommentResponsePayload>>("/rest/todos/$id/comments").handleStatusCodes()
 
@@ -51,13 +51,13 @@ object TodoDetails {
         updatedAtBadge.addCssClass("py-3")
     }
 
-    private fun displayTimestampBadges(todoRequestPayload: TodoRequestPayload?) {
+    private fun displayTimestampBadges(todo: TodoResponsePayload?) {
         createdAtBadge.removeCssClass("placeholder")
         createdAtBadge.removeCssClass("py-3")
         updatedAtBadge.removeCssClass("placeholder")
         updatedAtBadge.removeCssClass("py-3")
-        createdAtBadge.content = "Created at ${todoRequestPayload?.createdAt?.fromIso8601String()}"
-        updatedAtBadge.content = "Updated at ${todoRequestPayload?.updatedAt?.fromIso8601String()}"
+        createdAtBadge.content = "Created at ${todo?.metaInformation?.createdAt?.fromIso8601String()}"
+        updatedAtBadge.content = "Updated at ${todo?.metaInformation?.updatedAt?.fromIso8601String()}"
         createdAtBadge.refresh()
         updatedAtBadge.refresh()
     }
