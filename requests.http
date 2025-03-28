@@ -10,11 +10,17 @@ Content-Type: application/json
 > {%
 
 
+
  client.global.set("token", response.body.accessToken)
+
 
 
 %}
 
 ### Query all users
 GET http://localhost:8080/rest/users
+Authorization: Bearer {{token}}
+
+### Query Todos
+GET http://localhost:8080/rest/todos
 Authorization: Bearer {{token}}

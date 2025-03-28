@@ -48,7 +48,7 @@ data class WebserviceTest(val client: HttpClient) {
     @Contract(pure = true)
     suspend fun tryLogin(username: String, password: String): Tokens? {
         transaction {
-            val result = exec("SELECT * FROM tasket.users", transform = { resultSet ->
+            exec("SELECT * FROM tasket.users", transform = { resultSet ->
                 while (resultSet.next()) {
                     println(resultSet.getString("username"))
                     println(resultSet.getString("password"))

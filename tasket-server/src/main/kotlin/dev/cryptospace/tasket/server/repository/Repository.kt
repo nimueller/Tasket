@@ -3,17 +3,50 @@ package dev.cryptospace.tasket.server.repository
 import dev.cryptospace.tasket.payloads.ResponsePayload
 import dev.cryptospace.tasket.server.payload.ResponseMapper
 import dev.cryptospace.tasket.server.table.BaseTable
+import kotlinx.coroutines.Dispatchers
+import org.jetbrains.exposed.sql.Op
+import org.jetbrains.exposed.sql.SqlExpressionBuilder
+import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.deleteReturning
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.upsert
 import java.util.UUID
 
-abstract class BaseRepository<T : BaseTable, RESP : ResponsePayload>(
+open class Repository<T : BaseTable, RESP : ResponsePayload>(
     val table: T,
     private val responseMapper: ResponseMapper<T, RESP>,
-) : ReadOnlyRepository<T, RESP>(table, responseMapper) {
+) {
+    protected suspend fun <R> suspendedTransaction(block: Transaction.() -> R): R {
+        return newSuspendedTransaction(Dispatchers.IO, statement = block)
+    }
+
+    protected suspend fun queryForSingleResult(predicate: SqlExpressionBuilder.() -> Op<Boolean>): RESP? {
+        return suspendedTransaction {
+            table.selectAll().where(predicate).singleOrNull()?.let { row ->
+                responseMapper.mapToPayload(table, row)
+            }
+        }
+    }
+
+    protected suspend fun queryForMultipleResults(predicate: SqlExpressionBuilder.() -> Op<Boolean>): List<RESP> {
+        return suspendedTransaction {
+            table.selectAll().where(predicate).map { row ->
+                responseMapper.mapToPayload(table, row)
+            }
+        }
+    }
+
+    suspend fun getAllIgnoreOwner(): List<RESP> {
+        return queryForMultipleResults { Op.TRUE }
+    }
+
+    suspend fun getByIdIgnoreOwner(id: UUID): RESP? {
+        return queryForSingleResult { table.id eq id }
+    }
+
     suspend fun insert(updateBuilder: UpdateBuilder<Int>.() -> Unit = {}): RESP {
         return suspendedTransaction {
             val insertedId = table.insert { statement ->

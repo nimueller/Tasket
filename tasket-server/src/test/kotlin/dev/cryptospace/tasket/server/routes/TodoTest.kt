@@ -3,6 +3,8 @@ package dev.cryptospace.tasket.server.routes
 import dev.cryptospace.tasket.payloads.todo.request.TodoRequestPayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
+import dev.cryptospace.tasket.test.insertTodo
+import dev.cryptospace.tasket.test.insertUser
 import dev.cryptospace.tasket.test.testAuthenticatedWebservice
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
@@ -25,6 +27,31 @@ class TodoTest {
         assert(response.status == HttpStatusCode.OK)
         val payload = response.body<List<TodoRequestPayload>>()
         assert(payload.isEmpty())
+    }
+
+    @Test
+    fun `user should only see own todos when querying all todos`() = testAuthenticatedWebservice { ownUser ->
+        val ownTodoId = insertTodo(owner = ownUser)
+        val otherUser = insertUser(username = "other")
+        val otherTodoId = insertTodo(owner = otherUser)
+
+        client.get("/rest/todos").apply {
+            assert(status == HttpStatusCode.OK)
+            val payload = body<List<TodoResponsePayload>>()
+            assert(payload.size == 1)
+            assert(payload.first().metaInformation.id == ownTodoId)
+            assert(payload.none { it.metaInformation.id == otherTodoId })
+        }
+    }
+
+    @Test
+    fun `user should not be able to see todo of other users`() = testAuthenticatedWebservice {
+        val otherUser = insertUser(username = "other")
+        val otherTodoId = insertTodo(owner = otherUser)
+
+        client.get("/rest/todos/${otherTodoId}").apply {
+            assert(status == HttpStatusCode.NotFound)
+        }
     }
 
     @Test

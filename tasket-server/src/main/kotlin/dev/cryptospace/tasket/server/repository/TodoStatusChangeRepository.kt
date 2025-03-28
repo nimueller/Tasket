@@ -5,7 +5,7 @@ import dev.cryptospace.tasket.server.todo.database.TodoStatusChangesTable
 import dev.cryptospace.tasket.server.todo.mapper.TodoStatusChangeResponseMapper
 import java.util.UUID
 
-object TodoStatusChangeRepository : ReadOnlyRepository<TodoStatusChangesTable, TodoStatusChangeResponsePayload>(
+object TodoStatusChangeRepository : Repository<TodoStatusChangesTable, TodoStatusChangeResponsePayload>(
     TodoStatusChangesTable,
     TodoStatusChangeResponseMapper,
 ) {

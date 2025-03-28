@@ -9,4 +9,5 @@ data class TodoResponsePayload(
     override val metaInformation: MetaInformationPayload,
     val label: String,
     val statusId: String,
+    val ownerId: String,
 ) : ResponsePayload

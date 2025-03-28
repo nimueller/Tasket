@@ -1,7 +1,7 @@
 package dev.cryptospace.tasket.app.view.dashboard
 
 import dev.cryptospace.tasket.app.model.TodoViewModel
-import dev.cryptospace.tasket.payloads.todo.request.TodoRequestPayload
+import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import external.Sortable
 import io.kvision.core.Container
 import io.kvision.core.FlexDirection
@@ -20,13 +20,13 @@ fun Container.todoList() {
     div(className = "list-group") {
         bind(TodoViewModel.todos, removeChildren = false) { payloads ->
             getChildren().forEach { component ->
-                if (component.getAttribute("id") !in payloads.map { payload -> payload.id }) {
+                if (component.getAttribute("id") !in payloads.map { payload -> payload.metaInformation.id }) {
                     remove(component)
                 }
             }
 
             payloads.forEach { payload ->
-                if (payload.id !in getChildren().map { it.getAttribute("id") }) {
+                if (payload.metaInformation.id !in getChildren().map { it.getAttribute("id") }) {
                     todoListItem(payload)
                 }
             }
@@ -44,12 +44,12 @@ fun Container.todoList() {
     }
 }
 
-private fun Container.todoListItem(payload: TodoRequestPayload) {
+private fun Container.todoListItem(payload: TodoResponsePayload) {
     add(
         flexPanel(className = "list-group-item justify-content-between") {
             onClickLaunch {
                 TodoDetails.modal.show()
-                TodoDetails.refreshModal(payload.id!!)
+                TodoDetails.refreshModal(payload.metaInformation.id)
             }
             flexPanel(FlexDirection.ROW) {
                 checkBox()
