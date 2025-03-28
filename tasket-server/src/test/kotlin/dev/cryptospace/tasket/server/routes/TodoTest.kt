@@ -50,7 +50,7 @@ class TodoTest {
         val otherUser = insertUser(username = "other")
         val otherTodoId = insertTodo(owner = otherUser)
 
-        val response = client.get("/rest/todos/${otherTodoId}")
+        val response = client.get("/rest/todos/$otherTodoId")
 
         assert(response.status == HttpStatusCode.NotFound)
     }
@@ -60,10 +60,20 @@ class TodoTest {
         val otherUser = insertUser(username = "other")
         val otherTodoId = insertTodo(owner = otherUser)
 
-        val response = client.put("/rest/todos/${otherTodoId}") {
+        val response = client.put("/rest/todos/$otherTodoId") {
             contentType(ContentType.Application.Json)
             setBody(TodoRequestPayload(label = "Test Todo", statusId = null))
         }
+
+        assert(response.status == HttpStatusCode.NotFound)
+    }
+
+    @Test
+    fun `user should not be able to delete todo of other users`() = testAuthenticatedWebservice {
+        val otherUser = insertUser(username = "other")
+        val otherTodoId = insertTodo(owner = otherUser)
+
+        val response = client.delete("/rest/todos/$otherTodoId")
 
         assert(response.status == HttpStatusCode.NotFound)
     }

@@ -11,7 +11,7 @@ object TodoRequestMapper : RequestMapper<TodosTable, TodoRequestPayload> {
         principal: UUID,
         table: TodosTable,
         payload: TodoRequestPayload,
-        updateBuilder: UpdateBuilder<Int>
+        updateBuilder: UpdateBuilder<Int>,
     ) {
         updateBuilder[table.label] = payload.label
         updateBuilder[table.owner] = principal

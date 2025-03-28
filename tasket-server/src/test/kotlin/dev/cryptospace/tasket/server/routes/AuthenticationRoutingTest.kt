@@ -58,7 +58,6 @@ class AuthenticationRoutingTest {
         assert(JWT.decode(tokens.refreshToken).subject == user.id.value.toString())
     }
 
-
     @Test
     fun `refresh should return valid access token and rotate refresh token`() = testWebservice {
         val user = insertUser(username = "test", password = "test")

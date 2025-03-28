@@ -18,7 +18,7 @@ import kotlin.test.assertNotNull
 fun insertUser(
     username: String = TEST_USER_USERNAME,
     password: String = TEST_USER_PASSWORD,
-    isAdmin: Boolean = false
+    isAdmin: Boolean = false,
 ): TestUser {
     val passwordSalt = Argon2Hashing.generateSalt()
     val passwordHash = Argon2Hashing.hashPassword(password, passwordSalt).encodeBase64()
@@ -39,7 +39,7 @@ private fun Transaction.doInsert(
     username: String,
     passwordHash: String,
     passwordSalt: String,
-    isAdmin: Boolean
+    isAdmin: Boolean,
 ): String? {
     return exec(
         stmt = """
@@ -57,6 +57,6 @@ private fun Transaction.doInsert(
         transform = { resultSet ->
             assert(resultSet.next())
             resultSet.getString("id")
-        }
+        },
     )
 }

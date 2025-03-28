@@ -25,16 +25,13 @@ fun testWebservice(doTest: suspend WebserviceTest.() -> Unit) = testApplication 
 fun testAuthenticatedWebservice(
     asUsername: String = TEST_USER_USERNAME,
     asAdmin: Boolean = false,
-    doTest: suspend WebserviceTest.(TestUser) -> Unit
+    doTest: suspend WebserviceTest.(TestUser) -> Unit,
 ) {
     val user = insertUser(username = asUsername, isAdmin = asAdmin)
     testAuthenticatedWebservice(user = user, doTest = doTest)
 }
 
-fun testAuthenticatedWebservice(
-    user: TestUser,
-    doTest: suspend WebserviceTest.(TestUser) -> Unit
-) = testApplication {
+fun testAuthenticatedWebservice(user: TestUser, doTest: suspend WebserviceTest.(TestUser) -> Unit) = testApplication {
     application {
         module()
     }

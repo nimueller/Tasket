@@ -13,7 +13,7 @@ object UserRequestMapper : RequestMapper<UsersTable, UserRequestPayload> {
         principal: UUID,
         table: UsersTable,
         payload: UserRequestPayload,
-        updateBuilder: UpdateBuilder<Int>
+        updateBuilder: UpdateBuilder<Int>,
     ) {
         updateBuilder[table.username] = payload.username
 

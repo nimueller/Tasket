@@ -8,7 +8,7 @@ import java.util.UUID
 
 open class UserScopedRepository<T : OwnedTable, RESP : ResponsePayload>(
     table: T,
-    responseMapper: ResponseMapper<T, RESP>
+    responseMapper: ResponseMapper<T, RESP>,
 ) : Repository<T, RESP>(table, responseMapper) {
     suspend fun getAllOwnedBy(ownerId: UUID): List<RESP> {
         return queryForMultipleResults { table.owner eq ownerId }

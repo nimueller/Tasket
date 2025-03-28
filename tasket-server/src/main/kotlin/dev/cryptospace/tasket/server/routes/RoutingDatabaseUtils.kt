@@ -81,24 +81,8 @@ suspend inline fun <reified T, reified REQ, reified RESP> RoutingContext.handleP
     call.respond(payload)
 }
 
-suspend fun <T : BaseTable, RESP : ResponsePayload> RoutingContext.validateExistingItemIsOwnedByUser(
-    repository: Repository<T, RESP>,
-    id: UUID
-) {
-    val item = repository.getByIdIgnoreOwner(id)
-
-    if (item != null
-        && item.metaInformation.ownerId != null
-        && item.metaInformation.ownerId != call.userId().toString()
-    ) {
-        call.respond(HttpStatusCode.NotFound)
-    }
-}
-
-suspend inline fun <reified T : BaseTable> RoutingContext.handleDeleteRoute(
-    repository: Repository<T, *>,
-    id: UUID,
-) {
+suspend inline fun <reified T : BaseTable> RoutingContext.handleDeleteRoute(repository: Repository<T, *>, id: UUID) {
+    validateExistingItemIsOwnedByUser(repository, id)
     val deletedRowCount = repository.delete(id)
 
     if (deletedRowCount == 0) {
@@ -106,4 +90,25 @@ suspend inline fun <reified T : BaseTable> RoutingContext.handleDeleteRoute(
     } else {
         call.respond(HttpStatusCode.OK)
     }
+}
+
+suspend fun <T : BaseTable, RESP : ResponsePayload> RoutingContext.validateExistingItemIsOwnedByUser(
+    repository: Repository<T, RESP>,
+    id: UUID,
+) {
+    val item = repository.getByIdIgnoreOwner(id)
+    val itemDoesNotExist = item == null
+
+    if (itemDoesNotExist) {
+        return
+    }
+
+    val itemHasNoOwner = item.metaInformation.ownerId == null
+    val itemBelongsToOwner = item.metaInformation.ownerId == call.userId().toString()
+
+    if (itemHasNoOwner || itemBelongsToOwner) {
+        return
+    }
+
+    call.respond(HttpStatusCode.NotFound)
 }

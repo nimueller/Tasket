@@ -14,7 +14,7 @@ interface ResponseMapper<T : BaseTable, P : ResponsePayload> {
             id = row[table.id].toString(),
             createdAt = row[table.createdAt].toString(),
             updatedAt = row[table.updatedAt].toString(),
-            ownerId = if (table is OwnedTable) row[table.owner].toString() else null
+            ownerId = if (table is OwnedTable) row[table.owner].toString() else null,
         )
     }
 }

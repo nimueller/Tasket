@@ -3,7 +3,7 @@ package dev.cryptospace.tasket.test
 import org.jetbrains.exposed.sql.statements.StatementType
 import org.jetbrains.exposed.sql.transactions.transaction
 
-fun insertTodo(label: String = "Test", owner: TestUser): String {
+fun insertTodo(owner: TestUser): String {
     return transaction {
         exec(
             stmt = """
@@ -17,7 +17,7 @@ fun insertTodo(label: String = "Test", owner: TestUser): String {
             transform = { resultSet ->
                 assert(resultSet.next())
                 resultSet.getString("id")
-            }
-        ) ?: throw IllegalStateException("Inserting todo failed")
+            },
+        ) ?: error("Inserting todo failed")
     }
 }
