@@ -9,8 +9,6 @@ import dev.cryptospace.tasket.server.table.BaseTable
 import dev.cryptospace.tasket.server.table.OwnedTable
 import dev.cryptospace.tasket.server.utils.userId
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.auth.UserIdPrincipal
-import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.RoutingContext
@@ -63,9 +61,8 @@ suspend inline fun <reified T, reified REQ, reified RESP> RoutingContext.handleP
     crossinline additionalAttributes: UpdateBuilder<Int>.() -> Unit = {},
 ) where T : BaseTable, REQ : RequestPayload, RESP : ResponsePayload {
     val receivedPayload = call.receive<REQ>()
-    val principal = call.principal<UserIdPrincipal>() ?: error("No principal found")
     val payload = repository.insert {
-        requestMapper.mapFromPayload(principal, repository.table, receivedPayload, this)
+        requestMapper.mapFromPayload(call.userId(), repository.table, receivedPayload, this)
         additionalAttributes(this)
     }
     call.respond(HttpStatusCode.Created, payload)
@@ -76,12 +73,26 @@ suspend inline fun <reified T, reified REQ, reified RESP> RoutingContext.handleP
     requestMapper: RequestMapper<T, REQ>,
     id: UUID,
 ) where T : BaseTable, REQ : RequestPayload, RESP : ResponsePayload {
+    validateExistingItemIsOwnedByUser(repository, id)
     val receivedPayload = call.receive<REQ>()
-    val principal = call.principal<UserIdPrincipal>() ?: error("No principal found")
     val payload = repository.upsert(id) {
-        requestMapper.mapFromPayload(principal, repository.table, receivedPayload, this)
+        requestMapper.mapFromPayload(call.userId(), repository.table, receivedPayload, this)
     }
     call.respond(payload)
+}
+
+suspend fun <T : BaseTable, RESP : ResponsePayload> RoutingContext.validateExistingItemIsOwnedByUser(
+    repository: Repository<T, RESP>,
+    id: UUID
+) {
+    val item = repository.getByIdIgnoreOwner(id)
+
+    if (item != null
+        && item.metaInformation.ownerId != null
+        && item.metaInformation.ownerId != call.userId().toString()
+    ) {
+        call.respond(HttpStatusCode.NotFound)
+    }
 }
 
 suspend inline fun <reified T : BaseTable> RoutingContext.handleDeleteRoute(

@@ -10,6 +10,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
@@ -35,13 +36,13 @@ class TodoTest {
         val otherUser = insertUser(username = "other")
         val otherTodoId = insertTodo(owner = otherUser)
 
-        client.get("/rest/todos").apply {
-            assert(status == HttpStatusCode.OK)
-            val payload = body<List<TodoResponsePayload>>()
-            assert(payload.size == 1)
-            assert(payload.first().metaInformation.id == ownTodoId)
-            assert(payload.none { it.metaInformation.id == otherTodoId })
-        }
+        val response = client.get("/rest/todos")
+
+        assert(response.status == HttpStatusCode.OK)
+        val payload = response.body<List<TodoResponsePayload>>()
+        assert(payload.size == 1)
+        assert(payload.first().metaInformation.id == ownTodoId)
+        assert(payload.none { it.metaInformation.id == otherTodoId })
     }
 
     @Test
@@ -49,9 +50,22 @@ class TodoTest {
         val otherUser = insertUser(username = "other")
         val otherTodoId = insertTodo(owner = otherUser)
 
-        client.get("/rest/todos/${otherTodoId}").apply {
-            assert(status == HttpStatusCode.NotFound)
+        val response = client.get("/rest/todos/${otherTodoId}")
+
+        assert(response.status == HttpStatusCode.NotFound)
+    }
+
+    @Test
+    fun `user should not be able to update todo of other users`() = testAuthenticatedWebservice {
+        val otherUser = insertUser(username = "other")
+        val otherTodoId = insertTodo(owner = otherUser)
+
+        val response = client.put("/rest/todos/${otherTodoId}") {
+            contentType(ContentType.Application.Json)
+            setBody(TodoRequestPayload(label = "Test Todo", statusId = null))
         }
+
+        assert(response.status == HttpStatusCode.NotFound)
     }
 
     @Test

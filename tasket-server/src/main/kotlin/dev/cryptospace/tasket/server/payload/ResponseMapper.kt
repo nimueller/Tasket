@@ -3,6 +3,7 @@ package dev.cryptospace.tasket.server.payload
 import dev.cryptospace.tasket.payloads.MetaInformationPayload
 import dev.cryptospace.tasket.payloads.ResponsePayload
 import dev.cryptospace.tasket.server.table.BaseTable
+import dev.cryptospace.tasket.server.table.OwnedTable
 import org.jetbrains.exposed.sql.ResultRow
 
 interface ResponseMapper<T : BaseTable, P : ResponsePayload> {
@@ -13,6 +14,7 @@ interface ResponseMapper<T : BaseTable, P : ResponsePayload> {
             id = row[table.id].toString(),
             createdAt = row[table.createdAt].toString(),
             updatedAt = row[table.updatedAt].toString(),
+            ownerId = if (table is OwnedTable) row[table.owner].toString() else null
         )
     }
 }
