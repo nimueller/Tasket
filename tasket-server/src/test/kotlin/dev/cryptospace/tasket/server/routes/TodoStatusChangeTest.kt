@@ -5,6 +5,8 @@ import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoStatusChangeResponsePayload
 import dev.cryptospace.tasket.server.todo.database.TodosTable
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
+import dev.cryptospace.tasket.test.TestUser
+import dev.cryptospace.tasket.test.insertUser
 import dev.cryptospace.tasket.test.testAuthenticatedWebservice
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -27,19 +29,24 @@ private const val IN_PROGRESS_STATUS_ID = "a7226e20-0ba5-4f20-b69e-84243d207d7f"
 class TodoStatusChangeTest {
 
     private lateinit var todoId: UUID
+    private lateinit var user: TestUser
 
     @BeforeTest
     fun setup() {
+        user = insertUser()
+
         transaction {
             todoId = TodosTable.insert {
                 it[label] = "Test Todo"
+                it[owner] = user.id.value
             }[TodosTable.id].value
         }
+
         println("Todo ID: $todoId")
     }
 
     @Test
-    fun `initial status should be New`() = testAuthenticatedWebservice {
+    fun `initial status should be New`() = testAuthenticatedWebservice(user) {
         client.get("/rest/todos/$todoId").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<TodoResponsePayload>()
@@ -48,7 +55,7 @@ class TodoStatusChangeTest {
     }
 
     @Test
-    fun `get status changes on new todo should return empty list`() = testAuthenticatedWebservice {
+    fun `get status changes on new todo should return empty list`() = testAuthenticatedWebservice(user) {
         client.get("/rest/todos/$todoId/statusChanges").apply {
             assert(status == HttpStatusCode.OK)
             val payload = body<List<TodoStatusChangeResponsePayload>>()
@@ -57,7 +64,7 @@ class TodoStatusChangeTest {
     }
 
     @Test
-    fun `get status changes on todo with changed status should return change`() = testAuthenticatedWebservice {
+    fun `get status changes on todo with changed status should return change`() = testAuthenticatedWebservice(user) {
         client.put("/rest/todos/$todoId") {
             contentType(ContentType.Application.Json)
             setBody(TodoRequestPayload(label = "Test Todo", statusId = IN_PROGRESS_STATUS_ID))
