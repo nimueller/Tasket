@@ -15,6 +15,10 @@ import io.ktor.server.routing.RoutingContext
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.util.UUID
 
+/**
+ * Handles a GET request for a given [repository]. It will respond with all items in the database that belong to the
+ * current user.
+ */
 suspend inline fun <reified T : OwnedTable, reified RESP : ResponsePayload> RoutingContext.handleGetAllRoute(
     repository: UserScopedRepository<T, RESP>,
 ) {
@@ -22,6 +26,9 @@ suspend inline fun <reified T : OwnedTable, reified RESP : ResponsePayload> Rout
     call.respond(todoPayloads)
 }
 
+/**
+ * Handles a GET request for a given [repository]. It will respond with all items in the database.
+ */
 suspend inline fun <reified T : BaseTable, reified RESP : ResponsePayload> RoutingContext.handleGetAllRoute(
     repository: Repository<T, RESP>,
 ) {
@@ -29,6 +36,11 @@ suspend inline fun <reified T : BaseTable, reified RESP : ResponsePayload> Routi
     call.respond(todoPayloads)
 }
 
+/**
+ * Handles a GET request for a given [repository] and [id]. It will try to find the item by [id] in the database and
+ * respond with the item if it exists. If the item does not exist, it will respond with a 404. If the found item does
+ * not belong to the current user, it will also respond with a 404.
+ */
 suspend inline fun <reified T : OwnedTable, reified RESP : ResponsePayload> RoutingContext.handleGetByIdRoute(
     repository: UserScopedRepository<T, RESP>,
     id: UUID,
@@ -42,6 +54,10 @@ suspend inline fun <reified T : OwnedTable, reified RESP : ResponsePayload> Rout
     }
 }
 
+/**
+ * Handles a GET request for a given [repository] and [id]. It will try to find the item by [id] in the database and
+ * respond with the item if it exists. If the item does not exist, it will respond with a 404.
+ */
 suspend inline fun <reified T : BaseTable, reified RESP : ResponsePayload> RoutingContext.handleGetByIdRoute(
     repository: Repository<T, RESP>,
     id: UUID,
@@ -55,6 +71,10 @@ suspend inline fun <reified T : BaseTable, reified RESP : ResponsePayload> Routi
     }
 }
 
+/**
+ * Handles a POST request for a given [repository] and [requestMapper]. Optionally, additional attributes can be set
+ * on the [UpdateBuilder] using the [additionalAttributes] lambda.
+ */
 suspend inline fun <reified T, reified REQ, reified RESP> RoutingContext.handlePostRoute(
     repository: Repository<T, RESP>,
     requestMapper: RequestMapper<T, REQ>,
@@ -68,6 +88,12 @@ suspend inline fun <reified T, reified REQ, reified RESP> RoutingContext.handleP
     call.respond(HttpStatusCode.Created, payload)
 }
 
+/**
+ * Handles a PUT request for a given [repository] and [requestMapper]. It will try to find the item by [id] in the
+ * database and update it with the new values from the request. If the item does not exist, it will create a new item
+ * with the given [id]. If the found item has an owner, it will check if the item belongs to the current user. If it
+ * does not, it will respond with a 404.
+ */
 suspend inline fun <reified T, reified REQ, reified RESP> RoutingContext.handlePutRoute(
     repository: Repository<T, RESP>,
     requestMapper: RequestMapper<T, REQ>,
@@ -81,6 +107,11 @@ suspend inline fun <reified T, reified REQ, reified RESP> RoutingContext.handleP
     call.respond(payload)
 }
 
+/**
+ * Handles a DELETE request for a given [repository] and [id]. It will try to find the item by [id] in the database and
+ * delete it. If the item does not exist, it will respond with a 404. If the found item has an owner, it will check if
+ * the item belongs to the current user. If it does not, it will respond with a 404.
+ */
 suspend inline fun <reified T : BaseTable> RoutingContext.handleDeleteRoute(repository: Repository<T, *>, id: UUID) {
     validateExistingItemIsOwnedByUser(repository, id)
     val deletedRowCount = repository.delete(id)
@@ -92,6 +123,11 @@ suspend inline fun <reified T : BaseTable> RoutingContext.handleDeleteRoute(repo
     }
 }
 
+/**
+ * Validates that an item with the given [id] exists in the database and that it belongs to the current user.
+ * If the item does not exist, it will return early. If the item has no owner or belongs to the current user, it will
+ * return early. Otherwise, it will respond with a 404.
+ */
 suspend fun <T : BaseTable, RESP : ResponsePayload> RoutingContext.validateExistingItemIsOwnedByUser(
     repository: Repository<T, RESP>,
     id: UUID,

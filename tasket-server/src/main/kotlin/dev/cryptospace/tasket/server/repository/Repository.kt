@@ -17,7 +17,7 @@ import java.util.UUID
 
 open class Repository<T : BaseTable, RESP : ResponsePayload>(
     val table: T,
-    private val responseMapper: ResponseMapper<T, RESP>,
+    val responseMapper: ResponseMapper<T, RESP>,
 ) {
     protected suspend fun <R> suspendedTransaction(block: Transaction.() -> R): R {
         return newSuspendedTransaction(Dispatchers.IO, statement = block)
