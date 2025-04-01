@@ -13,6 +13,9 @@ import org.w3c.fetch.Response
 import kotlin.js.json
 
 object HttpClient {
+    val json = Json {
+        ignoreUnknownKeys = true
+    }
     val host: String?
         get() = localStorage.getItem("host")
     private var accessToken: String
@@ -68,14 +71,14 @@ object HttpClient {
 
     private suspend fun HttpClient.refreshAccessToken(refreshToken: String): LoginResponsePayload? {
         val url = "$host/rest/refresh"
-        val body = Json.encodeToString(RefreshTokenRequestPayload(refreshToken))
+        val body = json.encodeToString(RefreshTokenRequestPayload(refreshToken))
         return refreshTokens(url, body).parsedEntity
     }
 
     suspend inline fun <reified T> parseResponse(response: Response): T? {
         return if (response.ok) {
             val responseData = response.text().await()
-            Json.decodeFromString(responseData)
+            json.decodeFromString(responseData)
         } else {
             null
         }
