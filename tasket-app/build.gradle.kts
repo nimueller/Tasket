@@ -23,6 +23,7 @@ kotlin {
         implementation(projects.tasketShared)
         implementation(libs.bundles.kvision)
         implementation(npm("sortablejs", "1.15.3"))
-        implementation(npm("is-sorted", "1.0.5"))
+        implementation(npm("marked", "15.0.7"))
+        implementation(npm("sanitize-html", "2.15.0"))
     }
 }

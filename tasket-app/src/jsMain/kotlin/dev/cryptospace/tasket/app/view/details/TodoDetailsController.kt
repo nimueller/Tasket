@@ -6,8 +6,11 @@ import dev.cryptospace.tasket.app.network.post
 import dev.cryptospace.tasket.app.utils.fromIso8601String
 import dev.cryptospace.tasket.payloads.todo.request.TodoCommentRequestPayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoCommentResponsePayload
+import external.marked
+import external.sanitizeHtml
 import io.kvision.core.KVScope
 import io.kvision.core.onClickLaunch
+import io.kvision.html.div
 import kotlinx.coroutines.launch
 
 class TodoDetailsController(todoId: String) {
@@ -41,7 +44,9 @@ class TodoDetailsController(todoId: String) {
 
             result?.forEach { commentPayload ->
                 view.comments.item(timestamp = commentPayload.metaInformation.createdAt.fromIso8601String()) {
-                    +commentPayload.comment
+                    val renderedMarkdown = marked.parse(commentPayload.comment)
+                    val purifiedMarkdown = sanitizeHtml(renderedMarkdown)
+                    div(content = purifiedMarkdown, rich = true)
                 }
             }
         }
