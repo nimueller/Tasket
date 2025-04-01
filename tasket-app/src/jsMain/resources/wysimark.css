@@ -1,0 +1,9 @@
+/* This file is used to style the WYSIWYG editor provided by wysimark */
+
+.wysimark-container div[role=textbox] {
+    background: white;
+}
+
+div[class*="css-"] {
+    z-index: 2000;
+}

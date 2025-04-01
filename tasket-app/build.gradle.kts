@@ -25,5 +25,6 @@ kotlin {
         implementation(npm("sortablejs", "1.15.3"))
         implementation(npm("marked", "15.0.7"))
         implementation(npm("sanitize-html", "2.15.0"))
+        implementation(npm("@wysimark/standalone", "3.0.20"))
     }
 }

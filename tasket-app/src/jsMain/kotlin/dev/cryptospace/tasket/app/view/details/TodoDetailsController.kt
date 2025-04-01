@@ -25,17 +25,15 @@ class TodoDetailsController(todoId: String) {
 
     init {
         view.saveButton.onClickLaunch {
-            val comment = view.commentInput.value ?: return@onClickLaunch
+            val comment = view.getCommentInput()
             val payload = TodoCommentRequestPayload(comment)
             HttpClient.post("/rest/todos/$todoId/comments", payload).handleStatusCodes()
-            view.commentInput.value = ""
-            println("Pre refresh")
+            view.clearCommentInput()
             refreshItems()
         }
     }
 
     fun refreshItems() {
-        println("Refresh")
         view.comments.clearItems()
 
         KVScope.launch {
