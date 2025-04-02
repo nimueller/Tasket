@@ -62,6 +62,11 @@ private fun Route.comments() = route("comments") {
         validateExistingItemIsOwnedByUser(TodoRepository, todoId)
         handlePutRoute(TodoCommentRepository, TodoCommentRequestMapper, todoId)
     }
+    delete("{commentId}") {
+        val todoId = call.parameters.getOrFail<UUID>("todoId")
+        validateExistingItemIsOwnedByUser(TodoRepository, todoId)
+        handleDeleteRoute(TodoCommentRepository, call.parameters.getOrFail<UUID>("commentId"))
+    }
 }
 
 private fun Route.statusChanges() = route("statusChanges") {

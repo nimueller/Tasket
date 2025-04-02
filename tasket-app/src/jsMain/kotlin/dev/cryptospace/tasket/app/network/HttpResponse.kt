@@ -12,7 +12,7 @@ data class HttpResponse<T : Any>(val status: Short, val parsedEntity: T?) {
 
         if (status == 401.toShort()) {
             App.routing.navigate("/login")
-        } else {
+        } else if (status < 200.toShort() || status >= 300.toShort()) {
             Alert.show(
                 caption = tr("Error"),
                 text = tr(
