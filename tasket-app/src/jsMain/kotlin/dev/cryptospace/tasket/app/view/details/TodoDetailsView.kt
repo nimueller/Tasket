@@ -1,8 +1,13 @@
 package dev.cryptospace.tasket.app.view.details
 
+import dev.cryptospace.tasket.app.components.TimelineItem
 import dev.cryptospace.tasket.app.components.timeline
+import dev.cryptospace.tasket.app.utils.SmartListRenderer
+import dev.cryptospace.tasket.payloads.todo.response.TodoCommentResponsePayload
 import external.Wysimark
 import external.createWysimark
+import external.marked
+import external.sanitizeHtml
 import io.kvision.html.Div
 import io.kvision.html.button
 import io.kvision.html.div
@@ -11,7 +16,23 @@ import kotlin.js.json
 
 class TodoDetailsView : Div(className = "col") {
 
-    val comments = timeline()
+    val onCommentItemInserted = mutableListOf<(TimelineItem, TodoCommentResponsePayload) -> Unit>()
+
+    private val comments = timeline()
+
+    val commentsRenderer = SmartListRenderer<TodoCommentResponsePayload>(
+        container = comments,
+        itemRenderer = { comment ->
+            val item = TimelineItem(comment.metaInformation.createdAt)
+
+            val renderedMarkdown = marked.parse(comment.comment)
+            val purifiedMarkdown = sanitizeHtml(renderedMarkdown)
+            item.div(content = purifiedMarkdown, rich = true)
+            onCommentItemInserted.forEach { it(item, comment) }
+
+            return@SmartListRenderer item
+        }
+    )
 
     val commentInput = div(className = "wysimark-container") {
         addAfterInsertHook {

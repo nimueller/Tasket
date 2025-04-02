@@ -34,7 +34,7 @@ object TodoDetails {
 
         modal.removeAll()
         val todoDetails = TodoDetailsController(todoId)
-        todoDetails.refreshItems()
+        todoDetails.refreshComments()
         modal.add(todoDetails.view)
 
         modal.caption = todoPayload?.label
