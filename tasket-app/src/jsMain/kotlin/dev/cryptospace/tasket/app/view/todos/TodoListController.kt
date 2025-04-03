@@ -1,12 +1,14 @@
 package dev.cryptospace.tasket.app.view.todos
 
 import dev.cryptospace.tasket.app.network.HttpClient
+import dev.cryptospace.tasket.app.network.delete
 import dev.cryptospace.tasket.app.network.get
 import dev.cryptospace.tasket.app.network.post
 import dev.cryptospace.tasket.app.view.dashboard.TodoDetails
 import dev.cryptospace.tasket.payloads.todo.request.TodoRequestPayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import io.kvision.core.KVScope
+import io.kvision.core.onClickLaunch
 import io.kvision.core.onEventLaunch
 import kotlinx.coroutines.launch
 import org.w3c.dom.events.KeyboardEvent
@@ -22,10 +24,15 @@ class TodoListController {
             }
         }
 
-        view.onTodoInserted += { panel, todo ->
-            panel.onEventLaunch("click") {
+        view.onTodoInserted += { item, todo ->
+            item.clickHandle.onEventLaunch("click") {
                 TodoDetails.modal.show()
                 TodoDetails.refreshModal(todo.metaInformation.id)
+            }
+
+            item.deleteButton.onClickLaunch {
+                HttpClient.delete("/rest/todos/${todo.metaInformation.id}").handleStatusCodes()
+                refreshTodos()
             }
         }
 
