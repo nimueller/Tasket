@@ -4,6 +4,7 @@ import dev.cryptospace.tasket.app.utils.SmartListRenderer
 import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import external.Sortable
 import io.kvision.core.FlexDirection
+import io.kvision.core.Widget
 import io.kvision.form.check.checkBox
 import io.kvision.form.text.textInput
 import io.kvision.html.ButtonStyle
@@ -19,7 +20,7 @@ import kotlin.js.json
 
 class TodoListView : Div() {
 
-    val onTodoInserted = mutableListOf<(FlexPanel, TodoResponsePayload) -> Unit>()
+    val onTodoInserted = mutableListOf<(Widget, TodoResponsePayload) -> Unit>()
 
     val todoInserter = textInput {
         placeholder = tr("New TODO")
@@ -29,17 +30,22 @@ class TodoListView : Div() {
     }
 
     val todoRenderer = SmartListRenderer<TodoResponsePayload>(todoContainer) { todo ->
-        val panel = FlexPanel(className = "list-group-item justify-content-between") {
-            flexPanel(FlexDirection.ROW) {
-                checkBox()
-                span(className = "list-group-item-title", content = todo.label)
+        val clickHandlerPanel = Div(className = "flex-grow-1 py-3") {
+            span(className = "list-group-item-text", content = todo.label)
+        }
+        val panel = FlexPanel(className = "list-group-item justify-content-between py-0") {
+            flexPanel(FlexDirection.ROW, className = "flex-grow-1") {
+                checkBox {
+                    addCssClass("my-3")
+                }
+                add(clickHandlerPanel)
             }
             div {
                 button(text = "", icon = "fas fa-trash", ButtonStyle.OUTLINEDANGER)
             }
         }
 
-        onTodoInserted.forEach { it(panel, todo) }
+        onTodoInserted.forEach { it(clickHandlerPanel, todo) }
 
         return@SmartListRenderer panel
     }
