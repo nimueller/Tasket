@@ -18,16 +18,17 @@ class TodoDetailsView : Div(className = "col") {
 
     val onCommentItemInserted = mutableListOf<(TimelineItem, TodoCommentResponsePayload) -> Unit>()
 
-    private val comments = timeline()
+    private val commentsContainer = timeline()
 
     val commentsRenderer = SmartListRenderer<TodoCommentResponsePayload>(
-        container = comments,
+        container = commentsContainer,
         itemRenderer = { comment ->
             val item = TimelineItem(comment.metaInformation.createdAt)
 
             val renderedMarkdown = marked.parse(comment.comment)
             val purifiedMarkdown = sanitizeHtml(renderedMarkdown)
             item.div(content = purifiedMarkdown, rich = true)
+
             onCommentItemInserted.forEach { it(item, comment) }
 
             return@SmartListRenderer item
