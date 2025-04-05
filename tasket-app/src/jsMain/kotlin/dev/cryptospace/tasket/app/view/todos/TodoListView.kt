@@ -5,7 +5,7 @@ import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import external.Sortable
 import external.jsonObject
 import io.kvision.core.FlexDirection
-import io.kvision.form.check.checkBox
+import io.kvision.form.check.CheckBox
 import io.kvision.form.text.textInput
 import io.kvision.html.Button
 import io.kvision.html.ButtonStyle
@@ -31,6 +31,9 @@ class TodoListView : Div() {
     }
 
     val todoRenderer = SmartListRenderer<TodoResponsePayload>(todoContainer) { todo ->
+        val completeCheckbox = CheckBox {
+            addCssClass("my-3")
+        }
         val clickHandle = Div(className = "flex-grow-1 py-3") {
             span(className = "list-group-item-text", content = todo.label)
         }
@@ -38,9 +41,7 @@ class TodoListView : Div() {
 
         val panel = FlexPanel(className = "list-group-item justify-content-between py-0") {
             flexPanel(FlexDirection.ROW, className = "flex-grow-1") {
-                checkBox {
-                    addCssClass("my-3")
-                }
+                add(completeCheckbox)
                 add(clickHandle)
             }
             div(className = "my-3") {
@@ -51,6 +52,7 @@ class TodoListView : Div() {
         onTodoInserted.forEach { handler ->
             handler(
                 TodoListItemComponents(
+                    completeCheckbox = completeCheckbox,
                     clickHandle = clickHandle,
                     deleteButton = deleteButton
                 ), todo

@@ -25,6 +25,10 @@ class TodoListController {
         }
 
         view.onTodoInserted += { item, todo ->
+            item.completeCheckbox.onClickLaunch {
+                refreshTodos()
+            }
+
             item.clickHandle.onEventLaunch("click") {
                 TodoDetails.modal.show()
                 TodoDetails.refreshModal(todo.metaInformation.id)
