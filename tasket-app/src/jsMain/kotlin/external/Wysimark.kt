@@ -3,15 +3,19 @@
 
 package external
 
-import kotlin.js.Json
+import org.w3c.dom.Element
 
 external fun createWysimark(
-    container: org.w3c.dom.Element,
-    options: Json
+    container: Element,
+    options: WysimarkOptions
 ): Wysimark
 
 external class Wysimark {
     fun getMarkdown(): String
 
-    fun setMarkdown(markdown: String)
+    fun setMarkdown(@Suppress("unused") markdown: String)
+}
+
+external interface WysimarkOptions {
+    var initialMarkdown: String?
 }

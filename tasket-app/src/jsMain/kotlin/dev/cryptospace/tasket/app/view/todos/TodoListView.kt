@@ -3,6 +3,7 @@ package dev.cryptospace.tasket.app.view.todos
 import dev.cryptospace.tasket.app.utils.SmartListRenderer
 import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import external.Sortable
+import external.jsonObject
 import io.kvision.core.FlexDirection
 import io.kvision.form.check.checkBox
 import io.kvision.form.text.textInput
@@ -15,7 +16,8 @@ import io.kvision.i18n.tr
 import io.kvision.panel.FlexPanel
 import io.kvision.panel.flexPanel
 import org.w3c.dom.HTMLElement
-import kotlin.js.json
+
+private const val ANIMATION_DURATION_IN_MILLIS = 200
 
 class TodoListView : Div() {
 
@@ -61,10 +63,10 @@ class TodoListView : Div() {
     init {
         todoContainer.addAfterInsertHook { node ->
             Sortable.create(
-                node.elm!!.unsafeCast<HTMLElement>(),
-                json(
-                    "animation" to 200,
-                ),
+                element = node.elm!!.unsafeCast<HTMLElement>(),
+                options = jsonObject {
+                    animation = ANIMATION_DURATION_IN_MILLIS
+                }
             )
         }
     }

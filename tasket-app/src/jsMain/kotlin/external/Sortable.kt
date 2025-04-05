@@ -8,10 +8,12 @@ import org.w3c.dom.HTMLElement
 external object Sortable {
     val version: String
 
-    fun create(element: HTMLElement, options: dynamic = definedExternally)
+    fun create(
+        @Suppress("unused") element: HTMLElement,
+        @Suppress("unused") options: SortableOptions = definedExternally
+    )
 }
 
 external interface SortableOptions {
     var animation: Int?
-    var ghostClass: String?
 }
