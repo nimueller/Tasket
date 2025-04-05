@@ -1,4 +1,5 @@
 import dev.cryptospace.tasket.app.App
+import dev.cryptospace.tasket.app.model.TodoStatusModel
 import external.HighlightJs
 import external.Marked
 import external.jsonObject
@@ -9,6 +10,8 @@ import io.kvision.CoreModule
 import io.kvision.FontAwesomeModule
 import io.kvision.module
 import io.kvision.startApplication
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.js.json
 
 val markedHighlightOptions = json(
@@ -23,19 +26,13 @@ val markedHighlightOptions = json(
         print("Using language: $requestedLang for code: $code")
         HighlightJs.highlight(code, jsonObject { language = requestedLang }).value
     }
-).also {
-    println(JSON.stringify(it))
-}
+)
 
 fun main() {
     val markedHighlightExtension = markedHighlight(markedHighlightOptions)
-    println(JSON.stringify(markedHighlightExtension))
-    val options = json("extensions" to markedHighlightExtension)
-    println(JSON.stringify(options))
-
     Marked.use(markedHighlightExtension)
-
-    println(Marked.parse("# Hello world\n\n```kotlin\nval x = 1\n```"))
-
-    startApplication({ App }, module.hot, CoreModule, BootstrapModule, BootstrapCssModule, FontAwesomeModule)
+    GlobalScope.launch {
+        TodoStatusModel.init()
+        startApplication({ App }, module.hot, CoreModule, BootstrapModule, BootstrapCssModule, FontAwesomeModule)
+    }
 }

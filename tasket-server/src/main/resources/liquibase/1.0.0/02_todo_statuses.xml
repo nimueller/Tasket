@@ -63,7 +63,7 @@
         <insert schemaName="tasket" tableName="todo_statuses">
             <column name="id" value="a7226e20-0ba5-4f20-b69e-84243d207d7f"/>
             <column name="name" value="In Progress"/>
-            <column name="color" value="INFO"/>
+            <column name="color" value="WARNING"/>
         </insert>
         <insert schemaName="tasket" tableName="todo_statuses">
             <column name="id" value="0c98041b-8263-4fdf-8c99-9d8a1e42cfae"/>
