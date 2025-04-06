@@ -6,14 +6,25 @@ import dev.cryptospace.tasket.payloads.todo.response.TodoCommentResponsePayload
 import external.Wysimark
 import external.createWysimark
 import external.jsonObject
+import io.kvision.form.select.SelectInput
 import io.kvision.html.Div
 import io.kvision.html.button
 import io.kvision.html.div
+import io.kvision.html.span
 import io.kvision.i18n.tr
 
 class TodoDetailsView : Div(className = "col") {
 
     val onCommentItemInserted = mutableListOf<(TodoCommentItem, TodoCommentResponsePayload) -> Unit>()
+
+    val statusSelectionBox = SelectInput(className = "float-end")
+
+    init {
+        div(className = "col-md-6 clearfix") {
+            span(content = tr("Status"), className = "float-start")
+            add(this@TodoDetailsView.statusSelectionBox)
+        }
+    }
 
     private val commentsContainer = timeline()
 
