@@ -27,7 +27,6 @@ class TodoDetailsView : Div(className = "col") {
 
             val renderedMarkdown = Marked.parse(comment.comment)
             val purifiedMarkdown = DomPurify.sanitize(renderedMarkdown)
-            println("PURIFIED: $purifiedMarkdown")
             item.div(content = purifiedMarkdown, rich = true)
 
             onCommentItemInserted.forEach { it(item, comment) }

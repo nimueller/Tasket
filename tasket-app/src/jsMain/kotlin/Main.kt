@@ -1,5 +1,4 @@
 import dev.cryptospace.tasket.app.App
-import dev.cryptospace.tasket.app.model.TodoStatusModel
 import external.HighlightJs
 import external.Marked
 import external.jsonObject
@@ -10,8 +9,6 @@ import io.kvision.CoreModule
 import io.kvision.FontAwesomeModule
 import io.kvision.module
 import io.kvision.startApplication
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlin.js.json
 
 val markedHighlightOptions = json(
@@ -31,8 +28,5 @@ val markedHighlightOptions = json(
 fun main() {
     val markedHighlightExtension = markedHighlight(markedHighlightOptions)
     Marked.use(markedHighlightExtension)
-    GlobalScope.launch {
-        TodoStatusModel.init()
-        startApplication({ App }, module.hot, CoreModule, BootstrapModule, BootstrapCssModule, FontAwesomeModule)
-    }
+    startApplication({ App }, module.hot, CoreModule, BootstrapModule, BootstrapCssModule, FontAwesomeModule)
 }
