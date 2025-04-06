@@ -1,11 +1,8 @@
 package dev.cryptospace.tasket.app.view.details
 
-import dev.cryptospace.tasket.app.components.TimelineItem
 import dev.cryptospace.tasket.app.components.timeline
 import dev.cryptospace.tasket.app.utils.SmartListRenderer
 import dev.cryptospace.tasket.payloads.todo.response.TodoCommentResponsePayload
-import external.DomPurify
-import external.Marked
 import external.Wysimark
 import external.createWysimark
 import external.jsonObject
@@ -16,21 +13,15 @@ import io.kvision.i18n.tr
 
 class TodoDetailsView : Div(className = "col") {
 
-    val onCommentItemInserted = mutableListOf<(TimelineItem, TodoCommentResponsePayload) -> Unit>()
+    val onCommentItemInserted = mutableListOf<(TodoCommentItem, TodoCommentResponsePayload) -> Unit>()
 
     private val commentsContainer = timeline()
 
     val commentsRenderer = SmartListRenderer<TodoCommentResponsePayload>(
         container = commentsContainer,
-        itemRenderer = { comment ->
-            val item = TimelineItem(comment.metaInformation.createdAt)
-
-            val renderedMarkdown = Marked.parse(comment.comment)
-            val purifiedMarkdown = DomPurify.sanitize(renderedMarkdown)
-            item.div(content = purifiedMarkdown, rich = true)
-
-            onCommentItemInserted.forEach { it(item, comment) }
-
+        itemRenderer = { todoComment ->
+            val item = TodoCommentItem(todoComment)
+            onCommentItemInserted.forEach { it(item, todoComment) }
             return@SmartListRenderer item
         }
     )

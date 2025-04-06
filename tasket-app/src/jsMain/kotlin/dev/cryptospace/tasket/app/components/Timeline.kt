@@ -9,9 +9,6 @@ import io.kvision.core.ListStyleType
 import io.kvision.core.PClass
 import io.kvision.core.Position
 import io.kvision.core.Style
-import io.kvision.core.onClickLaunch
-import io.kvision.html.Button
-import io.kvision.html.ButtonStyle
 import io.kvision.html.Li
 import io.kvision.html.Ul
 import io.kvision.html.div
@@ -79,28 +76,18 @@ class Timeline(init: Timeline.() -> Unit = {}) : Ul() {
     }
 }
 
-class TimelineItem(timestamp: String) : Li() {
+open class TimelineItem(timestamp: String) : Li() {
 
-    val deleteButton = Button(text = "", icon = "fas fa-trash", ButtonStyle.OUTLINEDANGER)
+    val header = div(className = "clearfix") {
+        div(className = "float-start") {
+            h5(content = timestamp)
+        }
+    }
 
     init {
         addCssStyle(timelineItemStyle)
         addCssStyle(timelineItemStyleAfter)
         addCssStyle(timelineItemLastChildStyle)
-
-        div(className = "clearfix") {
-            div(className = "float-start") {
-                h5(content = timestamp)
-            }
-            div(className = "float-end") {
-                add(this@TimelineItem.deleteButton)
-            }
-        }
     }
 
-    fun onDeleteLaunch(handler: suspend () -> Unit) {
-        deleteButton.onClickLaunch {
-            handler()
-        }
-    }
 }
