@@ -1,5 +1,7 @@
 package dev.cryptospace.tasket.server.routes
 
+import dev.cryptospace.tasket.payloads.OptionalField
+import dev.cryptospace.tasket.payloads.todo.request.TodoPatchRequestPayload
 import dev.cryptospace.tasket.payloads.todo.request.TodoRequestPayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import dev.cryptospace.tasket.test.PostgresIntegrationTest
@@ -9,6 +11,7 @@ import dev.cryptospace.tasket.test.testAuthenticatedWebservice
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
@@ -127,6 +130,36 @@ class TodoTest {
     }
 
     @Test
+    fun `patch todo label on existing item should update only label`() = testAuthenticatedWebservice { ownUser ->
+        val ownTodoId = insertTodo(owner = ownUser, label = "Test Todo")
+
+        val response = client.patch("/rest/todos/$ownTodoId") {
+            contentType(ContentType.Application.Json)
+            setBody(TodoPatchRequestPayload(label = OptionalField.of("Other Todo")))
+        }
+
+        assert(response.status == HttpStatusCode.OK)
+        val payload = response.body<TodoResponsePayload>()
+        assert(payload.label == "Other Todo")
+        assert(payload.statusId == "1fab4c54-11bc-4f8a-a950-7a0032d31e85")
+    }
+
+    @Test
+    fun `patch todo status on existing item should update only status`() = testAuthenticatedWebservice { ownUser ->
+        val ownTodoId = insertTodo(owner = ownUser, label = "Test Todo")
+
+        val response = client.patch("/rest/todos/$ownTodoId") {
+            contentType(ContentType.Application.Json)
+            setBody(TodoPatchRequestPayload(statusId = OptionalField.of("a7226e20-0ba5-4f20-b69e-84243d207d7f")))
+        }
+
+        assert(response.status == HttpStatusCode.OK)
+        val payload = response.body<TodoResponsePayload>()
+        assert(payload.label == "Test Todo")
+        assert(payload.statusId == "a7226e20-0ba5-4f20-b69e-84243d207d7f")
+    }
+
+    @Test
     fun `delete todo on existing item should remove item`() = testAuthenticatedWebservice {
         val insertedItem = client.post("/rest/todos") {
             contentType(ContentType.Application.Json)
@@ -151,4 +184,5 @@ class TodoTest {
             assert(status == HttpStatusCode.NotFound)
         }
     }
+
 }

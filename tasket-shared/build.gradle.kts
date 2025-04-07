@@ -4,10 +4,20 @@ plugins {
 }
 
 kotlin {
-    js().browser()
+    js {
+        browser {
+            testTask {
+                useKarma {
+                    useFirefox()
+                }
+            }
+        }
+    }
     jvm()
 }
 
 dependencies {
-    commonMainImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    commonMainImplementation(libs.kotlinx.serialization.json)
+
+    commonTestImplementation(libs.kotlin.test)
 }

@@ -1,22 +1,23 @@
 package dev.cryptospace.tasket.server.todo.mapper
 
+import dev.cryptospace.tasket.payloads.todo.request.TodoPatchRequestPayload
 import dev.cryptospace.tasket.payloads.todo.request.TodoRequestPayload
+import dev.cryptospace.tasket.server.payload.PatchRequestMapper
 import dev.cryptospace.tasket.server.payload.RequestMapper
 import dev.cryptospace.tasket.server.todo.database.TodosTable
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.util.UUID
 
-object TodoRequestMapper : RequestMapper<TodosTable, TodoRequestPayload> {
+object TodoPatchRequestMapper : PatchRequestMapper<TodosTable, TodoPatchRequestPayload> {
     override fun mapFromPayload(
         principal: UUID,
         table: TodosTable,
-        payload: TodoRequestPayload,
+        payload: TodoPatchRequestPayload,
         updateBuilder: UpdateBuilder<Int>,
     ) {
         updateBuilder[table.owner] = principal
-        updateBuilder[table.label] = payload.label
-        payload.statusId?.let { statusId ->
-            updateBuilder[table.status] = UUID.fromString(statusId)
-        }
+
+        payload.label.includeIfPresent(updateBuilder, TodosTable.label)
+        payload.statusId.includeForeignKeyIfPresent(updateBuilder, TodosTable.status)
     }
 }

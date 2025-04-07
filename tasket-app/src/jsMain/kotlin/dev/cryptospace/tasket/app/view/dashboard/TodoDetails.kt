@@ -50,7 +50,7 @@ object TodoDetails {
         }
 
         modal.removeAll()
-        val todoDetails = TodoDetailsController(todoId)
+        val todoDetails = TodoDetailsController(todo)
         todoDetails.refreshComments()
         modal.add(todoDetails.view)
 

@@ -1,6 +1,7 @@
 package dev.cryptospace
 
 import com.auth0.jwt.JWT
+import dev.cryptospace.tasket.payloads.optionalFieldModule
 import dev.cryptospace.tasket.server.authorisation.AuthorisationException
 import dev.cryptospace.tasket.server.routes.login
 import dev.cryptospace.tasket.server.routes.status
@@ -29,6 +30,7 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -46,7 +48,7 @@ fun Application.module() {
         installAdminBearerAuthentication()
     }
     install(ContentNegotiation) {
-        json()
+        json(json = Json { serializersModule = optionalFieldModule })
     }
     install(CORS) {
         allowMethod(HttpMethod.Options)

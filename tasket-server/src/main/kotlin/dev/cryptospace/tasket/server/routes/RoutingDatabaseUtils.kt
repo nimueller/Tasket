@@ -1,7 +1,9 @@
 package dev.cryptospace.tasket.server.routes
 
+import dev.cryptospace.tasket.payloads.PatchRequestPayload
 import dev.cryptospace.tasket.payloads.RequestPayload
 import dev.cryptospace.tasket.payloads.ResponsePayload
+import dev.cryptospace.tasket.server.payload.PatchRequestMapper
 import dev.cryptospace.tasket.server.payload.RequestMapper
 import dev.cryptospace.tasket.server.repository.Repository
 import dev.cryptospace.tasket.server.repository.UserScopedRepository
@@ -107,6 +109,24 @@ suspend inline fun <reified T, reified REQ, reified RESP> RoutingContext.handleP
     call.respond(payload)
 }
 
+suspend inline fun <reified T, reified REQ, reified RESP> RoutingContext.handlePatchRoute(
+    repository: Repository<T, RESP>,
+    requestMapper: PatchRequestMapper<T, REQ>,
+    id: UUID,
+) where T : BaseTable, REQ : PatchRequestPayload, RESP : ResponsePayload {
+    val item = repository.getByIdIgnoreOwner(id)
+    if (item == null) {
+        call.respond(HttpStatusCode.NotFound)
+        return
+    }
+    validateExistingItemIsOwnedByUser(repository, id)
+    val receivedPayload = call.receive<REQ>()
+    val payload = repository.update(id) {
+        requestMapper.mapFromPayload(call.userId(), repository.table, receivedPayload, this)
+    }
+    call.respond(payload)
+}
+
 /**
  * Handles a DELETE request for a given [repository] and [id]. It will try to find the item by [id] in the database and
  * delete it. If the item does not exist, it will respond with a 404. If the found item has an owner, it will check if
@@ -123,16 +143,20 @@ suspend inline fun <reified T : BaseTable> RoutingContext.handleDeleteRoute(repo
     }
 }
 
-/**
- * Validates that an item with the given [id] exists in the database and that it belongs to the current user.
- * If the item does not exist, it will return early. If the item has no owner or belongs to the current user, it will
- * return early. Otherwise, it will respond with a 404.
- */
 suspend fun <T : BaseTable, RESP : ResponsePayload> RoutingContext.validateExistingItemIsOwnedByUser(
     repository: Repository<T, RESP>,
     id: UUID,
 ) {
     val item = repository.getByIdIgnoreOwner(id)
+    validateExistingItemIsOwnedByUser(item)
+}
+
+/**
+ * Validates that an item with the given [id] exists in the database and that it belongs to the current user.
+ * If the item does not exist, it will return early. If the item has no owner or belongs to the current user, it will
+ * return early. Otherwise, it will respond with a 404.
+ */
+suspend fun <RESP : ResponsePayload> RoutingContext.validateExistingItemIsOwnedByUser(item: RESP?) {
     val itemDoesNotExist = item == null
 
     if (itemDoesNotExist) {

@@ -12,6 +12,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.update
 import org.jetbrains.exposed.sql.upsert
 import java.util.UUID
 
@@ -70,6 +71,20 @@ open class Repository<T : BaseTable, RESP : ResponsePayload>(
 
             val row = table.selectAll().where {
                 table.id eq insertedId
+            }.single()
+
+            responseMapper.mapToPayload(table, row)
+        }
+    }
+
+    suspend fun update(id: UUID, updateBuilder: UpdateBuilder<Int>.() -> Unit = {}): RESP {
+        return suspendedTransaction {
+            table.update(where = { table.id eq id }) { statement ->
+                statement.updateBuilder()
+            }
+
+            val row = table.selectAll().where {
+                table.id eq id
             }.single()
 
             responseMapper.mapToPayload(table, row)

@@ -3,12 +3,12 @@ package dev.cryptospace.tasket.test
 import org.jetbrains.exposed.sql.statements.StatementType
 import org.jetbrains.exposed.sql.transactions.transaction
 
-fun insertTodo(owner: TestUser): String {
+fun insertTodo(owner: TestUser, label: String = "Test"): String {
     return transaction {
         exec(
             stmt = """
                 INSERT INTO tasket.todos (label,  owner_id)
-                VALUES ('Test', '${owner.id.value}')
+                VALUES ('$label', '${owner.id.value}')
                 RETURNING id
             """.trimIndent(),
             // the INSERT statement returns the id of the inserted row, so hint a return value to Exposed, otherwise

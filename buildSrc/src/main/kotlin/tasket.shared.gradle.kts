@@ -1,3 +1,7 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
     kotlin("plugin.power-assert")
     kotlin("plugin.serialization")
@@ -9,6 +13,10 @@ plugins {
 
 repositories {
     mavenCentral()
+}
+
+powerAssert {
+    functions = listOf("kotlin.assert", "kotlin.test.assertEquals")
 }
 
 //detekt {

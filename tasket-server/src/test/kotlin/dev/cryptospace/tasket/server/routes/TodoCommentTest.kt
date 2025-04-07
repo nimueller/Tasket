@@ -50,7 +50,7 @@ class TodoCommentTest {
 
         val response = client.put("/rest/todos/$otherTodoId/comments") {
             contentType(ContentType.Application.Json)
-            setBody(TodoRequestPayload(label = "Test Todo", statusId = null))
+            setBody(TodoRequestPayload(label = "Test Todo"))
         }
 
         assert(response.status == HttpStatusCode.NotFound)

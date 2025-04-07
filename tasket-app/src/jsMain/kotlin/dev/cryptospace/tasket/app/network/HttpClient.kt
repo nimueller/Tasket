@@ -3,6 +3,7 @@ package dev.cryptospace.tasket.app.network
 import dev.cryptospace.tasket.payloads.authentication.LoginRequestPayload
 import dev.cryptospace.tasket.payloads.authentication.LoginResponsePayload
 import dev.cryptospace.tasket.payloads.authentication.RefreshTokenRequestPayload
+import dev.cryptospace.tasket.payloads.optionalFieldModule
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import kotlinx.coroutines.await
@@ -14,6 +15,7 @@ import kotlin.js.json
 
 object HttpClient {
     val json = Json {
+        serializersModule = optionalFieldModule
         ignoreUnknownKeys = true
     }
     val host: String?

@@ -4,6 +4,7 @@ import dev.cryptospace.tasket.server.repository.TodoStatusChangeRepository
 import dev.cryptospace.tasket.server.routes.handleDeleteRoute
 import dev.cryptospace.tasket.server.routes.handleGetAllRoute
 import dev.cryptospace.tasket.server.routes.handleGetByIdRoute
+import dev.cryptospace.tasket.server.routes.handlePatchRoute
 import dev.cryptospace.tasket.server.routes.handlePostRoute
 import dev.cryptospace.tasket.server.routes.handlePutRoute
 import dev.cryptospace.tasket.server.routes.validateExistingItemIsOwnedByUser
@@ -11,12 +12,14 @@ import dev.cryptospace.tasket.server.todo.database.TodoCommentRepository
 import dev.cryptospace.tasket.server.todo.database.TodoCommentsTable
 import dev.cryptospace.tasket.server.todo.database.TodoRepository
 import dev.cryptospace.tasket.server.todo.mapper.TodoCommentRequestMapper
+import dev.cryptospace.tasket.server.todo.mapper.TodoPatchRequestMapper
 import dev.cryptospace.tasket.server.todo.mapper.TodoRequestMapper
 import dev.cryptospace.tasket.server.utils.userId
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
+import io.ktor.server.routing.patch
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 import io.ktor.server.routing.route
@@ -36,6 +39,9 @@ fun Route.todo() = route("todos") {
         }
         put {
             handlePutRoute(TodoRepository, TodoRequestMapper, call.parameters.getOrFail<UUID>("todoId"))
+        }
+        patch {
+            handlePatchRoute(TodoRepository, TodoPatchRequestMapper, call.parameters.getOrFail<UUID>("todoId"))
         }
         delete {
             handleDeleteRoute(TodoRepository, call.parameters.getOrFail<UUID>("todoId"))
