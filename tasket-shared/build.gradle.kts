@@ -6,18 +6,15 @@ plugins {
 kotlin {
     js {
         browser {
-            testTask {
-                useKarma {
-                    useFirefox()
-                }
-            }
         }
     }
-    jvm()
+    jvm {
+        dependencies {
+            commonTestImplementation(libs.kotlin.test)
+        }
+    }
 }
 
 dependencies {
     commonMainImplementation(libs.kotlinx.serialization.json)
-
-    commonTestImplementation(libs.kotlin.test)
 }

@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class OptionalFieldSerializerTest {
 
@@ -39,7 +38,7 @@ class OptionalFieldSerializerTest {
 
         val result = json.encodeToString(OptionalFieldPayload.serializer(), payload)
 
-        assertEquals(expectedJson, result)
+        assert(result == expectedJson)
     }
 
     @Test
@@ -53,7 +52,7 @@ class OptionalFieldSerializerTest {
 
         val result = json.encodeToString(OptionalFieldPayload.serializer(), payload)
 
-        assertEquals(expectedJson, result)
+        assert(result == expectedJson)
     }
 
     @Test
@@ -71,7 +70,7 @@ class OptionalFieldSerializerTest {
 
         val result = json.encodeToString(OptionalFieldPayload.serializer(), payload)
 
-        assertEquals(expectedJson, result)
+        assert(result == expectedJson)
     }
 
     @Test
@@ -83,7 +82,7 @@ class OptionalFieldSerializerTest {
 
         val result = json.encodeToString(OptionalFieldPayload.serializer(), payload)
 
-        assertEquals(expectedJson, result)
+        assert(result == expectedJson)
     }
 
     @Test
@@ -96,7 +95,7 @@ class OptionalFieldSerializerTest {
 
         val result = json.decodeFromString<OptionalFieldPayload>(payload)
 
-        assertEquals("Test", (result.label as OptionalField.Present).value)
+        assert((result.label as OptionalField.Present).value == "Test")
     }
 
     @Test
@@ -109,7 +108,7 @@ class OptionalFieldSerializerTest {
 
         val result = json.decodeFromString<OptionalFieldPayload>(payload)
 
-        assertEquals(null, (result.label as OptionalField.Present).value)
+        assert((result.label as OptionalField.Present).value == null)
     }
 
     @Test
@@ -123,8 +122,8 @@ class OptionalFieldSerializerTest {
 
         val result = json.decodeFromString<OptionalFieldPayload>(payload)
 
-        assertEquals("Test", (result.label as OptionalField.Present).value)
-        assertEquals(123, (result.type as OptionalField.Present).value)
+        assert((result.label as OptionalField.Present).value == "Test")
+        assert((result.type as OptionalField.Present).value == 123)
     }
 
     @Test
@@ -135,8 +134,8 @@ class OptionalFieldSerializerTest {
 
         val result = json.decodeFromString<OptionalFieldPayload>(payload)
 
-        assertEquals(OptionalField.Missing, result.label)
-        assertEquals(OptionalField.Missing, result.type)
+        assert(result.label == OptionalField.Missing)
+        assert(result.type == OptionalField.Missing)
     }
 
 }
