@@ -29,25 +29,7 @@ fun interface RequestMapper<T : BaseTable, P : RequestPayload> {
         }
     }
 
-    fun <F> OptionalField<F>.includeNullableIfPresent(
-        updateBuilder: UpdateBuilder<Int>,
-        column: Column<F?>
-    ) {
-        includeNullableIfPresent { value ->
-            updateBuilder[column] = value
-        }
-    }
-
     fun <F> OptionalField<F>.includeIfPresent(update: (F) -> Unit) {
-        when (this) {
-            is OptionalField.Present -> value?.let { update(it) }
-            is OptionalField.Missing -> {
-                // No action needed
-            }
-        }
-    }
-
-    fun <F> OptionalField<F>.includeNullableIfPresent(update: (F?) -> Unit) {
         when (this) {
             is OptionalField.Present -> update(value)
             is OptionalField.Missing -> {

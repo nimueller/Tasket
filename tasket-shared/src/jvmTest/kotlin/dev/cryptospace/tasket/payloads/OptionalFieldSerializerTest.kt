@@ -19,8 +19,8 @@ class OptionalFieldSerializerTest {
 
     @Serializable
     data class OptionalFieldPayload(
-        @Contextual val label: OptionalField<String> = OptionalField.Missing,
-        @Contextual val type: OptionalField<Int> = OptionalField.Missing,
+        @Contextual val label: OptionalField<String?> = OptionalField.Missing,
+        @Contextual val type: OptionalField<Int?> = OptionalField.Missing,
     )
 
     @Test

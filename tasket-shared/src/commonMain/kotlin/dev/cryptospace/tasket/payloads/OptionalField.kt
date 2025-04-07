@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 sealed class OptionalField<out T : Any?> {
     object Missing : OptionalField<Nothing>()
 
-    data class Present<T>(val value: T?) : OptionalField<T>()
+    data class Present<T>(val value: T) : OptionalField<T>()
 
     companion object {
 

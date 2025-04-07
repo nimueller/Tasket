@@ -1,9 +1,7 @@
 package dev.cryptospace.tasket.server.todo.mapper
 
 import dev.cryptospace.tasket.payloads.todo.request.TodoPatchRequestPayload
-import dev.cryptospace.tasket.payloads.todo.request.TodoRequestPayload
 import dev.cryptospace.tasket.server.payload.PatchRequestMapper
-import dev.cryptospace.tasket.server.payload.RequestMapper
 import dev.cryptospace.tasket.server.todo.database.TodosTable
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import java.util.UUID
