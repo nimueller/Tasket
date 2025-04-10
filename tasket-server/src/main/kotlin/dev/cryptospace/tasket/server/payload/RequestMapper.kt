@@ -13,17 +13,14 @@ fun interface RequestMapper<T : BaseTable, P : RequestPayload> {
 
     fun OptionalField<String>.includeForeignKeyIfPresent(
         updateBuilder: UpdateBuilder<Int>,
-        column: Column<EntityID<UUID>>
+        column: Column<EntityID<UUID>>,
     ) {
         includeIfPresent { value ->
             updateBuilder[column] = UUID.fromString(value)
         }
     }
 
-    fun <F> OptionalField<F>.includeIfPresent(
-        updateBuilder: UpdateBuilder<Int>,
-        column: Column<F>
-    ) {
+    fun <F> OptionalField<F>.includeIfPresent(updateBuilder: UpdateBuilder<Int>, column: Column<F>) {
         includeIfPresent { value ->
             updateBuilder[column] = value
         }

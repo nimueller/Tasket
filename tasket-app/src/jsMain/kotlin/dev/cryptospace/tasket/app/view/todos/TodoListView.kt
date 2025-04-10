@@ -39,7 +39,7 @@ class TodoListView : Div() {
                 element = node.elm!!.unsafeCast<HTMLElement>(),
                 options = jsonObject {
                     animation = ANIMATION_DURATION_IN_MILLIS
-                }
+                },
             )
         }
     }

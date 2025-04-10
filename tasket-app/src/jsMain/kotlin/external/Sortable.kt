@@ -10,7 +10,7 @@ external object Sortable {
 
     fun create(
         @Suppress("unused") element: HTMLElement,
-        @Suppress("unused") options: SortableOptions = definedExternally
+        @Suppress("unused") options: SortableOptions = definedExternally,
     )
 }
 

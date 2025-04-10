@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TodoRequestPayload(
     val label: String,
-    val statusId: String? = null
+    val statusId: String? = null,
 ) : RequestPayload

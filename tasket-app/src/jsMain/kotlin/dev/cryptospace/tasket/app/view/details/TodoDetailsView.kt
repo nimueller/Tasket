@@ -34,7 +34,7 @@ class TodoDetailsView : Div(className = "col") {
             val item = TodoCommentItem(todoComment)
             onCommentItemInserted.forEach { it(item, todoComment) }
             return@SmartListRenderer item
-        }
+        },
     )
 
     val commentInput = div(className = "wysimark-container") {
@@ -45,7 +45,7 @@ class TodoDetailsView : Div(className = "col") {
                 container = element,
                 options = jsonObject {
                     initialMarkdown = null
-                }
+                },
             )
         }
     }

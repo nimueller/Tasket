@@ -27,7 +27,7 @@ class OptionalFieldSerializerTest {
     fun serializationShouldIncludeAllFields() {
         val payload = OptionalFieldPayload(
             label = OptionalField.Present("Test"),
-            type = OptionalField.Present(123)
+            type = OptionalField.Present(123),
         )
         val expectedJson = """
             {
@@ -59,7 +59,7 @@ class OptionalFieldSerializerTest {
     fun serializationShouldIncludeNullField() {
         val payload = OptionalFieldPayload(
             label = OptionalField.Present("Test"),
-            type = OptionalField.Present(null)
+            type = OptionalField.Present(null),
         )
         val expectedJson = """
             {
@@ -137,5 +137,4 @@ class OptionalFieldSerializerTest {
         assert(result.label == OptionalField.Missing)
         assert(result.type == OptionalField.Missing)
     }
-
 }

@@ -5,10 +5,7 @@ package external
 
 import org.w3c.dom.Element
 
-external fun createWysimark(
-    container: Element,
-    options: WysimarkOptions
-): Wysimark
+external fun createWysimark(container: Element, options: WysimarkOptions): Wysimark
 
 external class Wysimark {
     fun getMarkdown(): String

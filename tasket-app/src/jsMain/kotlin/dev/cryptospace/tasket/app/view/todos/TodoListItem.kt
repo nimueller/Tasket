@@ -22,7 +22,7 @@ val todoListItemHandleStyle = Style {
 }
 
 class TodoListItem(
-    private val todo: TodoResponsePayload
+    private val todo: TodoResponsePayload,
 ) : FlexPanel(className = "list-group-item justify-content-between py-0") {
 
     private val status = TodoStatusModel.getStatusById(todo.statusId)

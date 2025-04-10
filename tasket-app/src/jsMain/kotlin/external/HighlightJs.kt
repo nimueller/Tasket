@@ -4,14 +4,9 @@ package external
 @JsNonModule
 @JsName("hljs")
 external object HighlightJs {
-    fun getLanguage(
-        @Suppress("unused") name: String
-    ): Language?
+    fun getLanguage(@Suppress("unused") name: String): Language?
 
-    fun highlight(
-        @Suppress("unused") code: String,
-        @Suppress("unused") options: HighlightOptions
-    ): HighlightResult
+    fun highlight(@Suppress("unused") code: String, @Suppress("unused") options: HighlightOptions): HighlightResult
 }
 
 external interface Language {

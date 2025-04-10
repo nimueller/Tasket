@@ -12,7 +12,7 @@ import io.kvision.core.Container
  */
 class SmartListRenderer<T : ResponsePayload>(
     private val container: Container,
-    private val itemRenderer: Container.(T) -> Component
+    private val itemRenderer: Container.(T) -> Component,
 ) {
     private val items = mutableMapOf<String, Component>()
 

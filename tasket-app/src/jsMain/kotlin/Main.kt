@@ -22,7 +22,7 @@ val markedHighlightOptions = json(
         }
         print("Using language: $requestedLang for code: $code")
         HighlightJs.highlight(code, jsonObject { language = requestedLang }).value
-    }
+    },
 )
 
 fun main() {

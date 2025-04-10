@@ -57,5 +57,4 @@ class TodoListController {
         view.todoInserter.value = null
         refreshTodos()
     }
-
 }

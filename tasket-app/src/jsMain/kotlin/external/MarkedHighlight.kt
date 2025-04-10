@@ -3,9 +3,7 @@
 
 package external
 
-external fun markedHighlight(
-    options: dynamic
-): dynamic
+external fun markedHighlight(options: dynamic): dynamic
 
 external interface MarkedHighlightOptions {
     var emptyLangClass: String

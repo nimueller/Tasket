@@ -89,5 +89,4 @@ open class TimelineItem(timestamp: String) : Li() {
         addCssStyle(timelineItemStyleAfter)
         addCssStyle(timelineItemLastChildStyle)
     }
-
 }

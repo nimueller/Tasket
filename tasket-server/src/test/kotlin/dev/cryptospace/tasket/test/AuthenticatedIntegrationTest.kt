@@ -48,9 +48,11 @@ fun testAuthenticatedWebservice(user: TestUser, doTest: suspend WebserviceTest.(
 
     val authenticatedClient = createClient {
         install(ContentNegotiation) {
-            json(json = Json {
-                serializersModule = optionalFieldModule
-            })
+            json(
+                json = Json {
+                    serializersModule = optionalFieldModule
+                },
+            )
         }
         defaultRequest {
             bearerAuth(tokens.accessToken)
