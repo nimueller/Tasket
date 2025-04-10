@@ -135,7 +135,7 @@ class TodoTest {
 
         val response = client.patch("/rest/todos/$ownTodoId") {
             contentType(ContentType.Application.Json)
-            setBody(TodoPatchRequestPayload(label = OptionalField.of("Other Todo")))
+            setBody(TodoPatchRequestPayload(label = OptionalField.Present("Other Todo")))
         }
 
         assert(response.status == HttpStatusCode.OK)
@@ -150,7 +150,7 @@ class TodoTest {
 
         val response = client.patch("/rest/todos/$ownTodoId") {
             contentType(ContentType.Application.Json)
-            setBody(TodoPatchRequestPayload(statusId = OptionalField.of("a7226e20-0ba5-4f20-b69e-84243d207d7f")))
+            setBody(TodoPatchRequestPayload(statusId = OptionalField.Present("a7226e20-0ba5-4f20-b69e-84243d207d7f")))
         }
 
         assert(response.status == HttpStatusCode.OK)

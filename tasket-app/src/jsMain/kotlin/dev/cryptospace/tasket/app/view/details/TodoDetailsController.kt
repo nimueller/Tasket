@@ -4,15 +4,23 @@ import dev.cryptospace.tasket.app.model.TodoStatusModel
 import dev.cryptospace.tasket.app.network.HttpClient
 import dev.cryptospace.tasket.app.network.delete
 import dev.cryptospace.tasket.app.network.get
+import dev.cryptospace.tasket.app.network.patch
 import dev.cryptospace.tasket.app.network.post
+import dev.cryptospace.tasket.app.view.todos.TodoListController
+import dev.cryptospace.tasket.payloads.OptionalField
 import dev.cryptospace.tasket.payloads.todo.request.TodoCommentRequestPayload
+import dev.cryptospace.tasket.payloads.todo.request.TodoPatchRequestPayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoCommentResponsePayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import io.kvision.core.KVScope
+import io.kvision.core.onChangeLaunch
 import io.kvision.core.onClickLaunch
 import kotlinx.coroutines.launch
 
-class TodoDetailsController(todo: TodoResponsePayload) {
+class TodoDetailsController(
+    private val todoListController: TodoListController,
+    todo: TodoResponsePayload
+) {
 
     var todo: TodoResponsePayload = todo
         set(value) {
@@ -29,7 +37,16 @@ class TodoDetailsController(todo: TodoResponsePayload) {
             options = TodoStatusModel.statuses.map { status ->
                 status.metaInformation.id to status.name
             }
-            value = todo.metaInformation.id
+            value = todo.statusId
+
+            onChangeLaunch {
+                val selectedStatusId = value
+                if (selectedStatusId != null) {
+                    val payload = TodoPatchRequestPayload(statusId = OptionalField.Present(selectedStatusId))
+                    HttpClient.patch("/rest/todos/$todoId", payload).handleStatusCodes()
+                    todoListController.refreshTodos()
+                }
+            }
         }
 
         view.onCommentItemInserted += { item, comment ->

@@ -6,6 +6,7 @@ import dev.cryptospace.tasket.app.network.get
 import dev.cryptospace.tasket.app.utils.fromIso8601String
 import dev.cryptospace.tasket.app.utils.toBackgroundBsColor
 import dev.cryptospace.tasket.app.view.details.TodoDetailsController
+import dev.cryptospace.tasket.app.view.todos.TodoListController
 import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import io.kvision.badge.Badge
 import io.kvision.core.BsColor
@@ -39,7 +40,7 @@ object TodoDetails {
             )
         }
 
-    suspend fun refreshModal(todoId: String) {
+    suspend fun refreshModal(todoListController: TodoListController, todoId: String) {
         setTimestampBadgesInPlaceholderMode()
 
         val todo = HttpClient.get<TodoResponsePayload>("/rest/todos/$todoId").handleStatusCodes()
@@ -50,7 +51,7 @@ object TodoDetails {
         }
 
         modal.removeAll()
-        val todoDetails = TodoDetailsController(todo)
+        val todoDetails = TodoDetailsController(todoListController, todo)
         todoDetails.refreshComments()
         modal.add(todoDetails.view)
 

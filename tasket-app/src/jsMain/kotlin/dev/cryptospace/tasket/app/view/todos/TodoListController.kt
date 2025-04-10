@@ -31,7 +31,7 @@ class TodoListController {
 
             item.clickHandle.onEventLaunch("click") {
                 TodoDetails.modal.show()
-                TodoDetails.refreshModal(todo.metaInformation.id)
+                TodoDetails.refreshModal(this@TodoListController, todo.metaInformation.id)
             }
 
             item.deleteButton.onClickLaunch {

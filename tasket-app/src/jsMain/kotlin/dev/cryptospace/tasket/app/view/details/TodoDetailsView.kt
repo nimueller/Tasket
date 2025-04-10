@@ -20,7 +20,7 @@ class TodoDetailsView : Div(className = "col") {
     val statusSelectionBox = SelectInput(className = "float-end")
 
     init {
-        div(className = "col-md-6 clearfix") {
+        div(className = "my-3 clearfix") {
             span(content = tr("Status"), className = "float-start")
             add(this@TodoDetailsView.statusSelectionBox)
         }
