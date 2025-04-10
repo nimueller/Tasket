@@ -22,6 +22,8 @@ class TodoDetailsController(
     todo: TodoResponsePayload
 ) {
 
+    val onStatusChanged = mutableListOf<suspend () -> Unit>()
+
     var todo: TodoResponsePayload = todo
         set(value) {
             field = value
@@ -45,6 +47,7 @@ class TodoDetailsController(
                     val payload = TodoPatchRequestPayload(statusId = OptionalField.Present(selectedStatusId))
                     HttpClient.patch("/rest/todos/$todoId", payload).handleStatusCodes()
                     todoListController.refreshTodos()
+                    onStatusChanged.forEach { it() }
                 }
             }
         }

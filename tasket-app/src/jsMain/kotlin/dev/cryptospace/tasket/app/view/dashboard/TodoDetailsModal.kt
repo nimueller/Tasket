@@ -18,7 +18,8 @@ import io.kvision.i18n.gettext
 import io.kvision.modal.Modal
 import io.kvision.modal.ModalSize
 
-object TodoDetails {
+class TodoDetailsModal : Modal(size = ModalSize.XLARGE, centered = true, scrollable = true) {
+
     private var currentHeaderBadgeColor: BsColor = BsColor.SECONDARYBG
     private val headerBadge = Badge(content = " ", bsColor = currentHeaderBadgeColor) {
         addCssClass("mx-3")
@@ -26,19 +27,18 @@ object TodoDetails {
     private val createdAtBadge = Badge(content = " ")
     private val updatedAtBadge = Badge(content = " ")
 
-    val modal =
-        Modal(caption = null, size = ModalSize.XLARGE, centered = true, scrollable = true) {
-            header.add(1, headerBadge)
+    init {
+        header.add(1, headerBadge)
 
-            footer.add(createdAtBadge)
-            footer.add(updatedAtBadge)
-            footer.addCssClass("placeholder-glow")
-            footer.addCssStyle(
-                Style {
-                    justifyContent = JustifyContent.SPACEBETWEEN
-                },
-            )
-        }
+        footer.add(createdAtBadge)
+        footer.add(updatedAtBadge)
+        footer.addCssClass("placeholder-glow")
+        footer.addCssStyle(
+            Style {
+                justifyContent = JustifyContent.SPACEBETWEEN
+            },
+        )
+    }
 
     suspend fun refreshModal(todoListController: TodoListController, todoId: String) {
         setTimestampBadgesInPlaceholderMode()
@@ -46,16 +46,16 @@ object TodoDetails {
         val todo = HttpClient.get<TodoResponsePayload>("/rest/todos/$todoId").handleStatusCodes()
 
         if (todo == null) {
-            modal.hide()
+            hide()
             return
         }
 
-        modal.removeAll()
+        removeAll()
         val todoDetails = TodoDetailsController(todoListController, todo)
         todoDetails.refreshComments()
-        modal.add(todoDetails.view)
+        add(todoDetails.view)
 
-        modal.caption = todo.label
+        caption = todo.label
         val status = TodoStatusModel.getStatusById(todo.statusId)
         headerBadge.content = gettext("Status: %1", status.name)
         headerBadge.removeBsColor(currentHeaderBadgeColor)

@@ -4,7 +4,7 @@ import dev.cryptospace.tasket.app.network.HttpClient
 import dev.cryptospace.tasket.app.network.delete
 import dev.cryptospace.tasket.app.network.get
 import dev.cryptospace.tasket.app.network.post
-import dev.cryptospace.tasket.app.view.dashboard.TodoDetails
+import dev.cryptospace.tasket.app.view.dashboard.TodoDetailsModal
 import dev.cryptospace.tasket.payloads.todo.request.TodoRequestPayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import io.kvision.core.KVScope
@@ -16,6 +16,7 @@ import org.w3c.dom.events.KeyboardEvent
 class TodoListController {
 
     val view = TodoListView()
+    val todoDetailsModal = TodoDetailsModal()
 
     init {
         view.todoInserter.onEventLaunch("keyup") { event ->
@@ -30,8 +31,8 @@ class TodoListController {
             }
 
             item.clickHandle.onEventLaunch("click") {
-                TodoDetails.modal.show()
-                TodoDetails.refreshModal(this@TodoListController, todo.metaInformation.id)
+                todoDetailsModal.show()
+                todoDetailsModal.refreshModal(this@TodoListController, todo.metaInformation.id)
             }
 
             item.deleteButton.onClickLaunch {
