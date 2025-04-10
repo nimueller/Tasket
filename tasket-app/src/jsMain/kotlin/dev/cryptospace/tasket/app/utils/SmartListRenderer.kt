@@ -30,7 +30,6 @@ class SmartListRenderer<T : ResponsePayload>(
             addItem(item)
         }
 
-        println(updatedItems)
         updatedItems.forEach { id ->
             updateItem(id)
         }

@@ -16,7 +16,7 @@ import org.w3c.dom.events.KeyboardEvent
 class TodoListController {
 
     val view = TodoListView()
-    val todoDetailsModal = TodoDetailsModal()
+    val todoDetailsModal = TodoDetailsModal(todoListController = this)
 
     init {
         view.todoInserter.onEventLaunch("keyup") { event ->
@@ -32,7 +32,7 @@ class TodoListController {
 
             item.clickHandle.onEventLaunch("click") {
                 todoDetailsModal.show()
-                todoDetailsModal.refreshModal(this@TodoListController, todo.metaInformation.id)
+                todoDetailsModal.refreshModal(todo.metaInformation.id)
             }
 
             item.deleteButton.onClickLaunch {

@@ -19,18 +19,22 @@ import kotlinx.coroutines.launch
 
 class TodoDetailsController(
     private val todoListController: TodoListController,
-    todo: TodoResponsePayload
+    todo: TodoResponsePayload?
 ) {
 
     val onStatusChanged = mutableListOf<suspend () -> Unit>()
 
-    var todo: TodoResponsePayload = todo
+    var todo: TodoResponsePayload? = todo
         set(value) {
             field = value
-            KVScope.launch { refreshComments() }
+            KVScope.launch {
+                view.statusSelectionBox.value = value?.statusId
+                view.clearCommentInput()
+                refreshComments()
+            }
         }
-    private val todoId: String
-        get() = todo.metaInformation.id
+    private val todoId: String?
+        get() = todo?.metaInformation?.id
 
     val view = TodoDetailsView()
 
@@ -39,7 +43,6 @@ class TodoDetailsController(
             options = TodoStatusModel.statuses.map { status ->
                 status.metaInformation.id to status.name
             }
-            value = todo.statusId
 
             onChangeLaunch {
                 val selectedStatusId = value
@@ -68,9 +71,15 @@ class TodoDetailsController(
         }
     }
 
-    suspend fun refreshComments() {
-        val result =
-            HttpClient.get<List<TodoCommentResponsePayload>>("/rest/todos/$todoId/comments").handleStatusCodes()
+    private suspend fun refreshComments() {
+        val id = todo?.metaInformation?.id
+
+        if (id == null) {
+            view.commentsRenderer.update(emptyList())
+            return
+        }
+
+        val result = HttpClient.get<List<TodoCommentResponsePayload>>("/rest/todos/$id/comments").handleStatusCodes()
 
         if (result != null) {
             view.commentsRenderer.update(result)

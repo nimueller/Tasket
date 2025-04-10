@@ -18,7 +18,9 @@ import io.kvision.i18n.gettext
 import io.kvision.modal.Modal
 import io.kvision.modal.ModalSize
 
-class TodoDetailsModal : Modal(size = ModalSize.XLARGE, centered = true, scrollable = true) {
+class TodoDetailsModal(
+    todoListController: TodoListController
+) : Modal(size = ModalSize.XLARGE, centered = true, scrollable = true) {
 
     private var currentHeaderBadgeColor: BsColor = BsColor.SECONDARYBG
     private val headerBadge = Badge(content = " ", bsColor = currentHeaderBadgeColor) {
@@ -26,6 +28,11 @@ class TodoDetailsModal : Modal(size = ModalSize.XLARGE, centered = true, scrolla
     }
     private val createdAtBadge = Badge(content = " ")
     private val updatedAtBadge = Badge(content = " ")
+    private val todoDetailsController = TodoDetailsController(todoListController, null).also { detailsController ->
+        detailsController.onStatusChanged += {
+            detailsController.todo?.let { refreshModal(it.metaInformation.id) }
+        }
+    }
 
     init {
         header.add(1, headerBadge)
@@ -38,9 +45,11 @@ class TodoDetailsModal : Modal(size = ModalSize.XLARGE, centered = true, scrolla
                 justifyContent = JustifyContent.SPACEBETWEEN
             },
         )
+
+        add(todoDetailsController.view)
     }
 
-    suspend fun refreshModal(todoListController: TodoListController, todoId: String) {
+    suspend fun refreshModal(todoId: String) {
         setTimestampBadgesInPlaceholderMode()
 
         val todo = HttpClient.get<TodoResponsePayload>("/rest/todos/$todoId").handleStatusCodes()
@@ -50,10 +59,7 @@ class TodoDetailsModal : Modal(size = ModalSize.XLARGE, centered = true, scrolla
             return
         }
 
-        removeAll()
-        val todoDetails = TodoDetailsController(todoListController, todo)
-        todoDetails.refreshComments()
-        add(todoDetails.view)
+        todoDetailsController.todo = todo
 
         caption = todo.label
         val status = TodoStatusModel.getStatusById(todo.statusId)
