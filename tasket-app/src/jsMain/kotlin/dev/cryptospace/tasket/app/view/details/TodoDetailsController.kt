@@ -12,6 +12,7 @@ import dev.cryptospace.tasket.payloads.todo.request.TodoCommentRequestPayload
 import dev.cryptospace.tasket.payloads.todo.request.TodoPatchRequestPayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoCommentResponsePayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
+import dev.cryptospace.tasket.payloads.todo.response.TodoStatusChangeResponsePayload
 import io.kvision.core.KVScope
 import io.kvision.core.onChangeLaunch
 import io.kvision.core.onClickLaunch
@@ -30,7 +31,7 @@ class TodoDetailsController(
             KVScope.launch {
                 view.statusSelectionBox.value = value?.statusId
                 view.clearCommentInput()
-                refreshComments()
+                refreshModificationItems()
             }
         }
     private val todoId: String?
@@ -58,7 +59,7 @@ class TodoDetailsController(
         view.onCommentItemInserted += { item, comment ->
             item.onDeleteLaunch {
                 HttpClient.delete("/rest/todos/$todoId/comments/${comment.metaInformation.id}").handleStatusCodes()
-                refreshComments()
+                refreshModificationItems()
             }
         }
 
@@ -67,11 +68,11 @@ class TodoDetailsController(
             val payload = TodoCommentRequestPayload(comment)
             HttpClient.post("/rest/todos/$todoId/comments", payload).handleStatusCodes()
             view.clearCommentInput()
-            refreshComments()
+            refreshModificationItems()
         }
     }
 
-    private suspend fun refreshComments() {
+    private suspend fun refreshModificationItems() {
         val id = todo?.metaInformation?.id
 
         if (id == null) {
@@ -79,10 +80,13 @@ class TodoDetailsController(
             return
         }
 
-        val result = HttpClient.get<List<TodoCommentResponsePayload>>("/rest/todos/$id/comments").handleStatusCodes()
+        val statusChanges =
+            HttpClient.get<List<TodoStatusChangeResponsePayload>>("/rest/todos/$id/statusChanges").handleStatusCodes()
+        val comments = HttpClient.get<List<TodoCommentResponsePayload>>("/rest/todos/$id/comments").handleStatusCodes()
 
-        if (result != null) {
-            view.commentsRenderer.update(result)
+        if (statusChanges != null && comments != null) {
+            val items = (statusChanges + comments).sortedBy { it.metaInformation.createdAt }
+            view.commentsRenderer.update(items)
         }
     }
 }

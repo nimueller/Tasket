@@ -2,7 +2,11 @@ package dev.cryptospace.tasket.app.view.details
 
 import dev.cryptospace.tasket.app.components.timeline
 import dev.cryptospace.tasket.app.utils.SmartListRenderer
+import dev.cryptospace.tasket.app.view.details.item.TodoCommentItem
+import dev.cryptospace.tasket.app.view.details.item.TodoStatusChangeItem
+import dev.cryptospace.tasket.payloads.ResponsePayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoCommentResponsePayload
+import dev.cryptospace.tasket.payloads.todo.response.TodoStatusChangeResponsePayload
 import external.Wysimark
 import external.createWysimark
 import external.jsonObject
@@ -28,11 +32,19 @@ class TodoDetailsView : Div(className = "col") {
 
     private val commentsContainer = timeline()
 
-    val commentsRenderer = SmartListRenderer<TodoCommentResponsePayload>(
+    val commentsRenderer = SmartListRenderer<ResponsePayload>(
         container = commentsContainer,
-        itemRenderer = { todoComment ->
-            val item = TodoCommentItem(todoComment)
-            onCommentItemInserted.forEach { it(item, todoComment) }
+        itemRenderer = { response ->
+            val item = when (response) {
+                is TodoStatusChangeResponsePayload -> TodoStatusChangeItem(response)
+                is TodoCommentResponsePayload -> {
+                    val item = TodoCommentItem(response)
+                    onCommentItemInserted.forEach { it(item, response) }
+                    item
+                }
+
+                else -> error("Unexpected type of response: $response")
+            }
             return@SmartListRenderer item
         },
     )
