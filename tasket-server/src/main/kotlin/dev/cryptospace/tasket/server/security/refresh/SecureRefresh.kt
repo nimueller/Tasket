@@ -19,7 +19,7 @@ object SecureRefresh {
 
     private val logger = logger<SecureRefresh>()
 
-    fun tryRefresh(refreshTokenRequest: RefreshTokenRequestPayload): RefreshResult {
+    suspend fun tryRefresh(refreshTokenRequest: RefreshTokenRequestPayload): RefreshResult {
         val refreshToken = refreshTokenRequest.refreshToken
 
         if (!JwtService.verifyToken(refreshToken)) {
@@ -29,7 +29,7 @@ object SecureRefresh {
         return doRefresh(refreshToken)
     }
 
-    private fun doRefresh(refreshToken: String): RefreshResult {
+    private suspend fun doRefresh(refreshToken: String): RefreshResult {
         val userId = extractUser(refreshToken) ?: return FailedRefreshResult
         val tokenValid = verifyTokenValid(userId, refreshToken)
 

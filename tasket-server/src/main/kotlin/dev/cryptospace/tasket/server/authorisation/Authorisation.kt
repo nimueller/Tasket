@@ -1,5 +1,6 @@
 package dev.cryptospace.tasket.server.authorisation
 
+import dev.cryptospace.tasket.server.table.user.UserId
 import dev.cryptospace.tasket.server.user.database.UserRepository
 import dev.cryptospace.tasket.server.user.database.UserRole
 import io.ktor.server.auth.UserIdPrincipal
@@ -30,6 +31,10 @@ suspend fun RoutingContext.requireOwnerPrivilege(userId: UUID) {
     if (!isOwner) {
         throw AuthorisationException()
     }
+}
+
+suspend fun RoutingContext.requireAdminOrOwnerPrivilege(userId: UserId) {
+    requireAdminOrOwnerPrivilege(userId.value)
 }
 
 suspend fun RoutingContext.requireAdminOrOwnerPrivilege(userId: UUID) {

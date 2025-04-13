@@ -32,6 +32,20 @@ class UserSettingsView : Div(className = "container") {
     val passwordValidations = PasswordValidations().also {
         add(it)
     }
+    val passwordChangeSuccessful = div(className = "alert alert-success") {
+        content =
+            tr(
+                "Password changed successfully. " +
+                    "For security reasons, it is advised to log out and log back in. " +
+                    "You can continue using the app if you want."
+            )
+    }
+    val passwordChangeError = div(className = "alert alert-danger") {
+        content = tr(
+            "Password could not be changed. " +
+                "Verify that the current password is correct and that the new password rules are met."
+        )
+    }
     val changePasswordSubmitButton = Button(text = tr("Change password"), className = "btn btn-primary").also {
         div(className = "clearfix") {
             div(className = "float-end") {

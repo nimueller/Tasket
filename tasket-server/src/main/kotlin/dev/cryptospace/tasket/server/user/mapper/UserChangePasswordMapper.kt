@@ -15,7 +15,7 @@ class UserChangePasswordMapper : RequestMapper<UsersTable, UserChangePasswordReq
         payload: UserChangePasswordRequestPayload,
         updateBuilder: UpdateBuilder<Int>,
     ) {
-        val password = payload.password
+        val password = payload.newPassword
         val salt = Argon2Hashing.generateSalt()
         updateBuilder[table.password] = Argon2Hashing.hashPassword(password, salt).encodeBase64()
         updateBuilder[table.salt] = salt.encodeBase64()

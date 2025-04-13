@@ -1,13 +1,18 @@
 package dev.cryptospace.tasket.server.user
 
+import dev.cryptospace.tasket.payloads.user.request.UserChangePasswordRequestPayload
 import dev.cryptospace.tasket.server.authorisation.requireAdminOrOwnerPrivilege
 import dev.cryptospace.tasket.server.authorisation.requireAdminPrivilege
 import dev.cryptospace.tasket.server.routes.handleGetAllRoute
 import dev.cryptospace.tasket.server.routes.handleGetByIdRoute
 import dev.cryptospace.tasket.server.routes.handlePostRoute
 import dev.cryptospace.tasket.server.routes.handlePutRoute
+import dev.cryptospace.tasket.server.security.PasswordChangeHandler
+import dev.cryptospace.tasket.server.table.user.UserId
 import dev.cryptospace.tasket.server.user.database.UserRepository
 import dev.cryptospace.tasket.server.user.mapper.UserRequestMapper
+import dev.cryptospace.tasket.server.utils.userId
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -29,6 +34,16 @@ fun Route.users() {
             requireAdminPrivilege()
             handlePostRoute(UserRepository, UserRequestMapper)
         }
+        get("/me") {
+            val id = call.userId()
+            val user = UserRepository.getByIdIgnoreOwner(id)
+
+            if (user == null) {
+                call.respond(message = "User not found", status = HttpStatusCode.NotFound)
+            } else {
+                call.respond(user)
+            }
+        }
         route("{userId}") {
             get {
                 val id = call.parameters.getOrFail<UUID>(name = "userId")
@@ -41,9 +56,23 @@ fun Route.users() {
                 handlePutRoute(UserRepository, UserRequestMapper, id)
             }
             patch("change-password") {
-                val id = call.parameters.getOrFail<UUID>(name = "userId")
+                val id = UserId(call.parameters.getOrFail<UUID>(name = "userId"))
                 requireAdminOrOwnerPrivilege(id)
-                call.respond(UserRepository.changePassword(id, call.receive()))
+                val changePasswordRequest = call.receive<UserChangePasswordRequestPayload>()
+                val passwordChange = PasswordChangeHandler.tryChangePassword(
+                    userId = id,
+                    changePasswordRequest = changePasswordRequest,
+                )
+
+                if (passwordChange == null) {
+                    call.respond(
+                        message = "Password could not be changed",
+                        status = HttpStatusCode.BadRequest
+                    )
+                    return@patch
+                }
+
+                call.respond(passwordChange)
             }
         }
     }

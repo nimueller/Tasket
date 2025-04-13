@@ -8,6 +8,7 @@ import dev.cryptospace.tasket.app.network.patch
 import dev.cryptospace.tasket.app.network.post
 import dev.cryptospace.tasket.app.view.todos.TodoListController
 import dev.cryptospace.tasket.payloads.OptionalField
+import dev.cryptospace.tasket.payloads.ResponsePayload
 import dev.cryptospace.tasket.payloads.todo.request.TodoCommentRequestPayload
 import dev.cryptospace.tasket.payloads.todo.request.TodoPatchRequestPayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoCommentResponsePayload
@@ -49,7 +50,7 @@ class TodoDetailsController(
                 val selectedStatusId = value
                 if (selectedStatusId != null) {
                     val payload = TodoPatchRequestPayload(statusId = OptionalField.Present(selectedStatusId))
-                    HttpClient.patch("/rest/todos/$todoId", payload).handleStatusCodes()
+                    HttpClient.patch<_, ResponsePayload.Empty>("/rest/todos/$todoId", payload).handleStatusCodes()
                     todoListController.refreshTodos()
                     onStatusChanged.forEach { it() }
                 }

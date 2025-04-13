@@ -6,6 +6,7 @@ import io.kvision.core.Widget
 import io.kvision.core.onEventLaunch
 import io.kvision.html.Button
 import org.w3c.dom.events.Event
+import org.w3c.dom.events.FocusEvent
 import org.w3c.dom.events.KeyboardEvent
 
 inline fun <reified T : Widget> T.onEnterKeyUp(noinline handler: suspend T.(Event) -> Unit) {
@@ -24,6 +25,15 @@ fun Button.disable() {
 fun Button.enable() {
     this.disabled = false
     this.removeCssClass("disabled")
+}
+
+
+inline fun <reified T : Widget> T.onFocus(noinline handler: T.(FocusEvent) -> Unit): Int {
+    return this.setEventListener<T> {
+        focus = { event ->
+            handler(event)
+        }
+    }
 }
 
 fun BootstrapColor.toBackgroundBsColor(): BsColor {
