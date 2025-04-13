@@ -32,11 +32,7 @@ class PasswordValidations : Div() {
             body = span(tr("Password and repeat password must match"))
         )
 
-    fun refresh(newPassword: String, repeatNewPassword: String) {
-        val validationErrors = SecurePasswordValidator.validate(newPassword, repeatNewPassword)
-
-        println(validationErrors)
-
+    fun refresh(validationErrors: List<SecurePasswordValidator.ValidationError>) {
         tooShort.valid()
         noUppercase.valid()
         noLowercase.valid()

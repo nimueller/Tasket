@@ -5,18 +5,14 @@ import dev.cryptospace.tasket.app.components.iconFormGroup
 import io.kvision.form.text.Password
 import io.kvision.form.text.Text
 import io.kvision.form.text.password
+import io.kvision.html.Button
 import io.kvision.html.Div
+import io.kvision.html.div
 import io.kvision.html.h2
 import io.kvision.html.h4
 import io.kvision.i18n.tr
 
 class UserSettingsView : Div(className = "container") {
-
-    val onPasswordChanged = mutableListOf<PasswordChangedHandler>()
-
-    fun interface PasswordChangedHandler {
-        fun onPasswordChanged(new: String)
-    }
 
     init {
         h2(content = tr("Settings")) {
@@ -28,12 +24,20 @@ class UserSettingsView : Div(className = "container") {
         }
     }
 
-    val currentPassword = passwordField(tr("Current password"))
+    val currentPassword = passwordField(tr("Current password")).also {
+        it.addCssClass("my-3")
+    }
     val newPassword = passwordField(tr("New password"))
     val repeatNewPassword = passwordField(tr("Repeat new password"))
     val passwordValidations = PasswordValidations().also {
-        addCssClass("collapse")
         add(it)
+    }
+    val changePasswordSubmitButton = Button(text = tr("Change password"), className = "btn btn-primary").also {
+        div(className = "clearfix") {
+            div(className = "float-end") {
+                add(it)
+            }
+        }
     }
 
     private fun passwordField(placeholderTitle: String): Password {

@@ -4,6 +4,7 @@ import dev.cryptospace.tasket.types.BootstrapColor
 import io.kvision.core.BsColor
 import io.kvision.core.Widget
 import io.kvision.core.onEventLaunch
+import io.kvision.html.Button
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 
@@ -13,6 +14,16 @@ inline fun <reified T : Widget> T.onEnterKeyUp(noinline handler: suspend T.(Even
             handler(event)
         }
     }
+}
+
+fun Button.disable() {
+    this.disabled = true
+    this.addCssClass("disabled")
+}
+
+fun Button.enable() {
+    this.disabled = false
+    this.removeCssClass("disabled")
 }
 
 fun BootstrapColor.toBackgroundBsColor(): BsColor {
