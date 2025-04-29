@@ -3,8 +3,11 @@ package dev.cryptospace.tasket.app.view.todos
 import dev.cryptospace.tasket.app.network.HttpClient
 import dev.cryptospace.tasket.app.network.delete
 import dev.cryptospace.tasket.app.network.get
+import dev.cryptospace.tasket.app.network.patch
 import dev.cryptospace.tasket.app.network.post
 import dev.cryptospace.tasket.app.view.dashboard.TodoDetailsModal
+import dev.cryptospace.tasket.payloads.OptionalField
+import dev.cryptospace.tasket.payloads.todo.request.TodoPatchRequestPayload
 import dev.cryptospace.tasket.payloads.todo.request.TodoRequestPayload
 import dev.cryptospace.tasket.payloads.todo.response.TodoResponsePayload
 import io.kvision.core.KVScope
@@ -41,6 +44,21 @@ class TodoListController {
             }
         }
 
+        view.onTodoMoved += {
+            KVScope.launch {
+                for (entry in view.todoRenderer.entries) {
+                    var todo = entry.item
+
+                    println(todo.label + " " + entry.index)
+
+                    HttpClient.patch<TodoPatchRequestPayload, TodoResponsePayload>(
+                        "/rest/todos/${todo.metaInformation.id}",
+                        TodoPatchRequestPayload(sortOrder = OptionalField.Present(entry.index)),
+                    ).handleStatusCodes()
+                }
+            }
+        }
+
         KVScope.launch { refreshTodos() }
     }
 
@@ -48,7 +66,11 @@ class TodoListController {
         val todos = HttpClient.get<List<TodoResponsePayload>>("/rest/todos").handleStatusCodes()
 
         if (todos != null) {
-            view.todoRenderer.update(todos)
+            val sortedTodos = todos.sortedWith(
+                compareBy<TodoResponsePayload> { it.sortOrder }.thenBy { it.metaInformation.createdAt },
+            )
+
+            view.todoRenderer.setItems(sortedTodos)
         }
     }
 

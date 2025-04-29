@@ -9,4 +9,5 @@ import kotlinx.serialization.Serializable
 data class TodoPatchRequestPayload(
     @Contextual val label: OptionalField<String> = OptionalField.Missing,
     @Contextual val statusId: OptionalField<String> = OptionalField.Missing,
+    @Contextual val sortOrder: OptionalField<Int> = OptionalField.Missing,
 ) : PatchRequestPayload

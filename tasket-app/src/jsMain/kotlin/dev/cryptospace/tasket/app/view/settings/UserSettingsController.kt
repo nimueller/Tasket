@@ -45,7 +45,6 @@ class UserSettingsController {
                 newPassword = view.newPassword.value ?: "",
                 repeatNewPassword = view.repeatNewPassword.value ?: ""
             )
-            println(payload)
 
             val response =
                 HttpClient.patch<_, ResponsePayload.Empty>(

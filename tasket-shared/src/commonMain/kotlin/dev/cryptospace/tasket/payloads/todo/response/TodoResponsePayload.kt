@@ -10,4 +10,5 @@ data class TodoResponsePayload(
     val label: String,
     val statusId: String,
     val ownerId: String,
+    val sortOrder: Int,
 ) : ResponsePayload

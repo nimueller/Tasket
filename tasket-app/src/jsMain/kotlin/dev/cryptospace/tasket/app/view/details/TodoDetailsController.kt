@@ -77,7 +77,7 @@ class TodoDetailsController(
         val id = todo?.metaInformation?.id
 
         if (id == null) {
-            view.commentsRenderer.update(emptyList())
+            view.commentsRenderer.setItems(emptyList())
             return
         }
 
@@ -87,7 +87,7 @@ class TodoDetailsController(
 
         if (statusChanges != null && comments != null) {
             val items = (statusChanges + comments).sortedBy { it.metaInformation.createdAt }
-            view.commentsRenderer.update(items)
+            view.commentsRenderer.setItems(items)
         }
     }
 }

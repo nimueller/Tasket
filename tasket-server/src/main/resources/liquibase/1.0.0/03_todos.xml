@@ -35,4 +35,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="1744997916022-1" author="nico (generated)">
+        <addColumn schemaName="tasket" tableName="todos">
+            <column name="sort_order" type="int" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

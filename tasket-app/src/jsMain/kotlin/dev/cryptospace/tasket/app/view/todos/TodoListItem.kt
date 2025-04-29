@@ -16,6 +16,7 @@ import io.kvision.html.span
 import io.kvision.i18n.gettext
 import io.kvision.panel.FlexPanel
 import io.kvision.panel.flexPanel
+import org.w3c.dom.HTMLElement
 
 val todoListItemHandleStyle = Style {
     cursor = Cursor.POINTER
@@ -51,6 +52,11 @@ class TodoListItem(
         }
         div(className = "my-3") {
             add(deleteButton)
+        }
+
+        addAfterInsertHook { node ->
+            val element = node.elm as? HTMLElement
+            element?.setAttribute("data-todo-id", todo.metaInformation.id)
         }
     }
 }

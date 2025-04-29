@@ -17,5 +17,6 @@ object TodoPatchRequestMapper : PatchRequestMapper<TodosTable, TodoPatchRequestP
 
         payload.label.includeIfPresent(updateBuilder, TodosTable.label)
         payload.statusId.includeForeignKeyIfPresent(updateBuilder, TodosTable.status)
+        payload.sortOrder.includeIfPresent(updateBuilder, TodosTable.sortOrder)
     }
 }

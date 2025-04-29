@@ -6,8 +6,6 @@ package external
 import org.w3c.dom.HTMLElement
 
 external object Sortable {
-    val version: String
-
     fun create(
         @Suppress("unused") element: HTMLElement,
         @Suppress("unused") options: SortableOptions = definedExternally,
@@ -16,4 +14,12 @@ external object Sortable {
 
 external interface SortableOptions {
     var animation: Int?
+    var onEnd: ((event: Event) -> Unit)?
+}
+
+external interface Event {
+
+    var item: HTMLElement?
+    var oldIndex: Int
+    var newIndex: Int
 }

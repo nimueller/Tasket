@@ -7,12 +7,11 @@ import org.jetbrains.exposed.sql.ResultRow
 
 object TodoResponseMapper : ResponseMapper<TodosTable, TodoResponsePayload> {
 
-    override fun mapToPayload(table: TodosTable, row: ResultRow): TodoResponsePayload {
-        return TodoResponsePayload(
-            metaInformation = mapMetaInformation(table, row),
-            label = row[table.label],
-            statusId = row[table.status].value.toString(),
-            ownerId = row[table.owner].value.toString(),
-        )
-    }
+    override fun mapToPayload(table: TodosTable, row: ResultRow) = TodoResponsePayload(
+        metaInformation = mapMetaInformation(table, row),
+        label = row[table.label],
+        statusId = row[table.status].value.toString(),
+        ownerId = row[table.owner].value.toString(),
+        sortOrder = row[table.sortOrder],
+    )
 }
